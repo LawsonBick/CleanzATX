@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ruby http server",
+      "runtimeExecutable": "/usr/bin/ruby",
+      "runtimeArgs": ["-run", "-e", "httpd", "/tmp/cleanzatx", "-p", "8080"],
+      "port": 8080
+    }
+  ]
+}
