@@ -581,7 +581,7 @@ input, select, textarea { font-family: var(--font); }
 
 .services__layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 40px;
   align-items: start;
 }
