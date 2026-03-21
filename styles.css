@@ -1237,10 +1237,10 @@ input, select, textarea { font-family: var(--font); }
    ============================================================ */
 .gallery { background: var(--white); }
 .gallery__stack {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 28px;
-  max-width: 720px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 .gallery__item {
@@ -1615,7 +1615,7 @@ input, select, textarea { font-family: var(--font); }
   .about__inner { grid-template-columns: 1fr; gap: 40px; }
   .about__right { order: -1; }
   .about__nextdoor .about__nd-reviews { grid-template-columns: 1fr; }
-  .gallery__stack { max-width: 100%; }
+  .gallery__stack { max-width: 100%; grid-template-columns: 1fr; }
 
   .why-us__inner { grid-template-columns: 1fr; }
   .why-us__right { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
