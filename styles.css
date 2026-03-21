@@ -440,11 +440,12 @@ input, select, textarea { font-family: var(--font); }
 .title-line { display: block; opacity: 0; transform: translateY(30px); }
 .title-line--accent {
   color: transparent;
-  -webkit-text-stroke: 2px var(--sky);
+  -webkit-text-stroke: 1px var(--sky);
   background: linear-gradient(90deg, var(--sky), var(--cyan));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
 }
 
 .hero__sub {
@@ -1541,4 +1542,372 @@ input, select, textarea { font-family: var(--font); }
   .footer__bottom-inner { justify-content: center; text-align: center; }
 
   .plans-strip { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   Quote Wizard
+   ============================================================ */
+.quote-section {
+  background: var(--navy);
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+.quote-section .section__tag,
+.quote-section .section__title,
+.quote-section .section__sub { color: var(--white); }
+.quote-section .section__tag { color: var(--sky); }
+.quote-section .section__sub { color: rgba(255,255,255,.6); }
+
+.qwiz {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--navy-2);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--r-xl);
+  padding: 40px 36px;
+}
+
+/* Progress */
+.qwiz__progress { margin-bottom: 32px; }
+.qwiz__bar {
+  height: 4px;
+  background: rgba(255,255,255,.1);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.qwiz__bar-fill {
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(90deg, var(--sky), var(--cyan));
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+.qwiz__steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.qwiz__step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.3);
+  border: 2px solid rgba(255,255,255,.08);
+  transition: all .3s;
+}
+.qwiz__step.active {
+  background: var(--sky);
+  color: var(--white);
+  border-color: var(--sky);
+}
+.qwiz__step.done {
+  background: var(--green);
+  color: var(--white);
+  border-color: var(--green);
+}
+.qwiz__step-label {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  font-weight: 500;
+}
+
+/* Panels */
+.qwiz__panel { display: none; }
+.qwiz__panel.active { display: block; animation: qwizFade .35s ease; }
+@keyframes qwizFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.qwiz__panel-title {
+  font-family: var(--head);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.qwiz__panel-sub {
+  color: rgba(255,255,255,.55);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* Fields */
+.qwiz__field { margin-bottom: 20px; }
+.qwiz__field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,.8);
+  margin-bottom: 6px;
+}
+.qwiz__field label em { font-weight: 400; color: rgba(255,255,255,.4); font-style: normal; }
+.qwiz__field .req { color: var(--sky); }
+.qwiz__field input,
+.qwiz__field select,
+.qwiz__field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--r);
+  color: var(--white);
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color .2s;
+}
+.qwiz__field input::placeholder { color: rgba(255,255,255,.3); }
+.qwiz__field input:focus,
+.qwiz__field select:focus {
+  border-color: var(--sky);
+  box-shadow: 0 0 0 3px rgba(14,165,233,.15);
+}
+.qwiz__field select option { background: var(--navy-2); color: var(--white); }
+.qwiz__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Chips (radio buttons as clickable tiles) */
+.qwiz__chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.qwiz__chip {
+  padding: 10px 20px;
+  border-radius: var(--r);
+  background: rgba(255,255,255,.06);
+  border: 2px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.7);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.qwiz__chip:hover { border-color: rgba(255,255,255,.25); color: var(--white); }
+.qwiz__chip.active {
+  border-color: var(--sky);
+  background: rgba(14,165,233,.12);
+  color: var(--white);
+}
+
+/* Checkboxes */
+.qwiz__checks { display: flex; flex-direction: column; gap: 10px; }
+.qwiz__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: rgba(255,255,255,.75);
+  font-size: 14px;
+}
+.qwiz__check input[type="checkbox"],
+.qwiz__check input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--sky);
+  flex-shrink: 0;
+}
+.qwiz__check em { color: rgba(255,255,255,.4); font-style: normal; font-size: 13px; }
+.qwiz__conditional { margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,.03); border-radius: var(--r); border: 1px solid rgba(255,255,255,.06); }
+
+/* Plan cards */
+.qwiz__plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.qwiz__plan {
+  background: rgba(255,255,255,.04);
+  border: 2px solid rgba(255,255,255,.08);
+  border-radius: var(--r-lg);
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+}
+.qwiz__plan:hover { border-color: rgba(255,255,255,.2); }
+.qwiz__plan.selected {
+  border-color: var(--sky);
+  background: rgba(14,165,233,.08);
+}
+.qwiz__plan--popular {
+  border-color: var(--sky);
+}
+.qwiz__plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 4px 14px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.qwiz__plan h4 {
+  font-family: var(--head);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.qwiz__plan-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--sky);
+  margin-bottom: 12px;
+}
+.qwiz__plan-price span { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.5); }
+.qwiz__plan ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 16px;
+}
+.qwiz__plan ul li {
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  padding: 3px 0;
+  padding-left: 18px;
+  position: relative;
+}
+.qwiz__plan ul li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 12px;
+}
+.qwiz__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+}
+.qwiz__toggle input { width: 16px; height: 16px; accent-color: var(--sky); }
+
+/* Actions */
+.qwiz__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.qwiz__action-group { display: flex; gap: 12px; align-items: center; }
+.btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.7);
+  padding: 10px 20px;
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s;
+  font-family: var(--font);
+}
+.btn--ghost:hover { border-color: rgba(255,255,255,.3); color: var(--white); }
+
+/* Price card */
+.qwiz__price-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  margin-bottom: 16px;
+}
+.qwiz__price-lines { display: flex; flex-direction: column; gap: 10px; }
+.qwiz__price-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: rgba(255,255,255,.7);
+}
+.qwiz__price-line span:last-child { font-weight: 600; color: var(--white); }
+.qwiz__price-line--discount { color: var(--green) !important; }
+.qwiz__price-line--discount span { color: var(--green) !important; }
+.qwiz__price-divider {
+  height: 1px;
+  background: rgba(255,255,255,.1);
+  margin: 16px 0;
+}
+.qwiz__price-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: 800;
+  font-family: var(--head);
+  color: var(--white);
+}
+.qwiz__price-total span:last-child { color: var(--sky); }
+.qwiz__disclaimer {
+  font-size: 13px;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Large home */
+.qwiz__large-home {
+  text-align: center;
+  padding: 40px 20px;
+}
+.qwiz__large-icon { margin-bottom: 16px; }
+.qwiz__large-home h4 {
+  font-family: var(--head);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.qwiz__large-home p {
+  color: rgba(255,255,255,.6);
+  margin-bottom: 24px;
+}
+
+/* Confirmation */
+.qwiz__confirm {
+  text-align: center;
+  padding: 40px 20px;
+}
+.qwiz__confirm-check { margin-bottom: 16px; }
+.qwiz__confirm h3 {
+  font-family: var(--head);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.qwiz__confirm p {
+  color: rgba(255,255,255,.6);
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Field validation error */
+.qwiz__field--error input,
+.qwiz__field--error select {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.15);
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .qwiz { padding: 28px 20px; }
+  .qwiz__row { grid-template-columns: 1fr; }
+  .qwiz__plans { grid-template-columns: 1fr; }
+  .qwiz__actions { flex-direction: column-reverse; gap: 12px; }
+  .qwiz__actions > * { width: 100%; text-align: center; justify-content: center; }
+  .qwiz__action-group { flex-direction: column-reverse; width: 100%; }
+  .qwiz__action-group > * { width: 100%; justify-content: center; }
+  .qwiz__step { width: 28px; height: 28px; font-size: 12px; }
 }

@@ -187,6 +187,381 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
+/* ============================================================
+   QUOTE WIZARD — Multi-step form with pricing engine
+   ============================================================ */
+const qwiz = document.getElementById('quoteWizard');
+if (qwiz) {
+  const state = {
+    step: 1,
+    address: '', sqft: 0, stories: 0,
+    windowCount: 0, screenCount: 0, trackCount: 0,
+    screenType: 'normal',
+    svcExterior: true, svcInterior: false, svcScreens: false, svcTracks: false,
+    plan: null, autoBilling: false,
+    firstName: '', phone: '', email: '',
+    referral: '', referrer: '', timeline: '', deadlineDate: '',
+  };
+
+  const stepLabels = {
+    1: 'Property Info',
+    2: 'Service Selection',
+    3: 'Service Plan',
+    4: 'Contact Info',
+    5: 'Your Quote'
+  };
+
+  // Window/screen/track options based on sqft
+  function getOptions(sqft) {
+    if (sqft <= 1500)      return { windows: [10,15,20,25], screens: [5,10,15,20], tracks: [5,10,15,20] };
+    if (sqft <= 2500)      return { windows: [15,20,25,30], screens: [15,20,25,30], tracks: [15,20,25,30] };
+    if (sqft <= 3500)      return { windows: [25,30,35,40], screens: [20,25,30,35], tracks: [20,25,30,35] };
+    return                        { windows: [35,40,45,50], screens: [25,30,35,40], tracks: [25,30,35,40] };
+  }
+
+  // Build chip selectors
+  function buildChips(container, options, stateKey) {
+    container.innerHTML = '';
+    options.forEach(val => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'qwiz__chip' + (state[stateKey] === val ? ' active' : '');
+      chip.textContent = val;
+      chip.addEventListener('click', () => {
+        state[stateKey] = val;
+        container.querySelectorAll('.qwiz__chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  // Navigate steps
+  function goToStep(step) {
+    state.step = step;
+    qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
+    const panel = qwiz.querySelector(`[data-panel="${step}"]`);
+    if (panel) panel.classList.add('active');
+
+    // Progress bar
+    const fill = document.getElementById('qwizBarFill');
+    fill.style.width = (step / 5 * 100) + '%';
+
+    // Step indicators
+    qwiz.querySelectorAll('.qwiz__step').forEach(s => {
+      const n = parseInt(s.dataset.step);
+      s.classList.remove('active', 'done');
+      if (n === step) s.classList.add('active');
+      else if (n < step) s.classList.add('done');
+    });
+
+    // Label
+    const label = document.getElementById('qwizStepLabel');
+    label.textContent = `Step ${step} of 5 — ${stepLabels[step] || ''}`;
+
+    // Pre-populate chips when entering step 2
+    if (step === 2) {
+      const opts = getOptions(state.sqft);
+      buildChips(document.getElementById('q-window-chips'), opts.windows, 'windowCount');
+      buildChips(document.getElementById('q-screen-chips'), opts.screens, 'screenCount');
+      buildChips(document.getElementById('q-track-chips'), opts.tracks, 'trackCount');
+    }
+
+    // Build price display when entering step 5
+    if (step === 5) buildPriceDisplay();
+
+    // Scroll to form
+    const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+    const top = qwiz.closest('.quote-section').getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  // Validation
+  function validateStep(step) {
+    if (step === 1) {
+      const addr = document.getElementById('q-address').value.trim();
+      const sqft = parseInt(document.getElementById('q-sqft').value);
+      const stories = document.getElementById('q-stories').value;
+      state.address = addr;
+      state.sqft = sqft || 0;
+      state.stories = parseInt(stories) || 0;
+      if (!addr) { flashError('q-address'); return false; }
+      if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
+      if (!stories) { flashError('q-stories'); return false; }
+      return true;
+    }
+    if (step === 2) {
+      if (!state.windowCount) {
+        const chips = document.getElementById('q-window-chips');
+        chips.style.outline = '2px solid #ef4444';
+        chips.style.borderRadius = '8px';
+        setTimeout(() => { chips.style.outline = ''; }, 2000);
+        return false;
+      }
+      if (state.svcScreens && !state.screenCount) return false;
+      if (state.svcTracks && !state.trackCount) return false;
+      return true;
+    }
+    if (step === 4) {
+      const fname = document.getElementById('q-fname').value.trim();
+      const phone = document.getElementById('q-phone').value.trim();
+      const timeline = document.getElementById('q-timeline').value;
+      state.firstName = fname;
+      state.phone = phone;
+      state.email = document.getElementById('q-email').value.trim();
+      state.referral = document.getElementById('q-referral').value;
+      state.referrer = document.getElementById('q-referrer')?.value?.trim() || '';
+      state.timeline = timeline;
+      state.deadlineDate = document.getElementById('q-date')?.value || '';
+      if (!fname) { flashError('q-fname'); return false; }
+      if (!phone || phone.replace(/\D/g,'').length < 10) { flashError('q-phone'); return false; }
+      if (!timeline) { flashError('q-timeline'); return false; }
+      return true;
+    }
+    return true;
+  }
+
+  function flashError(id) {
+    const field = document.getElementById(id)?.closest('.qwiz__field');
+    if (!field) return;
+    field.classList.add('qwiz__field--error');
+    document.getElementById(id).focus();
+    setTimeout(() => field.classList.remove('qwiz__field--error'), 2500);
+  }
+
+  // Pricing engine
+  function calcPrice() {
+    const sqft = state.sqft;
+    let exterior = sqft * 0.10;
+    let interior = state.svcInterior ? sqft * 0.05 : 0;
+    const screenPrice = state.screenType === 'solar' ? 10 : 5;
+    let screens = state.svcScreens ? state.screenCount * screenPrice : 0;
+    let tracks = state.svcTracks ? state.trackCount * 5 : 0;
+    let discount = 0;
+    if (state.plan === '6month') discount = 50;
+    else if (state.plan === 'quarterly') discount = 100;
+    else if (state.plan === 'monthly') discount = 150;
+    const subtotal = exterior + interior + screens + tracks;
+    const total = Math.max(0, subtotal - discount);
+    return { exterior, interior, screens, tracks, discount, subtotal, total, planName: state.plan };
+  }
+
+  // Job duration estimate
+  function getEstimatedDuration() {
+    const sqft = state.sqft;
+    let extMin = 60;
+    if (sqft > 1500) extMin = 120;
+    if (sqft > 2500) extMin = 180;
+    if (sqft > 3500) extMin = 240;
+    let intMin = 0;
+    if (state.svcInterior) {
+      intMin = 30;
+      if (sqft > 1500) intMin = 60;
+      if (sqft > 2500) intMin = 90;
+      if (sqft > 3500) intMin = 105;
+    }
+    const screenMin = state.svcScreens ? state.screenCount * 1 : 0;
+    const trackMin = state.svcTracks ? state.trackCount * 1 : 0;
+    return extMin + intMin + screenMin + trackMin;
+  }
+
+  function buildPriceDisplay() {
+    const isLarge = state.sqft >= 5000;
+    document.getElementById('q-price-normal').style.display = isLarge ? 'none' : 'block';
+    document.getElementById('q-price-large').style.display = isLarge ? 'block' : 'none';
+    if (isLarge) return;
+
+    const p = calcPrice();
+    const lines = document.getElementById('q-price-lines');
+    lines.innerHTML = '';
+    const addLine = (label, amount, cls) => {
+      const div = document.createElement('div');
+      div.className = 'qwiz__price-line' + (cls ? ' ' + cls : '');
+      div.innerHTML = `<span>${label}</span><span>${typeof amount === 'string' ? amount : '$' + amount.toFixed(2)}</span>`;
+      lines.appendChild(div);
+    };
+    addLine('Exterior Windows', p.exterior);
+    if (state.svcInterior) addLine('Interior Windows', p.interior);
+    if (state.svcScreens) addLine(`Screen Cleaning (${state.screenCount} ${state.screenType === 'solar' ? 'solar' : 'standard'})`, p.screens);
+    if (state.svcTracks) addLine(`Track Cleaning (${state.trackCount})`, p.tracks);
+    if (p.discount > 0) {
+      const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : 'Monthly';
+      addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
+    }
+    document.getElementById('q-price-total').textContent = '$' + p.total.toFixed(2);
+  }
+
+  // Wire up Next/Back buttons
+  qwiz.querySelectorAll('.qwiz__next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = parseInt(btn.dataset.next);
+      if (validateStep(state.step)) goToStep(next);
+    });
+  });
+  qwiz.querySelectorAll('.qwiz__back').forEach(btn => {
+    btn.addEventListener('click', () => goToStep(parseInt(btn.dataset.back)));
+  });
+
+  // Service checkboxes
+  document.getElementById('q-svc-interior')?.addEventListener('change', e => { state.svcInterior = e.target.checked; });
+  document.getElementById('q-svc-screens')?.addEventListener('change', e => {
+    state.svcScreens = e.target.checked;
+    document.getElementById('q-screen-options').style.display = e.target.checked ? 'block' : 'none';
+  });
+  document.getElementById('q-svc-tracks')?.addEventListener('change', e => {
+    state.svcTracks = e.target.checked;
+    document.getElementById('q-track-options').style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  // Screen type radios
+  document.querySelectorAll('input[name="screenType"]').forEach(r => {
+    r.addEventListener('change', e => { state.screenType = e.target.value; });
+  });
+
+  // Plan selection
+  qwiz.querySelectorAll('.qwiz__plan').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.qwiz__toggle')) return;
+      const wasSelected = card.classList.contains('selected');
+      qwiz.querySelectorAll('.qwiz__plan').forEach(c => c.classList.remove('selected'));
+      if (!wasSelected) {
+        card.classList.add('selected');
+        state.plan = card.dataset.plan;
+      } else {
+        state.plan = null;
+      }
+      document.getElementById('skipPlanBtn').style.display = state.plan ? 'none' : '';
+      document.getElementById('selectPlanBtn').style.display = state.plan ? '' : 'none';
+    });
+  });
+
+  // Auto-billing toggles
+  qwiz.querySelectorAll('.auto-bill-toggle').forEach(toggle => {
+    toggle.addEventListener('change', e => {
+      state.autoBilling = e.target.checked;
+    });
+  });
+
+  // Referral conditional
+  document.getElementById('q-referral')?.addEventListener('change', e => {
+    document.getElementById('q-referrer-field').style.display = e.target.value === 'Word of Mouth' ? 'block' : 'none';
+  });
+
+  // Timeline conditional
+  document.getElementById('q-timeline')?.addEventListener('change', e => {
+    document.getElementById('q-date-field').style.display = e.target.value === 'specific_date' ? 'block' : 'none';
+  });
+
+  // Submit handlers
+  function handleSubmit() {
+    const p = calcPrice();
+    const isLarge = state.sqft >= 5000;
+    const payload = {
+      first_name: state.firstName,
+      phone: state.phone.replace(/\D/g, ''),
+      email: state.email,
+      address: state.address,
+      sqft: state.sqft,
+      stories: state.stories,
+      services: {
+        exterior_windows: true,
+        interior_windows: state.svcInterior,
+        screens: state.svcScreens,
+        screen_count: state.svcScreens ? state.screenCount : 0,
+        screen_type: state.screenType,
+        tracks: state.svcTracks,
+        track_count: state.svcTracks ? state.trackCount : 0,
+      },
+      service_plan: state.plan || 'none',
+      auto_billing: state.autoBilling,
+      quoted_price: isLarge ? null : Math.round(p.total * 100) / 100,
+      timeline: state.timeline,
+      deadline_date: state.deadlineDate || null,
+      estimated_duration_minutes: getEstimatedDuration(),
+      referral_source: state.referral || null,
+      referrer_name: state.referrer || null,
+      large_home: isLarge,
+    };
+
+    // Fire-and-forget webhook POST
+    fetch('http://187.124.236.252:5678/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {}); // fire-and-forget
+
+    // Email backup — send formatted quote to cleanzatx@gmail.com
+    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None';
+    const emailBody = [
+      `NEW QUOTE REQUEST`,
+      ``,
+      `--- Contact ---`,
+      `Name: ${state.firstName}`,
+      `Phone: ${state.phone}`,
+      `Email: ${state.email || 'Not provided'}`,
+      ``,
+      `--- Property ---`,
+      `Address: ${state.address}`,
+      `Square Footage: ${state.sqft}`,
+      `Stories: ${state.stories}`,
+      ``,
+      `--- Services ---`,
+      `Exterior Windows: Yes`,
+      `Interior Windows: ${state.svcInterior ? 'Yes' : 'No'}`,
+      `Screen Cleaning: ${state.svcScreens ? state.screenCount + ' screens (' + state.screenType + ')' : 'No'}`,
+      `Track Cleaning: ${state.svcTracks ? state.trackCount + ' tracks' : 'No'}`,
+      ``,
+      `--- Plan ---`,
+      `Service Plan: ${planLabel}`,
+      `Auto-Billing: ${state.autoBilling ? 'Yes' : 'No'}`,
+      ``,
+      `--- Quote ---`,
+      isLarge ? `Large Home — Custom Quote Required` : `Quoted Price: $${p.total.toFixed(2)}`,
+      ``,
+      `--- Scheduling ---`,
+      `Timeline: ${state.timeline}`,
+      state.deadlineDate ? `Preferred Date: ${state.deadlineDate}` : '',
+      `Estimated Duration: ${getEstimatedDuration()} minutes`,
+      ``,
+      `--- Referral ---`,
+      `Source: ${state.referral || 'Not specified'}`,
+      state.referrer ? `Referred by: ${state.referrer}` : '',
+    ].filter(Boolean).join('\n');
+
+    // Try EmailJS if configured, otherwise use mailto
+    if (typeof emailjs !== 'undefined' && emailjs.send) {
+      emailjs.send('default_service', 'template_quote', {
+        to_email: 'cleanzatx@gmail.com',
+        from_name: state.firstName,
+        subject: 'New Quote Request — ' + state.firstName + ' — $' + (isLarge ? 'Custom' : p.total.toFixed(2)),
+        message: emailBody,
+      }).catch(() => {
+        // Fallback: open mailto if EmailJS fails
+        window.open('mailto:cleanzatx@gmail.com?subject=' + encodeURIComponent('New Quote Request — ' + state.firstName) + '&body=' + encodeURIComponent(emailBody), '_self');
+      });
+    } else {
+      // Direct mailto fallback
+      window.open('mailto:cleanzatx@gmail.com?subject=' + encodeURIComponent('New Quote Request — ' + state.firstName) + '&body=' + encodeURIComponent(emailBody), '_self');
+    }
+
+    // Show confirmation
+    qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
+    const confirmPanel = qwiz.querySelector('[data-panel="confirm"]');
+    confirmPanel.style.display = '';
+    confirmPanel.classList.add('active');
+    document.getElementById('q-confirm-msg').textContent = `Thanks for reaching out, ${state.firstName}!`;
+
+    // Hide progress
+    qwiz.querySelector('.qwiz__progress').style.display = 'none';
+  }
+
+  document.getElementById('q-submit')?.addEventListener('click', handleSubmit);
+  document.getElementById('q-submit-large')?.addEventListener('click', handleSubmit);
+
+  // Initialize step 1
+  goToStep(1);
+}
+
 /* ---------- Contact form ---------- */
 const form = document.getElementById('contactForm');
 if (form) {
