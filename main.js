@@ -270,10 +270,14 @@ if (qwiz) {
     // Build price display when entering step 5
     if (step === 5) buildPriceDisplay();
 
-    // Scroll to form
-    const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-    const top = qwiz.closest('.quote-section').getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
+    // Scroll to form (skip on initial load)
+    if (!qwiz._initialized) {
+      qwiz._initialized = true;
+    } else {
+      const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      const top = qwiz.closest('.quote-section').getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   }
 
   // Validation

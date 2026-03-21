@@ -395,7 +395,31 @@ input, select, textarea { font-family: var(--font); }
   66% { transform: translate(-20px,30px) scale(.97); }
 }
 
-.hero__content { position: relative; z-index: 1; }
+.hero__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.hero__text { position: relative; z-index: 2; }
+.hero__photo {
+  position: relative;
+  z-index: 2;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  margin-top: 100px;
+  transform: scale(1.1);
+  transform-origin: top center;
+}
+.hero__photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
 
 .hero__brand-title {
   font-family: var(--head);
@@ -430,8 +454,8 @@ input, select, textarea { font-family: var(--font); }
   font-family: var(--head);
   font-size: clamp(48px, 7.5vw, 92px);
   font-weight: 900;
-  line-height: 1.02;
-  letter-spacing: -.04em;
+  line-height: 1.12;
+  letter-spacing: -.02em;
   color: var(--white);
   margin-bottom: 28px;
   display: flex;
@@ -555,6 +579,39 @@ input, select, textarea { font-family: var(--font); }
    ============================================================ */
 .services { background: var(--bg); }
 
+.services__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.services__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.services__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+}
+.gallery-thumb {
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3;
+}
+.gallery-thumb--wide {
+  aspect-ratio: 16 / 10;
+}
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
 .services__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -738,7 +795,9 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    WHY US
    ============================================================ */
-.why-us { background: var(--white); }
+.why-us { background: var(--navy); }
+.why-us .section__tag { background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.why-us .section__title { color: var(--white); }
 .why-us__inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -748,7 +807,7 @@ input, select, textarea { font-family: var(--font); }
 
 .why-us__intro {
   font-size: 16px;
-  color: var(--mid);
+  color: rgba(255,255,255,.65);
   margin-bottom: 36px;
   line-height: 1.75;
 }
@@ -762,7 +821,7 @@ input, select, textarea { font-family: var(--font); }
   border-radius: var(--r);
   transition: background .2s;
 }
-.feature-item:hover { background: var(--bg); }
+.feature-item:hover { background: rgba(255,255,255,.05); }
 .fi-icon {
   width: 42px; height: 42px;
   min-width: 42px;
@@ -779,10 +838,10 @@ input, select, textarea { font-family: var(--font); }
   font-family: var(--head);
   font-size: 15px;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--white);
   margin-bottom: 4px;
 }
-.feature-item p { font-size: 13.5px; color: var(--mid); line-height: 1.6; }
+.feature-item p { font-size: 13.5px; color: rgba(255,255,255,.6); line-height: 1.6; }
 
 /* Right side proof cards */
 .why-us__right { display: flex; flex-direction: column; gap: 20px; }
@@ -1062,6 +1121,7 @@ input, select, textarea { font-family: var(--font); }
    ABOUT / MEET THE OWNER
    ============================================================ */
 .about { background: var(--white); }
+.about .section__title { color: var(--navy); }
 .about__inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1175,7 +1235,7 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    GALLERY / BEFORE & AFTER
    ============================================================ */
-.gallery { background: var(--bg); }
+.gallery { background: var(--white); }
 .gallery__stack {
   display: flex;
   flex-direction: column;
@@ -1261,7 +1321,10 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    AREAS
    ============================================================ */
-.areas { background: var(--bg); }
+.areas { background: var(--navy); }
+.areas .section__tag { background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.areas .section__title { color: var(--white); }
+.areas .section__sub { color: rgba(255,255,255,.65); }
 .areas__inner {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
@@ -1270,7 +1333,7 @@ input, select, textarea { font-family: var(--font); }
 }
 .areas__left p {
   font-size: 16px;
-  color: var(--mid);
+  color: rgba(255,255,255,.65);
   line-height: 1.75;
   margin-bottom: 4px;
 }
@@ -1284,20 +1347,20 @@ input, select, textarea { font-family: var(--font); }
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: var(--white);
-  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.1);
   border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--slate);
+  color: rgba(255,255,255,.8);
   transition: all .2s;
   cursor: default;
 }
-.area-pill svg { color: var(--mid); flex-shrink: 0; transition: color .2s; }
+.area-pill svg { color: rgba(255,255,255,.4); flex-shrink: 0; transition: color .2s; }
 .area-pill:hover {
   border-color: var(--sky);
-  color: var(--sky-d);
-  background: var(--sky-ll);
+  color: var(--white);
+  background: rgba(14,165,233,.12);
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(14,165,233,.15);
 }
@@ -1347,7 +1410,10 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    CONTACT
    ============================================================ */
-.contact { background: var(--white); }
+.contact { background: var(--navy); }
+.contact .section__tag { background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.contact .section__title { color: var(--white); }
+.contact .section__sub { color: rgba(255,255,255,.65); }
 .contact__inner {
   display: grid;
   grid-template-columns: 1fr 1.3fr;
@@ -1356,7 +1422,7 @@ input, select, textarea { font-family: var(--font); }
 }
 .contact__left > p {
   font-size: 16px;
-  color: var(--mid);
+  color: rgba(255,255,255,.65);
   line-height: 1.75;
   margin-bottom: 32px;
 }
@@ -1367,16 +1433,16 @@ input, select, textarea { font-family: var(--font); }
   align-items: center;
   gap: 14px;
   padding: 16px 20px;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.1);
   border-radius: var(--r-lg);
   transition: all .22s;
 }
-.ccard:hover { border-color: var(--sky); background: var(--sky-ll); box-shadow: 0 4px 16px rgba(14,165,233,.12); }
+.ccard:hover { border-color: var(--sky); background: rgba(14,165,233,.1); box-shadow: 0 4px 16px rgba(14,165,233,.12); }
 .ccard__icon {
   width: 42px; height: 42px;
-  background: var(--sky-ll);
-  border: 1px solid rgba(14,165,233,.18);
+  background: rgba(14,165,233,.12);
+  border: 1px solid rgba(14,165,233,.2);
   border-radius: 11px;
   display: flex;
   align-items: center;
@@ -1384,8 +1450,8 @@ input, select, textarea { font-family: var(--font); }
   color: var(--sky);
   flex-shrink: 0;
 }
-.ccard strong { display: block; font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
-.ccard span { font-size: 12px; color: var(--mid); }
+.ccard strong { display: block; font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+.ccard span { font-size: 12px; color: rgba(255,255,255,.5); }
 
 /* Quote form */
 .quote-form {
@@ -1470,7 +1536,7 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    FOOTER
    ============================================================ */
-.footer { background: var(--navy); color: rgba(255,255,255,.55); }
+.footer { background: var(--white); color: var(--mid); }
 .footer__main {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1485,7 +1551,7 @@ input, select, textarea { font-family: var(--font); }
   font-family: var(--head);
   font-size: 20px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--navy);
   letter-spacing: -.03em;
   margin-bottom: 18px;
 }
@@ -1497,20 +1563,20 @@ input, select, textarea { font-family: var(--font); }
   font-family: var(--head);
   font-size: 14px;
   font-weight: 700;
-  color: var(--white);
+  color: var(--navy);
   margin-bottom: 18px;
   letter-spacing: .02em;
 }
 .footer__col ul { display: flex; flex-direction: column; gap: 11px; }
 .footer__col ul li a {
   font-size: 14px;
-  color: rgba(255,255,255,.5);
+  color: var(--mid);
   transition: color .2s;
 }
 .footer__col ul li a:hover { color: var(--sky); }
 
 .footer__bottom {
-  border-top: 1px solid rgba(255,255,255,.07);
+  border-top: 1px solid var(--border);
   padding-block: 22px;
 }
 .footer__bottom-inner {
@@ -1520,7 +1586,7 @@ input, select, textarea { font-family: var(--font); }
   flex-wrap: wrap;
   gap: 8px;
   font-size: 13px;
-  color: rgba(255,255,255,.3);
+  color: var(--mid);
 }
 
 /* ============================================================
@@ -1538,7 +1604,11 @@ input, select, textarea { font-family: var(--font); }
   .nav__burger { display: flex; }
 
   .hero__logo-badge { display: none; }
+  .hero__content { grid-template-columns: 1fr; }
+  .hero__photo { max-height: 350px; aspect-ratio: 4/3; order: 2; margin-top: 0; transform: none; }
 
+  .services__layout { grid-template-columns: 1fr; }
+  .services__gallery { position: static; }
   .services__grid .svc-card:last-child { max-width: none; }
 
   .nav__logo-img { height: 72px; }
@@ -1598,15 +1668,13 @@ input, select, textarea { font-family: var(--font); }
    Quote Wizard
    ============================================================ */
 .quote-section {
-  background: var(--navy);
+  background: #ffffff;
   padding-top: 80px;
   padding-bottom: 80px;
 }
-.quote-section .section__tag,
-.quote-section .section__title,
-.quote-section .section__sub { color: var(--white); }
 .quote-section .section__tag { color: var(--sky); }
-.quote-section .section__sub { color: rgba(255,255,255,.6); }
+.quote-section .section__title { color: var(--navy); }
+.quote-section .section__sub { color: var(--slate); }
 
 .qwiz {
   max-width: 720px;
