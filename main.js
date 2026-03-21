@@ -562,31 +562,7 @@ if (qwiz) {
   goToStep(1);
 }
 
-/* ---------- Contact form ---------- */
-const form = document.getElementById('contactForm');
-if (form) {
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
-
-    // Simulate send (replace with real endpoint)
-    setTimeout(() => {
-      form.innerHTML = `
-        <div class="form-success">
-          <div class="form-success__check">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <h3>Request Sent!</h3>
-          <p>Thanks! We'll be in touch within a few hours.<br>Or call us now at <a href="tel:5125180512" style="color:var(--sky);font-weight:600">(512) 518-0512</a>.</p>
-        </div>
-      `;
-    }, 900);
-  });
-}
+/* ---------- Contact form (removed — replaced by quote wizard) ---------- */
 
 /* ---------- Active nav link on scroll ---------- */
 const sections = document.querySelectorAll('section[id]');
