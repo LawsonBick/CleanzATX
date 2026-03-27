@@ -347,7 +347,9 @@ if (qwiz) {
     else if (state.plan === 'monthly') discount = 150;
     const subtotal = exterior + interior + screens + tracks;
     const total = Math.max(0, subtotal - discount);
-    return { exterior, interior, screens, tracks, discount, subtotal, total, planName: state.plan };
+    const low = Math.max(0, total - 50);
+    const high = total + 50;
+    return { exterior, interior, screens, tracks, discount, subtotal, total, low, high, planName: state.plan };
   }
 
   // Job duration estimate
@@ -392,7 +394,7 @@ if (qwiz) {
       const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : 'Monthly';
       addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
     }
-    document.getElementById('q-price-total').textContent = '$' + p.total.toFixed(2);
+    document.getElementById('q-price-total').textContent = '$' + Math.round(p.low) + ' – $' + Math.round(p.high);
   }
 
   // Wire up Next/Back buttons
