@@ -498,7 +498,7 @@ if (qwiz) {
 
     // Silent EmailJS send — no popups, no mailto, no redirects
     const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
-    emailjs.send('service_xsex2ss', 'template_c33cpvh', {
+    emailjs.send('service_xsex2ss', 'template_536xvvp', {
       first_name: state.firstName,
       last_name: '',
       phone: state.phone,
