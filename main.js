@@ -553,7 +553,7 @@ if (qwiz) {
     };
 
     // Fire-and-forget to n8n — server handles all Xecute & client texts
-    fetch('http://187.124.236.252:5678/webhook/cleanzatx-quote', {
+    fetch('http://187.124.236.252:5678/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(n8nPayload),
