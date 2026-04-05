@@ -501,7 +501,10 @@ if (qwiz) {
   });
 
   // Submit handlers
+  let submitted = false;
   function handleSubmit() {
+    if (submitted) return;
+    submitted = true;
     const p = calcPrice();
     const isLarge = state.sqft >= 5000;
     const payload = {
