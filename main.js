@@ -557,7 +557,7 @@ if (qwiz) {
       service_plan:     planLabel,
       auto_billing:     state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
       referral_source:  state.referral || '',
-      timeline:         state.timeline || '',
+      timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
     };
     console.log('EmailJS payload:', emailPayload);
     emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {}); // silent — ignore any errors
