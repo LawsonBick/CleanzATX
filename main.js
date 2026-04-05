@@ -286,12 +286,15 @@ if (qwiz) {
       const addr = document.getElementById('q-address').value.trim();
       const sqft = parseInt(document.getElementById('q-sqft').value);
       const stories = document.getElementById('q-stories').value;
+      const lastCleaned = document.getElementById('q-last-cleaned').value;
       state.address = addr;
       state.sqft = sqft || 0;
       state.stories = parseInt(stories) || 0;
+      state.lastCleaned = lastCleaned;
       if (!addr) { flashError('q-address'); return false; }
       if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
       if (!stories) { flashError('q-stories'); return false; }
+      if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
       return true;
     }
     if (step === 2) {
@@ -505,7 +508,7 @@ if (qwiz) {
       email: state.email || '',
       sqft: state.sqft,
       stories: state.stories,
-      last_cleaned: '',
+      last_cleaned: state.lastCleaned || '',
       exterior_windows: 'Yes',
       interior_windows: state.svcInterior ? 'Yes' : 'No',
       screens: state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
