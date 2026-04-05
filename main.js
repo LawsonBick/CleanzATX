@@ -531,6 +531,35 @@ if (qwiz) {
   goToStep(1);
 }
 
+/* ---------- Phone action modal ---------- */
+(function () {
+  const overlay = document.getElementById('phoneModal');
+  if (!overlay) return;
+
+  function openModal(e) {
+    e.preventDefault();
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Intercept all tel: links
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', openModal);
+  });
+
+  // Close on cancel button or overlay backdrop click
+  document.getElementById('phoneModalCancel').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+})();
+
 /* ---------- Contact form (removed — replaced by quote wizard) ---------- */
 
 /* ---------- Active nav link on scroll ---------- */

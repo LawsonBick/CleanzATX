@@ -2029,3 +2029,103 @@ input, select, textarea { font-family: var(--font); }
   .qwiz__action-group > * { width: 100%; justify-content: center; }
   .qwiz__step { width: 28px; height: 28px; font-size: 12px; }
 }
+
+/* ===== PHONE ACTION MODAL ===== */
+.phone-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 26, 46, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+.phone-modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.phone-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  width: 100%;
+  max-width: 400px;
+  transform: translateY(24px);
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+}
+.phone-modal-overlay.active .phone-modal {
+  transform: translateY(0);
+}
+.phone-modal__icon {
+  width: 52px;
+  height: 52px;
+  background: var(--sky-ll);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.phone-modal__icon svg { color: var(--sky); }
+.phone-modal h3 {
+  font-family: var(--head);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+  letter-spacing: -.02em;
+}
+.phone-modal p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+.phone-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.phone-modal__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: background .15s, transform .1s;
+}
+.phone-modal__btn:active { transform: scale(.97); }
+.phone-modal__btn--call {
+  background: var(--sky);
+  color: #fff;
+}
+.phone-modal__btn--call:hover { background: var(--sky-d); }
+.phone-modal__btn--text {
+  background: var(--sky-ll);
+  color: var(--sky-d);
+}
+.phone-modal__btn--text:hover { background: #bae6fd; }
+.phone-modal__cancel {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 4px;
+}
+.phone-modal__cancel:hover { color: #64748b; }
