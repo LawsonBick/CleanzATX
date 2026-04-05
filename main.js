@@ -562,6 +562,45 @@ if (qwiz) {
     console.log('EmailJS payload:', emailPayload);
     emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {}); // silent — ignore any errors
 
+    // OpenPhone / Xecute automation sequence
+    // Server handles: Step1 profile text → Step2 reply+Yes → Step3 wait 2min+estimate → Step4 reply+Yes
+    const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
+    const openPhonePayload = {
+      // OpenPhone routing
+      api_key:     '6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd',
+      from_number: '+17372774533',
+      to_number:   '+19498286231',
+
+      // Customer profile (Step 1)
+      first_name:    state.firstName,
+      last_name:     state.lastName || '',
+      email:         state.email || '',
+      phone:         state.phone,
+      address:       state.address || '',
+      stories:       state.stories,
+      sqft:          state.sqft,
+      last_cleaned:  state.lastCleaned || '',
+      service_plan:  planLabel,
+      auto_billing:  state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
+
+      // Estimate line items (Step 3)
+      exterior_windows_price: p.exterior > 0  ? '$' + p.exterior.toFixed(2)  : 'N/A',
+      interior_windows_price: p.interior > 0  ? '$' + p.interior.toFixed(2)  : 'N/A',
+      screens_price:          p.screens > 0   ? '$' + p.screens.toFixed(2) + ' (' + screenTypeLabel + ')' : 'N/A',
+      tracks_price:           p.tracks > 0    ? '$' + p.tracks.toFixed(2)    : 'N/A',
+      discount:               p.discount > 0  ? '-$' + p.discount.toFixed(2) : 'None',
+      total:                  '$' + p.total.toFixed(2),
+      assignees:              'Tyler, Kyson',
+    };
+
+    fetch('http://187.124.236.252:3210/webhook/openphone', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(openPhonePayload),
+    }).then(r => {
+      if (!r.ok) console.error('OpenPhone webhook error:', r.status, r.statusText);
+    }).catch(err => console.error('OpenPhone webhook failed:', err));
+
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
     const confirmPanel = qwiz.querySelector('[data-panel="confirm"]');
