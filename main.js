@@ -507,42 +507,59 @@ if (qwiz) {
     submitted = true;
     const p = calcPrice();
     const isLarge = state.sqft >= 5000;
-    const payload = {
-      first_name: state.firstName,
-      phone: state.phone.replace(/\D/g, ''),
-      email: state.email,
-      address: state.address,
-      sqft: state.sqft,
-      stories: state.stories,
-      services: {
-        exterior_windows: true,
-        interior_windows: state.svcInterior,
-        screens: state.svcScreens,
-        screen_count: state.svcScreens ? state.screenCount : 0,
-        screen_type: state.screenType,
-        tracks: state.svcTracks,
-        track_count: state.svcTracks ? state.trackCount : 0,
-      },
-      service_plan: state.plan || 'none',
-      auto_billing: state.autoBilling,
-      quoted_price: isLarge ? null : Math.round(p.total * 100) / 100,
-      timeline: state.timeline,
-      deadline_date: state.deadlineDate || null,
+    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
+    const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
+
+    // Build services description for n8n
+    const servicesList = ['Exterior Windows'];
+    if (state.svcInterior) servicesList.push('Interior Windows');
+    if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
+    if (state.svcTracks) servicesList.push('Track Cleaning');
+
+    // Derive deadline date from timeline if not a specific date
+    let deadlineDate = state.deadlineDate || '';
+    if (!deadlineDate) {
+      const d = new Date();
+      const days = { asap: 3, within_1_week: 7, within_2_weeks: 14 };
+      d.setDate(d.getDate() + (days[state.timeline] || 30));
+      deadlineDate = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+    }
+
+    // n8n workflow — handles all Xecute + client texting server-side
+    const n8nPayload = {
+      first_name:                 state.firstName,
+      last_name:                  state.lastName || '',
+      phone:                      state.phone,
+      email:                      state.email || '',
+      address:                    state.address || '',
+      sqft:                       state.sqft,
+      stories:                    state.stories,
+      last_cleaned:               state.lastCleaned || '',
+      property_type:              state.propertyType || 'Residential',
+      service_plan:               planLabel,
+      auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+      exterior_price:             p.exterior.toFixed(2),
+      interior_price:             p.interior.toFixed(2),
+      screen_price:               p.screens.toFixed(2),
+      track_price:                p.tracks.toFixed(2),
+      discount:                   p.discount.toFixed(2),
+      total_price:                p.total.toFixed(2),
+      services:                   servicesList.join(', '),
+      deadline_date:              deadlineDate,
       estimated_duration_minutes: getEstimatedDuration(),
-      referral_source: state.referral || null,
-      referrer_name: state.referrer || null,
-      large_home: isLarge,
+      referral_source:            state.referral || '',
+      timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+      large_home:                 isLarge,
     };
 
-    // Fire-and-forget webhook POST
-    fetch('http://187.124.236.252:5678/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+    // Fire-and-forget to n8n — server handles all Xecute & client texts
+    fetch('http://187.124.236.252:5678/webhook/cleanzatx-quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    }).catch(() => {}); // fire-and-forget
+      body: JSON.stringify(n8nPayload),
+    }).catch(() => {});
 
-    // Silent EmailJS send — no popups, no mailto, no redirects
-    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
+    // Silent EmailJS send
     const emailPayload = {
       first_name:       state.firstName,
       last_name:        state.lastName || '',
@@ -562,57 +579,7 @@ if (qwiz) {
       referral_source:  state.referral || '',
       timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
     };
-    console.log('EmailJS payload:', emailPayload);
-    emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {}); // silent — ignore any errors
-
-    // OpenPhone / Xecute automation — called directly via API (CORS confirmed working)
-    const OP_KEY  = '6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd';
-    const OP_FROM = '+17372774533';
-    const OP_TO   = '+19498286231';
-    const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
-
-    function opSend(text) {
-      return fetch('https://api.openphone.com/v1/messages', {
-        method:  'POST',
-        headers: { 'Authorization': OP_KEY, 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ from: OP_FROM, to: [OP_TO], content: text }),
-      }).catch(err => console.error('OpenPhone send failed:', err));
-    }
-
-    // Step 1 — Customer profile text → triggers Xecute "Create Lead" confirmation
-    const profileText =
-      'New Quote Request\n' +
-      'Name: ' + state.firstName + ' ' + (state.lastName || '') + '\n' +
-      'Email: ' + (state.email || 'N/A') + '\n' +
-      'Phone: ' + state.phone + '\n' +
-      'Address: ' + (state.address || 'N/A') + '\n' +
-      'Stories: ' + state.stories + '\n' +
-      'Sqft: ' + state.sqft + '\n' +
-      'Last Cleaned: ' + (state.lastCleaned || 'N/A') + '\n' +
-      'Plan: ' + planLabel + '\n' +
-      'Auto-Bill: ' + (state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled');
-    opSend(profileText);
-
-    // Step 2 — "Yes" at 5s to confirm lead creation
-    setTimeout(() => opSend('Yes'), 5 * 1000);
-
-    // Step 3 — Estimate text at 10s
-    const estimateText =
-      'Estimate for ' + state.firstName + ' ' + (state.lastName || '') + ':\n' +
-      'Exterior Windows: $' + p.exterior.toFixed(2) + '\n' +
-      (p.interior > 0  ? 'Interior Windows: $' + p.interior.toFixed(2) + '\n' : '') +
-      (p.screens  > 0  ? 'Screen Cleaning (' + screenTypeLabel + '): $' + p.screens.toFixed(2) + '\n' : '') +
-      (p.tracks   > 0  ? 'Track Cleaning: $' + p.tracks.toFixed(2) + '\n' : '') +
-      (p.discount > 0  ? 'Plan Discount: -$' + p.discount.toFixed(2) + '\n' : '') +
-      'Total: $' + p.total.toFixed(2) + '\n' +
-      'Assign: Tyler & Kyson';
-    setTimeout(() => opSend(estimateText), 10 * 1000);
-
-    // Step 4 — "Yes" at 15s to confirm estimate creation
-    setTimeout(() => opSend('Yes'), 15 * 1000);
-
-    // Step 5 — "Yes" at 20s to confirm sending estimate to client
-    setTimeout(() => opSend('Yes'), 20 * 1000);
+    emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
