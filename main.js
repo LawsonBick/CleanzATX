@@ -576,7 +576,7 @@ if (qwiz) {
       }).catch(err => console.error('OpenPhone send failed:', err));
     }
 
-    // Step 1 — Customer profile text (immediate)
+    // Step 1 — Customer profile text → triggers Xecute "Create Lead" confirmation
     const profileText =
       'New Quote Request\n' +
       'Name: ' + state.firstName + ' ' + (state.lastName || '') + '\n' +
@@ -590,7 +590,10 @@ if (qwiz) {
       'Auto-Bill: ' + (state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled');
     opSend(profileText);
 
-    // Step 3 — Estimate text (after 2 minutes)
+    // Step 2 — "Yes" after 60s to confirm lead creation
+    setTimeout(() => opSend('Yes'), 60 * 1000);
+
+    // Step 3 — Estimate text 3s after Yes (triggers Xecute "Create Estimate" confirmation)
     const estimateText =
       'Estimate for ' + state.firstName + ' ' + (state.lastName || '') + ':\n' +
       'Exterior Windows: $' + p.exterior.toFixed(2) + '\n' +
@@ -600,7 +603,13 @@ if (qwiz) {
       (p.discount > 0  ? 'Plan Discount: -$' + p.discount.toFixed(2) + '\n' : '') +
       'Total: $' + p.total.toFixed(2) + '\n' +
       'Assign: Tyler & Kyson';
-    setTimeout(() => opSend(estimateText), 2 * 60 * 1000);
+    setTimeout(() => opSend(estimateText), 63 * 1000);
+
+    // Step 4 — "Yes" after 123s to confirm estimate creation
+    setTimeout(() => opSend('Yes'), 123 * 1000);
+
+    // Step 5 — "Yes" after 183s to confirm sending estimate to client
+    setTimeout(() => opSend('Yes'), 183 * 1000);
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
