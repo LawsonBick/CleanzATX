@@ -8,6 +8,20 @@ const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
+/* --- Centre scroll arrow against viewport, not hero overflow --- */
+(function () {
+  const arrow = document.querySelector('.hero__scroll-arrow');
+  if (!arrow) return;
+  function positionArrow() {
+    const vw = document.documentElement.clientWidth;
+    const w  = arrow.offsetWidth;
+    arrow.style.left = Math.round((vw - w) / 2) + 'px';
+    arrow.style.transform = 'none';
+  }
+  positionArrow();
+  window.addEventListener('resize', positionArrow);
+})();
+
 /* ---------- Mobile menu ---------- */
 const burger = document.getElementById('burger');
 const mobileMenu = document.getElementById('mobileMenu');
@@ -539,6 +553,7 @@ if (qwiz) {
       screens: state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
       tracks: state.svcTracks ? state.trackCount + ' tracks' : 'No',
       service_plan: planLabel,
+      auto_billing: state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
     }).catch(() => {}); // silent — ignore any errors
 
     // Show confirmation
