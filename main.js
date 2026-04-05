@@ -590,10 +590,10 @@ if (qwiz) {
       'Auto-Bill: ' + (state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled');
     opSend(profileText);
 
-    // Step 2 — "Yes" at 30s to confirm lead creation
-    setTimeout(() => opSend('Yes'), 30 * 1000);
+    // Step 2 — "Yes" at 20s to confirm lead creation
+    setTimeout(() => opSend('Yes'), 20 * 1000);
 
-    // Step 3 — Estimate text at 90s (30s Yes + ~60s for Xecute to process lead & prompt)
+    // Step 3 — Estimate text at 80s (20s Yes + ~60s for Xecute to process lead & prompt)
     const estimateText =
       'Estimate for ' + state.firstName + ' ' + (state.lastName || '') + ':\n' +
       'Exterior Windows: $' + p.exterior.toFixed(2) + '\n' +
@@ -603,13 +603,13 @@ if (qwiz) {
       (p.discount > 0  ? 'Plan Discount: -$' + p.discount.toFixed(2) + '\n' : '') +
       'Total: $' + p.total.toFixed(2) + '\n' +
       'Assign: Tyler & Kyson';
-    setTimeout(() => opSend(estimateText), 90 * 1000);
+    setTimeout(() => opSend(estimateText), 80 * 1000);
 
-    // Step 4 — "Yes" at 120s to confirm estimate creation (30s after estimate text)
+    // Step 4 — "Yes" at 100s to confirm estimate creation (20s after estimate text)
+    setTimeout(() => opSend('Yes'), 100 * 1000);
+
+    // Step 5 — "Yes" at 120s to confirm sending estimate to client (20s after previous)
     setTimeout(() => opSend('Yes'), 120 * 1000);
-
-    // Step 5 — "Yes" at 150s to confirm sending estimate to client (30s after previous)
-    setTimeout(() => opSend('Yes'), 150 * 1000);
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
