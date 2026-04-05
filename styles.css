@@ -2030,6 +2030,25 @@ input, select, textarea { font-family: var(--font); }
   .qwiz__step { width: 28px; height: 28px; font-size: 12px; }
 }
 
+/* ===== QUOTE WIZARD EXTRAS ===== */
+.qwiz__checks--inline { flex-direction: row; gap: 24px; flex-wrap: wrap; }
+.qwiz__checks--inline .qwiz__check { gap: 8px; align-items: center; }
+.qwiz__checks--inline .qwiz__check input[type="radio"] { margin: 0; vertical-align: middle; position: relative; top: 0; }
+.qwiz__checks--inline .qwiz__check span { line-height: 1; vertical-align: middle; position: relative; top: 1px; }
+.qwiz__custom-count { margin-top: 10px; }
+.qwiz__custom-count input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 8px;
+  background: rgba(255,255,255,.07);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 15px;
+}
+.qwiz__custom-count input::placeholder { color: rgba(255,255,255,.4); }
+.qwiz__custom-count input:focus { outline: none; border-color: var(--sky); }
+
 /* ===== PHONE ACTION MODAL ===== */
 .phone-modal-overlay {
   position: fixed;

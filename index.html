@@ -178,8 +178,19 @@
           <h3 class="qwiz__panel-title">Window &amp; Service Selection</h3>
 
           <div class="qwiz__field">
+            <label>Property Type <span class="req">*</span></label>
+            <div class="qwiz__checks qwiz__checks--inline" style="margin-top:22px; margin-bottom:6px;">
+              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-residential" value="Residential" checked /><span style="margin-left:6px;">Residential</span></label>
+              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-commercial" value="Commercial" /><span style="margin-left:6px;">Commercial</span></label>
+            </div>
+          </div>
+
+          <div class="qwiz__field">
             <label>How many windows does your home have? <span class="req">*</span></label>
             <div class="qwiz__chips" id="q-window-chips"></div>
+            <div class="qwiz__custom-count" id="q-window-custom-wrap" style="display:none">
+              <input type="number" id="q-window-custom" placeholder="Enter exact count" min="1" max="999" />
+            </div>
           </div>
 
           <div class="qwiz__field">

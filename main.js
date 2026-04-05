@@ -195,6 +195,7 @@ if (qwiz) {
   const state = {
     step: 1,
     address: '', sqft: 0, stories: 0,
+    propertyType: 'Residential',
     windowCount: 0, screenCount: 0, trackCount: 0,
     screenType: 'normal',
     svcExterior: true, svcInterior: false, svcScreens: false, svcTracks: false,
@@ -262,9 +263,27 @@ if (qwiz) {
     // Pre-populate chips when entering step 2
     if (step === 2) {
       const opts = getOptions(state.sqft);
-      buildChips(document.getElementById('q-window-chips'), opts.windows, 'windowCount');
+      buildChips(document.getElementById('q-window-chips'), [...opts.windows, 'Other'], 'windowCount');
       buildChips(document.getElementById('q-screen-chips'), opts.screens, 'screenCount');
       buildChips(document.getElementById('q-track-chips'), opts.tracks, 'trackCount');
+
+      // Wire "Other" chip to show custom input
+      const windowChips = document.getElementById('q-window-chips');
+      const customWrap = document.getElementById('q-window-custom-wrap');
+      const customInput = document.getElementById('q-window-custom');
+      windowChips.querySelectorAll('.qwiz__chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          if (chip.textContent === 'Other') {
+            customWrap.style.display = '';
+            state.windowCount = parseInt(customInput.value) || 0;
+          } else {
+            customWrap.style.display = 'none';
+          }
+        });
+      });
+      customInput.addEventListener('input', () => {
+        state.windowCount = parseInt(customInput.value) || 0;
+      });
     }
 
     // Build price display when entering step 5
@@ -411,6 +430,11 @@ if (qwiz) {
     btn.addEventListener('click', () => goToStep(parseInt(btn.dataset.back)));
   });
 
+  // Property type
+  document.querySelectorAll('input[name="propertyType"]').forEach(r => {
+    r.addEventListener('change', e => { state.propertyType = e.target.value; });
+  });
+
   // Service checkboxes
   document.getElementById('q-svc-interior')?.addEventListener('change', e => { state.svcInterior = e.target.checked; });
   document.getElementById('q-svc-screens')?.addEventListener('change', e => {
@@ -506,6 +530,7 @@ if (qwiz) {
       last_name: '',
       phone: state.phone,
       email: state.email || '',
+      property_type: state.propertyType || 'Residential',
       sqft: state.sqft,
       stories: state.stories,
       last_cleaned: state.lastCleaned || '',
