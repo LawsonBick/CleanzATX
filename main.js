@@ -496,66 +496,29 @@ if (qwiz) {
       body: JSON.stringify(payload),
     }).catch(() => {}); // fire-and-forget
 
-    // Email backup — send formatted quote to cleanzatx@gmail.com
-    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None';
-    const emailBody = [
-      `NEW QUOTE REQUEST`,
-      ``,
-      `--- Contact ---`,
-      `Name: ${state.firstName}`,
-      `Phone: ${state.phone}`,
-      `Email: ${state.email || 'Not provided'}`,
-      ``,
-      `--- Property ---`,
-      `Address: ${state.address}`,
-      `Square Footage: ${state.sqft}`,
-      `Stories: ${state.stories}`,
-      ``,
-      `--- Services ---`,
-      `Exterior Windows: Yes`,
-      `Interior Windows: ${state.svcInterior ? 'Yes' : 'No'}`,
-      `Screen Cleaning: ${state.svcScreens ? state.screenCount + ' screens (' + state.screenType + ')' : 'No'}`,
-      `Track Cleaning: ${state.svcTracks ? state.trackCount + ' tracks' : 'No'}`,
-      ``,
-      `--- Plan ---`,
-      `Service Plan: ${planLabel}`,
-      `Auto-Billing: ${state.autoBilling ? 'Yes' : 'No'}`,
-      ``,
-      `--- Quote ---`,
-      isLarge ? `Large Home — Custom Quote Required` : `Quoted Price: $${p.total.toFixed(2)}`,
-      ``,
-      `--- Scheduling ---`,
-      `Timeline: ${state.timeline}`,
-      state.deadlineDate ? `Preferred Date: ${state.deadlineDate}` : '',
-      `Estimated Duration: ${getEstimatedDuration()} minutes`,
-      ``,
-      `--- Referral ---`,
-      `Source: ${state.referral || 'Not specified'}`,
-      state.referrer ? `Referred by: ${state.referrer}` : '',
-    ].filter(Boolean).join('\n');
-
-    // Try EmailJS if configured, otherwise use mailto
-    if (typeof emailjs !== 'undefined' && emailjs.send) {
-      emailjs.send('default_service', 'template_quote', {
-        to_email: 'cleanzatx@gmail.com',
-        from_name: state.firstName,
-        subject: 'New Quote Request — ' + state.firstName + ' — $' + (isLarge ? 'Custom' : p.total.toFixed(2)),
-        message: emailBody,
-      }).catch(() => {
-        // Fallback: open mailto if EmailJS fails
-        window.open('mailto:cleanzatx@gmail.com?subject=' + encodeURIComponent('New Quote Request — ' + state.firstName) + '&body=' + encodeURIComponent(emailBody), '_self');
-      });
-    } else {
-      // Direct mailto fallback
-      window.open('mailto:cleanzatx@gmail.com?subject=' + encodeURIComponent('New Quote Request — ' + state.firstName) + '&body=' + encodeURIComponent(emailBody), '_self');
-    }
+    // Silent EmailJS send — no popups, no mailto, no redirects
+    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
+    emailjs.send('service_xsex2ss', 'template_c33cpvh', {
+      first_name: state.firstName,
+      last_name: '',
+      phone: state.phone,
+      email: state.email || '',
+      sqft: state.sqft,
+      stories: state.stories,
+      last_cleaned: '',
+      exterior_windows: 'Yes',
+      interior_windows: state.svcInterior ? 'Yes' : 'No',
+      screens: state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
+      tracks: state.svcTracks ? state.trackCount + ' tracks' : 'No',
+      service_plan: planLabel,
+    }).catch(() => {}); // silent — ignore any errors
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
     const confirmPanel = qwiz.querySelector('[data-panel="confirm"]');
     confirmPanel.style.display = '';
     confirmPanel.classList.add('active');
-    document.getElementById('q-confirm-msg').textContent = `Thanks for reaching out, ${state.firstName}!`;
+    document.getElementById('q-confirm-msg').textContent = `Thanks! We'll be in touch with your quote shortly.`;
 
     // Hide progress
     qwiz.querySelector('.qwiz__progress').style.display = 'none';
