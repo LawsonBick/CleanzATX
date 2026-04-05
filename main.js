@@ -595,10 +595,9 @@ if (qwiz) {
 
     fetch('http://187.124.236.252:3210/webhook/openphone', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      mode:    'no-cors', // avoids CORS preflight — server confirmed 200 via curl
+      headers: { 'Content-Type': 'text/plain' },
       body:    JSON.stringify(openPhonePayload),
-    }).then(r => {
-      if (!r.ok) console.error('OpenPhone webhook error:', r.status, r.statusText);
     }).catch(err => console.error('OpenPhone webhook failed:', err));
 
     // Show confirmation
