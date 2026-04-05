@@ -347,6 +347,7 @@ if (qwiz) {
       const phone = document.getElementById('q-phone').value.trim();
       const timeline = document.getElementById('q-timeline').value;
       state.firstName = fname;
+      state.lastName = document.getElementById('q-lname')?.value.trim() || '';
       state.phone = phone;
       state.email = document.getElementById('q-email').value.trim();
       state.referral = document.getElementById('q-referral').value;
@@ -539,22 +540,27 @@ if (qwiz) {
 
     // Silent EmailJS send — no popups, no mailto, no redirects
     const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
-    emailjs.send('service_xsex2ss', 'template_536xvvp', {
-      first_name: state.firstName,
-      last_name: '',
-      phone: state.phone,
-      email: state.email || '',
-      property_type: state.propertyType || 'Residential',
-      sqft: state.sqft,
-      stories: state.stories,
-      last_cleaned: state.lastCleaned || '',
+    const emailPayload = {
+      first_name:       state.firstName,
+      last_name:        state.lastName || '',
+      phone:            state.phone,
+      email:            state.email || '',
+      address:          state.address || '',
+      property_type:    state.propertyType || 'Residential',
+      sqft:             state.sqft,
+      stories:          state.stories,
+      last_cleaned:     state.lastCleaned || '',
       exterior_windows: 'Yes',
       interior_windows: state.svcInterior ? 'Yes' : 'No',
-      screens: state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
-      tracks: state.svcTracks ? state.trackCount + ' tracks' : 'No',
-      service_plan: planLabel,
-      auto_billing: state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
-    }).catch(() => {}); // silent — ignore any errors
+      screens:          state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
+      tracks:           state.svcTracks ? state.trackCount + ' tracks' : 'No',
+      service_plan:     planLabel,
+      auto_billing:     state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
+      referral_source:  state.referral || '',
+      timeline:         state.timeline || '',
+    };
+    console.log('EmailJS payload:', emailPayload);
+    emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {}); // silent — ignore any errors
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));

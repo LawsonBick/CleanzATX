@@ -109,6 +109,12 @@
       </div>
     </div>
 
+    <!-- Scroll prompt -->
+    <a href="#quote" class="hero__scroll-arrow" aria-label="Scroll down to get a quote">
+      <span class="hero__scroll-label">Get Your Quote</span>
+      <svg class="hero__scroll-chevron" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </a>
+
   </section>
 
   <!-- ===== INSTANT QUOTE FORM ===== -->
@@ -314,9 +320,13 @@
               <input type="text" id="q-fname" placeholder="Jane" required />
             </div>
             <div class="qwiz__field">
-              <label for="q-phone">Phone Number <span class="req">*</span></label>
-              <input type="tel" id="q-phone" placeholder="(512) 000-0000" required />
+              <label for="q-lname">Last Name</label>
+              <input type="text" id="q-lname" placeholder="Doe" />
             </div>
+          </div>
+          <div class="qwiz__field">
+            <label for="q-phone">Phone Number <span class="req">*</span></label>
+            <input type="tel" id="q-phone" placeholder="(512) 000-0000" required />
           </div>
           <div class="qwiz__field">
             <label for="q-email">Email <em>(optional)</em></label>
@@ -988,6 +998,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init('pEcuEf_nmG3f4FLX1');</script>
-<script src="main.js?v=4"></script>
+<script src="main.js?v=5"></script>
 </body>
 </html>
