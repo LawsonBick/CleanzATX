@@ -510,55 +510,6 @@ if (qwiz) {
     const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
     const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
 
-    // Build services description for n8n
-    const servicesList = ['Exterior Windows'];
-    if (state.svcInterior) servicesList.push('Interior Windows');
-    if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
-    if (state.svcTracks) servicesList.push('Track Cleaning');
-
-    // Derive deadline date from timeline if not a specific date
-    let deadlineDate = state.deadlineDate || '';
-    if (!deadlineDate) {
-      const d = new Date();
-      const days = { asap: 3, within_1_week: 7, within_2_weeks: 14 };
-      d.setDate(d.getDate() + (days[state.timeline] || 30));
-      deadlineDate = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
-    }
-
-    // n8n workflow — handles all Xecute + client texting server-side
-    const n8nPayload = {
-      first_name:                 state.firstName,
-      last_name:                  state.lastName || '',
-      phone:                      state.phone,
-      email:                      state.email || '',
-      address:                    state.address || '',
-      sqft:                       state.sqft,
-      stories:                    state.stories,
-      last_cleaned:               state.lastCleaned || '',
-      property_type:              state.propertyType || 'Residential',
-      service_plan:               planLabel,
-      auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
-      exterior_price:             p.exterior.toFixed(2),
-      interior_price:             p.interior.toFixed(2),
-      screen_price:               p.screens.toFixed(2),
-      track_price:                p.tracks.toFixed(2),
-      discount:                   p.discount.toFixed(2),
-      total_price:                p.total.toFixed(2),
-      services:                   servicesList.join(', '),
-      deadline_date:              deadlineDate,
-      estimated_duration_minutes: getEstimatedDuration(),
-      referral_source:            state.referral || '',
-      timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
-      large_home:                 isLarge,
-    };
-
-    // Fire-and-forget to n8n — server handles all Xecute & client texts
-    fetch('http://187.124.236.252:5678/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(n8nPayload),
-    }).catch(() => {});
-
     // Silent EmailJS send
     const emailPayload = {
       first_name:       state.firstName,
@@ -580,6 +531,51 @@ if (qwiz) {
       timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
     };
     emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
+
+    // Derive deadline date
+    let deadlineDate = state.deadlineDate || '';
+    if (!deadlineDate) {
+      const d = new Date();
+      const days = { asap: 3, within_1_week: 7, within_2_weeks: 14 };
+      d.setDate(d.getDate() + (days[state.timeline] || 30));
+      deadlineDate = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+    }
+
+    // Send to n8n — handles all OpenPhone/Xecute steps server-side
+    const servicesList = ['Exterior Windows'];
+    if (state.svcInterior) servicesList.push('Interior Windows');
+    if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
+    if (state.svcTracks) servicesList.push('Track Cleaning');
+
+    fetch('/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name:                 state.firstName,
+        last_name:                  state.lastName || '',
+        phone:                      state.phone,
+        email:                      state.email || '',
+        address:                    state.address || '',
+        sqft:                       state.sqft,
+        stories:                    state.stories,
+        last_cleaned:               state.lastCleaned || '',
+        property_type:              state.propertyType || 'Residential',
+        service_plan:               planLabel,
+        auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+        exterior_price:             p.exterior.toFixed(2),
+        interior_price:             p.interior.toFixed(2),
+        screen_price:               p.screens.toFixed(2),
+        track_price:                p.tracks.toFixed(2),
+        discount:                   p.discount.toFixed(2),
+        total_price:                p.total.toFixed(2),
+        services:                   servicesList.join(', '),
+        deadline_date:              deadlineDate,
+        estimated_duration_minutes: getEstimatedDuration(),
+        referral_source:            state.referral || '',
+        timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+        large_home:                 isLarge,
+      }),
+    }).catch(() => {});
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
