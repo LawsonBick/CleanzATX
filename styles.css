@@ -1365,6 +1365,19 @@ input, select, textarea { font-family: var(--font); }
   box-shadow: 0 6px 16px rgba(14,165,233,.15);
 }
 .area-pill:hover svg { color: var(--sky); }
+.areas__map {
+  margin-top: 48px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(14,165,233,.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.areas__map iframe {
+  display: block;
+  width: 100%;
+  height: 400px;
+  border: 0;
+}
 
 /* ============================================================
    CTA BAND
