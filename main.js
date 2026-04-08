@@ -303,6 +303,9 @@ if (qwiz) {
     // Build price display when entering step 5
     if (step === 5) buildPriceDisplay();
 
+    // GA4 step tracking
+    trackStep(step);
+
     // Scroll to form (skip on initial load)
     if (!qwiz._initialized) {
       qwiz._initialized = true;
@@ -501,6 +504,13 @@ if (qwiz) {
     document.getElementById('q-date-field').style.display = e.target.value === 'specific_date' ? 'block' : 'none';
   });
 
+  // GA4 — track quote wizard step progression
+  function trackStep(step) {
+    if (typeof gtag === 'undefined') return;
+    gtag('event', 'quote_step', { step_number: step });
+    if (step === 1) gtag('event', 'begin_checkout'); // started quote
+  }
+
   // Submit handlers
   let submitted = false;
   function handleSubmit() {
@@ -578,6 +588,15 @@ if (qwiz) {
       }),
     }).catch(() => {});
 
+    // GA4 — lead conversion event
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'generate_lead', {
+        value: parseFloat(calcPrice().total.toFixed(2)),
+        currency: 'USD',
+        lead_source: state.referral || 'unknown',
+      });
+    }
+
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
     const confirmPanel = qwiz.querySelector('[data-panel="confirm"]');
@@ -617,6 +636,14 @@ if (qwiz) {
     link.addEventListener('click', openModal);
   });
 
+  // Track phone call & text clicks
+  overlay.querySelector('.phone-modal__btn--call')?.addEventListener('click', () => {
+    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'call' });
+  });
+  overlay.querySelector('.phone-modal__btn--text')?.addEventListener('click', () => {
+    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'text' });
+  });
+
   // Close on cancel button or overlay backdrop click
   document.getElementById('phoneModalCancel').addEventListener('click', closeModal);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
@@ -624,6 +651,15 @@ if (qwiz) {
   // Close on Escape
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 })();
+
+/* ---------- GA4 — CTA button click tracking ---------- */
+document.querySelectorAll('a[href="#quote"], .btn--primary, .btn--nav').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'cta_click', { button_text: btn.textContent.trim() });
+    }
+  });
+});
 
 /* ---------- Contact form (removed — replaced by quote wizard) ---------- */
 
