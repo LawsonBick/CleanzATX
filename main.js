@@ -492,7 +492,8 @@ if (qwiz) {
 
   // Referral conditional
   document.getElementById('q-referral')?.addEventListener('change', e => {
-    document.getElementById('q-referrer-field').style.display = e.target.value === 'Word of Mouth' ? 'block' : 'none';
+    const v = e.target.value;
+    document.getElementById('q-referrer-field').style.display = (v === 'Word of Mouth' || v === 'Referral') ? 'block' : 'none';
   });
 
   // Timeline conditional
