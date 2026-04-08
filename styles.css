@@ -2070,7 +2070,8 @@ input, select, textarea { font-family: var(--font); }
   pointer-events: all;
 }
 .phone-modal {
-  background: #fff;
+  background: linear-gradient(145deg, var(--navy) 0%, var(--navy-2) 100%);
+  border: 1px solid rgba(14, 165, 233, 0.2);
   border-radius: 20px;
   padding: 28px 24px 24px;
   width: 100%;
@@ -2078,6 +2079,7 @@ input, select, textarea { font-family: var(--font); }
   transform: translateY(24px);
   transition: transform .25s cubic-bezier(.34,1.56,.64,1);
   text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
 }
 .phone-modal-overlay.active .phone-modal {
   transform: translateY(0);
@@ -2085,25 +2087,26 @@ input, select, textarea { font-family: var(--font); }
 .phone-modal__icon {
   width: 52px;
   height: 52px;
-  background: var(--sky-ll);
+  background: rgba(14, 165, 233, 0.15);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
 }
 .phone-modal__icon svg { color: var(--sky); }
 .phone-modal h3 {
   font-family: var(--head);
   font-size: 20px;
   font-weight: 800;
-  color: var(--navy);
+  color: #fff;
   margin-bottom: 4px;
   letter-spacing: -.02em;
 }
 .phone-modal p {
   font-size: 14px;
-  color: #64748b;
+  color: rgba(255,255,255,0.55);
   margin-bottom: 20px;
 }
 .phone-modal__actions {
@@ -2133,18 +2136,19 @@ input, select, textarea { font-family: var(--font); }
 }
 .phone-modal__btn--call:hover { background: var(--sky-d); }
 .phone-modal__btn--text {
-  background: var(--sky-ll);
-  color: var(--sky-d);
+  background: rgba(14, 165, 233, 0.12);
+  color: var(--sky);
+  border: 1px solid rgba(14, 165, 233, 0.3);
 }
-.phone-modal__btn--text:hover { background: #bae6fd; }
+.phone-modal__btn--text:hover { background: rgba(14, 165, 233, 0.2); }
 .phone-modal__cancel {
   margin-top: 8px;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: rgba(255,255,255,0.35);
   font-size: 14px;
   font-family: var(--font);
   cursor: pointer;
   padding: 4px;
 }
-.phone-modal__cancel:hover { color: #64748b; }
+.phone-modal__cancel:hover { color: rgba(255,255,255,0.6); }
