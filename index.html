@@ -109,12 +109,6 @@
       </div>
     </div>
 
-    <!-- Scroll prompt -->
-    <a href="#quote" class="hero__scroll-arrow" aria-label="Scroll down to get a quote">
-      <span class="hero__scroll-label">Get Your Quote</span>
-      <svg class="hero__scroll-chevron" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </a>
-
   </section>
 
   <!-- ===== INSTANT QUOTE FORM ===== -->
@@ -339,9 +333,10 @@
                 <option value="">Select...</option>
                 <option value="Google">Google</option>
                 <option value="Google Ads">Google Ads</option>
-                <option value="Referral">Referral</option>
+                <option value="Facebook">Facebook</option>
                 <option value="Nextdoor">Nextdoor</option>
-                <option value="Word of Mouth">Word of Mouth</option>
+                <option value="Saw Your Truck">Saw Your Truck</option>
+                <option value="Referral">Referral / Word of Mouth</option>
               </select>
             </div>
             <div class="qwiz__field">
@@ -351,11 +346,12 @@
                 <option value="asap">ASAP</option>
                 <option value="within_1_week">Within 1 Week</option>
                 <option value="within_2_weeks">Within 2 Weeks</option>
+                <option value="flexible">Flexible</option>
                 <option value="specific_date">Specific Date</option>
               </select>
             </div>
           </div>
-          <!-- Referrer name (shown when Word of Mouth selected) -->
+          <!-- Referrer name (shown when Referral selected) -->
           <div class="qwiz__field" id="q-referrer-field" style="display:none">
             <label for="q-referrer">Who referred you?</label>
             <input type="text" id="q-referrer" placeholder="Their name" />
