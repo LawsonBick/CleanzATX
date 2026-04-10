@@ -41,7 +41,10 @@
   --py:     100px;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
 body {
   font-family: var(--font);
   font-size: 16px;
@@ -50,6 +53,26 @@ body {
   background: var(--white);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Native-feel tap interactions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+  .hero__orb { animation: none; }
+  [data-aos] { opacity: 1; transform: none; }
 }
 img { display: block; max-width: 100%; }
 a { text-decoration: none; color: inherit; }
@@ -201,6 +224,17 @@ input, select, textarea { font-family: var(--font); }
 }
 .btn--nav:hover { background: var(--sky-d); }
 
+.btn--sky {
+  background: var(--sky);
+  color: var(--white);
+  border-color: var(--sky);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.btn--sky:hover { background: var(--sky-d); border-color: var(--sky-d); }
+
 /* ============================================================
    SECTION HEADERS
    ============================================================ */
@@ -304,7 +338,11 @@ input, select, textarea { font-family: var(--font); }
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 .nav__burger span {
   display: block;
@@ -1623,7 +1661,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .services__gallery { position: static; }
   .services__grid .svc-card:last-child { max-width: none; }
 
-  .nav__logo-img { height: 72px; }
+  .nav__logo-img { height: 60px; }
   .about__inner { grid-template-columns: 1fr; gap: 40px; }
   .about__right { order: -1; }
   .about__nextdoor .about__nd-reviews { grid-template-columns: 1fr; }
@@ -2277,7 +2315,6 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 @media(max-width:768px) {
   .mobile-cta-bar { display: flex; }
-  body { padding-bottom: 60px; }
 }
 
 /* ---------- Exit-Intent Popup ---------- */
@@ -3038,11 +3075,12 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     padding-top: 48px;
     padding-bottom: 48px;
   }
-  /* Kill side margin on the card */
+  /* Full-bleed card on mobile — breaks out of 16px container padding */
   .qwiz {
-    border-radius: 12px;
-    margin-left: 0;
-    margin-right: 0;
+    border-radius: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    max-width: none;
   }
   /* Urgency strip */
   .qwiz__urgency {
@@ -3209,13 +3247,17 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  /* Comparison table: horizontally scrollable */
+  /* Comparison table: horizontally scrollable wrapper */
+  .why-compare-right {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .compare-section .container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
   .compare-table {
-    min-width: 520px;
+    min-width: 480px;
   }
   .compare-table__header,
   .compare-row {
@@ -3304,16 +3346,18 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   /* ── Sticky Mobile CTA Bar ───────────────────────── */
   .mobile-cta-bar {
     display: flex;
-    height: 60px;
-    padding: 0;
+    height: auto;
+    min-height: 60px;
+    padding: 0 0 max(0px, env(safe-area-inset-bottom));
     gap: 0;
     background: var(--navy);
     border-top: 1px solid rgba(255,255,255,.12);
+    border-radius: 0;
   }
-  body { padding-bottom: 60px; }
-  /* Quote button: sky blue, full left side, prominent */
+  body { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+  /* Quote button: sky blue, takes 65%, prominent */
   .mobile-cta-bar__quote {
-    flex: 2;
+    flex: 13;
     background: var(--sky);
     color: #fff;
     font-size: 15px;
@@ -3325,10 +3369,11 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     text-decoration: none;
     letter-spacing: -.01em;
     border-right: 1px solid rgba(255,255,255,.1);
+    min-height: 60px;
   }
-  /* Call button: right side */
+  /* Call button: right side, takes 35% */
   .mobile-cta-bar__call {
-    flex: 1;
+    flex: 7;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3339,6 +3384,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     font-weight: 600;
     text-decoration: none;
     border: none;
+    min-height: 60px;
   }
 
   /* ── Booking Notifications ───────────────────────── */
@@ -3357,6 +3403,14 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     max-width: 100%;
     padding: 28px 20px;
     border-radius: 16px;
+  }
+
+  /* ── Contact Form (prevent iOS zoom on font-size < 16px) ── */
+  .qf-field input,
+  .qf-field select,
+  .qf-field textarea {
+    font-size: 16px;
+    min-height: 48px;
   }
 
   /* ── Pricing Grid ────────────────────────────────── */
@@ -3384,6 +3438,35 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .section__title { font-size: clamp(22px, 6vw, 36px); }
   .section__sub { font-size: 15px; }
   .section__header { margin-bottom: 36px; }
+
+  /* ── Mobile typography scale ──────────────────────── */
+  h1 { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+  h2 { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  h3 { font-size: clamp(1.1rem, 4.5vw, 1.4rem); }
+
+  /* ── Nav logo smaller on phones ──────────────────── */
+  .nav__logo-img { height: 52px; }
+
+  /* ── Areas grid: 2 columns at 640, already set ──── */
+  .areas__grid { grid-template-columns: 1fr 1fr; }
+
+  /* ── Gallery stack: single column on mobile ──────── */
+  .gallery__stack { grid-template-columns: 1fr; gap: 16px; }
+
+  /* ── Footer links: ensure tap targets ───────────── */
+  .footer__col ul li a {
+    display: block;
+    padding: 6px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── Pricing example: smaller padding ───────────── */
+  .pricing-example { padding: 20px 16px; }
+
+  /* ── Plans how-to strip: 2-per-row ──────────────── */
+  .plans-how__step { min-width: 40%; }
 }
 
 /* ---------- Very small phones (max 400px) ---------- */
@@ -3393,8 +3476,17 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .qwiz__urgency { font-size: 11px; padding: 8px 12px; }
   .quote-trust-bar span { font-size: 11px; padding: 5px 8px; }
   .mobile-cta-bar__quote { font-size: 13px; }
+  .mobile-cta-bar__call { font-size: 13px; }
   .pricing-grid { grid-template-columns: 1fr; }
   .hero__stats { gap: 8px; }
   .stat { padding: 12px 8px; }
   .stat__num { font-size: 18px; }
+  .hero__badge { font-size: 11px; padding: 6px 12px; }
+  .nav__logo-img { height: 44px; }
+  /* qwiz progress circles */
+  .qwiz__step { width: 24px; height: 24px; font-size: 10px; }
+  /* Keep footer links tappable */
+  .footer__col ul li a { min-height: 40px; }
+  /* Section subheading smaller */
+  .section__sub { font-size: 14px; }
 }
