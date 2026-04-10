@@ -216,6 +216,7 @@ if (qwiz) {
     plan: null, autoBilling: false,
     firstName: '', phone: '', email: '',
     referral: '', referrer: '', timeline: '', deadlineDate: '',
+    promoCode: '', promoDiscount: 0,
   };
 
   const stepLabels = {
@@ -300,6 +301,23 @@ if (qwiz) {
       });
     }
 
+    // Auto-apply promo from localStorage when entering step 4
+    if (step === 4) {
+      try {
+        const stored = localStorage.getItem('cleanzatx_promo');
+        if (stored) {
+          const promo = JSON.parse(stored);
+          if (promo && promo.code === 'SAVE25' && state.promoDiscount === 0) {
+            const promoInput = document.getElementById('q-promo');
+            if (promoInput) {
+              promoInput.value = promo.code;
+              applyPromo(promo.code);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
     // Build price display when entering step 5
     if (step === 5) buildPriceDisplay();
 
@@ -313,6 +331,24 @@ if (qwiz) {
       const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
       const top = qwiz.closest('.quote-section').getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
+    }
+  }
+
+  // Promo code logic
+  function applyPromo(code) {
+    const msgEl = document.getElementById('q-promo-msg');
+    if (!msgEl) return;
+    if (code === 'SAVE25') {
+      state.promoCode = 'SAVE25';
+      state.promoDiscount = 25;
+      msgEl.style.display = '';
+      msgEl.style.color = '#22c55e';
+      msgEl.textContent = '✅ $25 off applied! Code: SAVE25';
+      localStorage.removeItem('cleanzatx_promo');
+    } else {
+      msgEl.style.display = '';
+      msgEl.style.color = '#ef4444';
+      msgEl.textContent = '❌ Invalid promo code.';
     }
   }
 
@@ -386,7 +422,7 @@ if (qwiz) {
     else if (state.plan === 'quarterly') discount = 100;
     else if (state.plan === 'monthly') discount = 150;
     const subtotal = exterior + interior + screens + tracks;
-    const total = Math.max(0, subtotal - discount);
+    const total = Math.max(0, subtotal - discount - state.promoDiscount);
     const low = Math.max(0, total - 50);
     const high = total + 50;
     return { exterior, interior, screens, tracks, discount, subtotal, total, low, high, planName: state.plan };
@@ -433,6 +469,9 @@ if (qwiz) {
     if (p.discount > 0) {
       const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : 'Monthly';
       addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
+    }
+    if (state.promoDiscount > 0) {
+      addLine(`🎟 Promo (${state.promoCode})`, '-$' + state.promoDiscount.toFixed(2), 'qwiz__price-line--discount');
     }
     document.getElementById('q-price-total').textContent = '$' + Math.round(p.low) + ' – $' + Math.round(p.high);
   }
@@ -504,6 +543,19 @@ if (qwiz) {
     document.getElementById('q-date-field').style.display = e.target.value === 'specific_date' ? 'block' : 'none';
   });
 
+  // Promo code apply button and Enter key
+  document.getElementById('q-promo-apply')?.addEventListener('click', () => {
+    const code = document.getElementById('q-promo')?.value.trim().toUpperCase() || '';
+    applyPromo(code);
+  });
+  document.getElementById('q-promo')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const code = e.target.value.trim().toUpperCase();
+      applyPromo(code);
+    }
+  });
+
   // GA4 — track quote wizard step progression
   function trackStep(step) {
     if (typeof gtag === 'undefined') return;
@@ -540,6 +592,8 @@ if (qwiz) {
       auto_billing:     state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
       referral_source:  state.referral || '',
       timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+      promo_code:       state.promoCode || '',
+      promo_discount:   state.promoDiscount || 0,
     };
     emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
 
@@ -585,6 +639,8 @@ if (qwiz) {
         referral_source:            state.referral || '',
         timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
         large_home:                 isLarge,
+        promo_code:                 state.promoCode || '',
+        promo_discount:             state.promoDiscount || 0,
       }),
     }).catch(() => {});
 
@@ -617,6 +673,8 @@ if (qwiz) {
         timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
         large_home:                 isLarge,
         how_found:                  state.referral || '',
+        promo_code:                 state.promoCode || '',
+        promo_discount:             state.promoDiscount || 0,
       }),
     }).catch(() => {});
 
@@ -831,6 +889,17 @@ if (origSubmitBtn) {
   document.getElementById('exitPopupClose')?.addEventListener('click', () => popup.classList.remove('active'));
   document.getElementById('exitPopupSkip')?.addEventListener('click', () => popup.classList.remove('active'));
   popup.addEventListener('click', (e) => { if (e.target === popup) popup.classList.remove('active'); });
+
+  document.getElementById('exitPopupCTA')?.addEventListener('click', () => {
+    localStorage.setItem('cleanzatx_promo', JSON.stringify({ code: 'SAVE25', discount: 25, source: 'exit_popup' }));
+    popup.classList.remove('active');
+    const quoteSection = document.getElementById('quote');
+    if (quoteSection) {
+      const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      const top = quoteSection.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
 })();
 
 /* ---------- #12 Booking notifications ---------- */
