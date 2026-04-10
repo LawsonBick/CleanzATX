@@ -466,7 +466,7 @@ input, select, textarea { font-family: var(--font); }
   color: var(--sky);
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -483,10 +483,29 @@ input, select, textarea { font-family: var(--font); }
   border-radius: 100px;
   font-size: 13px;
   font-weight: 500;
-  margin-bottom: 32px;
+  margin-bottom: 10px;
   backdrop-filter: blur(8px);
 }
 .hero__badge .stars { color: var(--gold); letter-spacing: 1px; }
+
+/* Animated scroll arrow beneath the reviews badge */
+.hero__scroll-arrow {
+  display: block;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 18px;
+  text-decoration: none;
+  transition: color .2s;
+  line-height: 1;
+}
+.hero__scroll-arrow:hover { color: rgba(255,255,255,.7); }
+.hero__scroll-arrow svg {
+  animation: arrowBounce 1.6s ease-in-out infinite;
+  display: block;
+}
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); opacity: .4; }
+  50%       { transform: translateY(6px); opacity: 1; }
+}
 
 .hero__title {
   font-family: var(--head);
@@ -495,7 +514,7 @@ input, select, textarea { font-family: var(--font); }
   line-height: 1.12;
   letter-spacing: -.02em;
   color: var(--white);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -514,7 +533,7 @@ input, select, textarea { font-family: var(--font); }
   font-size: clamp(16px, 2vw, 19px);
   color: rgba(255,255,255,.6);
   max-width: 520px;
-  margin-bottom: 44px;
+  margin-bottom: 32px;
   line-height: 1.75;
   opacity: 0;
   transform: translateY(20px);
@@ -525,7 +544,7 @@ input, select, textarea { font-family: var(--font); }
   gap: 14px;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 64px;
+  margin-bottom: 44px;
   opacity: 0;
   transform: translateY(20px);
 }
