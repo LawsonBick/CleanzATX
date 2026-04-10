@@ -294,7 +294,7 @@
         </a>
       </div>
 
-      <div class="hero__photo">
+      <div class="hero__photo" aria-hidden="true">
         <img src="hero-photo.jpg" alt="CleanzATX window cleaning" />
       </div>
 
@@ -834,7 +834,7 @@
           <span class="section__tag">Meet the Owner</span>
           <h2 class="section__title">Hey, I'm Tyler!</h2>
           <p class="about__bio">I'm a Lakeway local and proud Lake Travis High School grad (class of 2021). I started Cleanz ATX in 2020 after years of seeing neighbors frustrated with unreliable contractors.</p>
-          <p class="about__bio">With 6+ years of pressure washing experience and 3+ years of window cleaning, I've built a business based on quality, reliability, and fast communication. We've proudly cleaned 1,000+ homes in the Lake Travis area and are rated 5 stars on Google.</p>
+          <p class="about__bio">With 8 years of pressure washing experience and 6 years of window cleaning, I've built a business based on quality, reliability, and fast communication. We've proudly cleaned 1,000+ homes in the Lake Travis area and are rated 5 stars on Google.</p>
           <div class="about__badges">
             <div class="about-badge">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-3 3 1-4-3-3h4L12 7l1 4h4l-3 3 1 4z"/><circle cx="12" cy="12" r="10"/></svg>
@@ -1042,9 +1042,11 @@
           </div>
         </div>
 
-        <!-- Right: Comparison table -->
+        <!-- Right: Comparison -->
         <div class="why-compare-right" data-aos>
-          <div class="compare-table">
+
+          <!-- Desktop table (hidden on mobile) -->
+          <div class="compare-table compare-table--desktop">
             <div class="compare-table__header">
               <div class="compare-col compare-col--feature"></div>
               <div class="compare-col compare-col--us">CleanzATX</div>
@@ -1068,7 +1070,7 @@
             <div class="compare-row compare-row--alt">
               <div class="compare-col compare-col--feature">$1M liability insurance</div>
               <div class="compare-col compare-col--us">✅ Verified</div>
-              <div class="compare-col compare-col--them">⚠️ Often unverified</div>
+              <div class="compare-col compare-col--them">⚠️ Unverified</div>
             </div>
             <div class="compare-row">
               <div class="compare-col compare-col--feature">Auto-scheduling plans</div>
@@ -1076,21 +1078,31 @@
               <div class="compare-col compare-col--them">❌ Manual only</div>
             </div>
             <div class="compare-row compare-row--alt">
-              <div class="compare-col compare-col--feature">Triple reminders</div>
-              <div class="compare-col compare-col--us">✅ 48hr · 24hr · day-of</div>
-              <div class="compare-col compare-col--them">❌ None</div>
-            </div>
-            <div class="compare-row">
               <div class="compare-col compare-col--feature">Instant online pricing</div>
               <div class="compare-col compare-col--us">✅ 60-second quote</div>
               <div class="compare-col compare-col--them">❌ "Call for a quote"</div>
             </div>
-            <div class="compare-row compare-row--alt">
-              <div class="compare-col compare-col--feature">Google Reviews</div>
-              <div class="compare-col compare-col--us">✅ 5.0 · 167 reviews</div>
+            <div class="compare-row">
+              <div class="compare-col compare-col--feature">5.0 Google Reviews</div>
+              <div class="compare-col compare-col--us">✅ 167 reviews</div>
               <div class="compare-col compare-col--them">⚠️ Varies</div>
             </div>
           </div>
+
+          <!-- Mobile checklist (hidden on desktop) -->
+          <div class="compare-mobile">
+            <div class="compare-mobile__title">What you get with CleanzATX</div>
+            <ul class="compare-mobile__list">
+              <li><span class="cm-check">✅</span><span><strong>Owner on every job</strong> — not a random crew</span></li>
+              <li><span class="cm-check">✅</span><span><strong>De-ionized water tech</strong> — zero streaks, zero spots</span></li>
+              <li><span class="cm-check">✅</span><span><strong>7-day rain guarantee</strong> — we re-clean free</span></li>
+              <li><span class="cm-check">✅</span><span><strong>$1M insured</strong> — verified, not just claimed</span></li>
+              <li><span class="cm-check">✅</span><span><strong>Auto-scheduling plans</strong> — set it and forget it</span></li>
+              <li><span class="cm-check">✅</span><span><strong>60-second instant quote</strong> — no phone tag</span></li>
+              <li><span class="cm-check">✅</span><span><strong>5.0 stars · 167 Google reviews</strong></span></li>
+            </ul>
+          </div>
+
           <div style="text-align:center;margin-top:24px">
             <a href="#quote" class="btn btn--primary btn--lg">Get My Instant Quote →</a>
           </div>
@@ -1107,7 +1119,7 @@
         <h2 class="section__title">Before &amp; After</h2>
         <p class="section__sub">Real results from real Lakeway, Bee Cave & Lake Travis homes. See the difference professional exterior cleaning makes.</p>
       </div>
-      <div class="gallery__stack">
+      <div class="gallery__stack gallery__carousel">
 <div class="gallery__item" data-aos>
           <img src="gallery/window-2.jpg" alt="Interior window cleaning before and after" loading="lazy" />
           <span class="gallery__badge gallery__badge--before">Before</span>
@@ -1181,6 +1193,7 @@
           </div>
         </div>
       </div>
+      <p class="gallery__swipe-hint">← Swipe to see more →</p>
       <p class="gallery__note">Want to see more? Visit our <a href="/gallery">full photo gallery →</a></p>
     </div>
   </section>
@@ -1310,7 +1323,7 @@
           <h2>Your Cleanest Windows Start With One Click</h2>
           <p>Join 1,000+ Lakeway homeowners who trust CleanzATX. Get your instant quote in 60 seconds — no phone tag, no waiting.</p>
           <div class="bottom-cta__proof">
-            <span>★★★★★ 5.0 · 167 Google Reviews</span>
+            <span><span style="color:#f59e0b">★★★★★</span> 5.0 · 167 Google Reviews</span>
             <span>·</span>
             <span>7-Day Rain Guarantee</span>
             <span>·</span>
