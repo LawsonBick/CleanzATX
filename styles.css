@@ -3044,23 +3044,19 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     min-height: 48px;
   }
 
-  /* ── Hero: full-screen on mobile, scroll cue pinned to bottom ── */
+  /* ── Hero: full-screen on mobile ── */
   .hero {
     padding-top: calc(var(--nav-h) + 16px);
-    padding-bottom: 28px;
+    padding-bottom: 24px;
     min-height: 100svh;
-    display: flex;
-    align-items: flex-start;
-    position: relative;
+    align-items: stretch;
   }
   .hero__content {
     grid-template-columns: 1fr;
     gap: 0;
-    width: 100%;
-    /* fill the hero height so stats can push to bottom */
-    min-height: calc(100svh - var(--nav-h) - 44px - 16px);
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
   .hero__text {
     display: flex;
@@ -3104,13 +3100,13 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     color: rgba(255,255,255,.45);
     margin-top: 2px;
   }
-  /* Stats: push content down to fill the screen */
+  /* Stats inside bottom group */
   .hero__stats {
     width: 100%;
     flex-wrap: nowrap;
     gap: 8px;
-    margin-top: auto;
-    padding-top: 20px;
+    margin-top: 0;
+    padding-top: 0;
   }
   .hero__stats .stat:nth-child(3) {
     flex: 1 1 auto;
@@ -3122,13 +3118,19 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   }
   .stat__num { font-size: 18px; }
   .stat__label { font-size: 10px; }
-  /* Scroll cue: pinned to bottom of hero */
+  /* Bottom group: stats + scroll cue pushed to bottom */
+  .hero__bottom {
+    margin-top: auto;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
   .hero__scroll-cue {
     display: inline-flex;
-    position: absolute;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static;
+    transform: none;
     flex-direction: column;
     align-items: center;
     gap: 4px;
@@ -3136,6 +3138,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     letter-spacing: .06em;
     text-transform: uppercase;
     white-space: nowrap;
+    margin: 0;
   }
   .hero__photo { display: none; }
   .hero__logo-badge { display: none; }
