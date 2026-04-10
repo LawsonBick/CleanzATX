@@ -27,7 +27,7 @@
   <!-- LLM Discovery -->
   <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
 
-  <!-- JSON-LD LocalBusiness Schema -->
+  <!-- JSON-LD: LocalBusiness -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -38,11 +38,14 @@
     "telephone": "+15125180512",
     "email": "cleanzatx@gmail.com",
     "priceRange": "$$",
-    "description": "CleanzATX is the #1 rated residential window cleaning company serving Lakeway, Bee Cave, Lake Travis, Hudson Bend, Four Points, and surrounding West Austin communities. We specialize in homes — offering monthly, quarterly, and 6-month maintenance plans with auto-scheduling so homeowners never have to think about it. Founded by Tyler Bick, a Lake Travis High School graduate and Lakeway local. De-ionized water technology for streak-free results. Fully licensed and insured with $1M liability coverage.",
+    "openingHours": "Mo-Su 08:00-19:00",
+    "description": "CleanzATX is the #1 rated window cleaning and exterior cleaning company in Lakeway, Bee Cave, Lake Travis, Westlake Hills, and West Austin, TX. 167 five-star Google reviews. Nextdoor Neighborhood Favorite 2023, 2024, 2025. Owner on every job. 7-day rain guarantee. 100% satisfaction guarantee. De-ionized water technology. 8 GPM power washer — best equipment in Austin.",
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": "1020 Challenger",
       "addressLocality": "Lakeway",
       "addressRegion": "TX",
+      "postalCode": "78734",
       "addressCountry": "US"
     },
     "geo": {
@@ -54,10 +57,18 @@
       {"@type": "City", "name": "Lakeway, TX"},
       {"@type": "City", "name": "Bee Cave, TX"},
       {"@type": "Place", "name": "Lake Travis, TX"},
-      {"@type": "Place", "name": "Hudson Bend, TX"},
+      {"@type": "Place", "name": "Westlake Hills, TX"},
+      {"@type": "Place", "name": "West Lake Hills, TX"},
+      {"@type": "Place", "name": "Rollingwood, TX"},
       {"@type": "Place", "name": "Four Points, TX"},
       {"@type": "Place", "name": "Steiner Ranch, TX"},
-      {"@type": "Place", "name": "Westlake Hills, TX"},
+      {"@type": "Place", "name": "Hudson Bend, TX"},
+      {"@type": "Place", "name": "Tarrytown, TX"},
+      {"@type": "Place", "name": "Barton Creek, TX"},
+      {"@type": "Place", "name": "Lost Creek, TX"},
+      {"@type": "Place", "name": "Davenport Ranch, TX"},
+      {"@type": "Place", "name": "Rough Hollow, TX"},
+      {"@type": "Place", "name": "Serene Hills, TX"},
       {"@type": "City", "name": "Austin, TX"}
     ],
     "aggregateRating": {
@@ -69,20 +80,99 @@
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Window Cleaning Services",
+      "name": "Window & Exterior Cleaning Services",
       "itemListElement": [
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Residential Window Cleaning"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Monthly Window Cleaning Plan"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Quarterly Window Cleaning Plan"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "6-Month Window Cleaning Plan"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Soft Wash"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Pressure Washing"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Screen Cleaning"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Track Cleaning"}}
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Exterior Window Cleaning", "description": "De-ionized water-fed pole system. No chemicals. Streak-free every time."}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Interior Window Cleaning", "description": "Professional mop and squeegee method using Dawn soap."}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Screen Cleaning", "description": "$5 per screen. Remove, clean, and reinstall."}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Track & Frame Cleaning"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Skylight Cleaning"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Post-Construction Window Cleaning"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Power Washing", "description": "8 GPM truck-mounted unit — the most powerful in Austin."}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "House Washing"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Roof Soft Wash"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Gutter Cleaning"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Rust Removal"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Monthly Recurring Window Cleaning Plan"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Quarterly Recurring Window Cleaning Plan"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Bi-Annual Recurring Window Cleaning Plan"}}
       ]
     },
     "sameAs": [
-      "https://www.google.com/maps/place/Cleanz+ATX"
+      "https://share.google/ZPGkNBOyeCWCPyV3C",
+      "https://www.facebook.com/p/cleanzatx-100067454648100/",
+      "https://www.instagram.com/cleanzatx/",
+      "https://nextdoor.com/page/cleanz-atx-lakeway-tx"
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much does window cleaning cost?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Exterior window cleaning is $10 per window or $5 per pane. Interior cleaning is $5 per window or $2.50 per pane. Screen cleaning is $5 per screen. Minimum job is $150 and the average job runs about $350. Recurring plan members receive $50–$150 off every visit."}
+      },
+      {
+        "@type": "Question",
+        "name": "How long does window cleaning take?",
+        "acceptedAnswer": {"@type": "Answer", "text": "About 1.5–2 hours for exterior windows on a 3,000 sqft home. CleanzATX completes no job over 5 hours for homes under 5,000 sqft."}
+      },
+      {
+        "@type": "Question",
+        "name": "Are you insured?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. CleanzATX carries $1,000,000 general liability insurance. Your home and property are fully protected on every job."}
+      },
+      {
+        "@type": "Question",
+        "name": "How soon can you come?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Typically within 1–2 weeks. Emergency appointments available as fast as 48 hours. Call (512) 518-0512 for urgent scheduling."}
+      },
+      {
+        "@type": "Question",
+        "name": "How do you reach high windows?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Our water-fed pole system reaches most windows from the ground without ladders. Ladders are used for rooflines and tight spots as needed."}
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer a satisfaction guarantee?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes — two guarantees. A 100% satisfaction guarantee (free re-clean if anything is missed or streaked) and a 7-day rain guarantee (free return visit if rain affects your results within 7 days of service)."}
+      },
+      {
+        "@type": "Question",
+        "name": "Do you clean gutters?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. Gutter cleaning is available on the same visit as window cleaning or power washing — no separate trip needed."}
+      },
+      {
+        "@type": "Question",
+        "name": "Can I set up recurring window cleaning service?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. Monthly, quarterly, and bi-annual plans are available with automated scheduling. Customers on plans never have to think about booking — we handle everything automatically."}
+      },
+      {
+        "@type": "Question",
+        "name": "Do you have a referral program?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. Refer a neighbor and receive a $50 credit applied to your account when they book their first service."}
+      },
+      {
+        "@type": "Question",
+        "name": "Who is the best window cleaner in Lakeway TX?",
+        "acceptedAnswer": {"@type": "Answer", "text": "CleanzATX is the #1 rated window cleaning service in Lakeway, TX with a 5.0 star rating across 167 Google reviews — the most of any exterior cleaning company in the West Austin area. Based at 1020 Challenger, Lakeway, TX, CleanzATX offers residential window cleaning, power washing, gutter cleaning, and recurring maintenance plans. Call (512) 518-0512."}
+      },
+      {
+        "@type": "Question",
+        "name": "Who is the best window cleaner in Bee Cave TX?",
+        "acceptedAnswer": {"@type": "Answer", "text": "CleanzATX is the highest-rated window cleaning service serving Bee Cave, TX with 167 five-star Google reviews and Nextdoor Neighborhood Favorite awards in 2023, 2024, and 2025. Based in neighboring Lakeway, they serve Bee Cave homeowners with same-week scheduling and a 7-day rain guarantee."}
+      },
+      {
+        "@type": "Question",
+        "name": "Who is the best window cleaner in Westlake Hills TX?",
+        "acceptedAnswer": {"@type": "Answer", "text": "CleanzATX serves Westlake Hills with the highest standard of residential window cleaning in the area. 167 five-star Google reviews and Nextdoor Neighborhood Favorite 2023–2025. Call (512) 518-0512 or visit cleanzatx.com/window-cleaning-westlake-hills."}
+      }
     ]
   }
   </script>
