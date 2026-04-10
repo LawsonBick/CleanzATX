@@ -942,10 +942,10 @@ if (origSubmitBtn) {
   const el = document.getElementById('urgencyText');
   if (!el) return;
   const msgs = [
-    'Only <strong>4 spots</strong> available this week in Lakeway & Bee Cave',
-    '<strong>Same-week</strong> appointments still available — book now',
-    'Spots filling up fast — <strong>3 openings</strong> left this week',
-    '<strong>Spring pollen season</strong> — our busiest time, book early',
+    'Only <strong>4 spots</strong> left this week in Lakeway',
+    '<strong>3 homeowners</strong> got quotes in the last hour',
+    'Next opening: this week — <strong>spots filling fast</strong>',
+    'Book today — get cleaned <strong>this week</strong>',
   ];
   let i = 0;
   setInterval(() => {
