@@ -588,6 +588,38 @@ if (qwiz) {
       }),
     }).catch(() => {});
 
+    // Send to CleanzATX Tracker — auto-creates client + plan
+    fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name:                 state.firstName,
+        last_name:                  state.lastName || '',
+        phone:                      state.phone,
+        email:                      state.email || '',
+        address:                    state.address || '',
+        sqft:                       state.sqft,
+        stories:                    state.stories,
+        last_cleaned:               state.lastCleaned || '',
+        property_type:              state.propertyType || 'Residential',
+        service_plan:               planLabel,
+        auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+        exterior_price:             p.exterior.toFixed(2),
+        interior_price:             p.interior.toFixed(2),
+        screen_price:               p.screens.toFixed(2),
+        track_price:                p.tracks.toFixed(2),
+        discount:                   p.discount.toFixed(2),
+        total_price:                p.total.toFixed(2),
+        services:                   servicesList.join(', '),
+        deadline_date:              deadlineDate,
+        estimated_duration_minutes: getEstimatedDuration(),
+        referral_source:            state.referral || '',
+        timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+        large_home:                 isLarge,
+        how_found:                  state.referral || '',
+      }),
+    }).catch(() => {});
+
     // GA4 — lead conversion event
     if (typeof gtag !== 'undefined') {
       gtag('event', 'generate_lead', {
@@ -683,3 +715,356 @@ const sectionObserver = new IntersectionObserver(
   { rootMargin: '-40% 0px -55% 0px' }
 );
 sections.forEach(s => sectionObserver.observe(s));
+
+/* ============================================================
+   FEATURE ADDITIONS — Phase 2 Build
+   ============================================================ */
+
+/* ---------- #9 Quote form localStorage save/restore ---------- */
+(function() {
+  const STORAGE_KEY = 'cleanzatx_quote_draft';
+  const fields = ['q-address', 'q-sqft', 'q-fname', 'q-lname', 'q-phone', 'q-email'];
+  
+  // Restore on load
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && saved[id]) el.value = saved[id];
+  });
+  
+  // Save on input
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      data[id] = el.value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    });
+  });
+  
+  // Clear on submit
+  document.getElementById('q-submit')?.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+  });
+})();
+
+/* ---------- #48 GPS address auto-fill ---------- */
+(function() {
+  const addressField = document.getElementById('q-address');
+  if (!addressField || !navigator.geolocation) return;
+  
+  // Add a GPS button next to address field
+  const gpsBtn = document.createElement('button');
+  gpsBtn.type = 'button';
+  gpsBtn.className = 'gps-btn';
+  gpsBtn.innerHTML = '📍 Use My Location';
+  gpsBtn.title = 'Auto-fill your address';
+  addressField.parentNode.appendChild(gpsBtn);
+  
+  gpsBtn.addEventListener('click', () => {
+    gpsBtn.textContent = '📍 Locating...';
+    gpsBtn.disabled = true;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const { latitude, longitude } = pos.coords;
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+        const data = await res.json();
+        const addr = data.address;
+        const street = (addr.house_number ? addr.house_number + ' ' : '') + (addr.road || '');
+        const city = addr.city || addr.town || addr.village || '';
+        const state = addr.state_code || addr.state || '';
+        const zip = addr.postcode || '';
+        if (street) addressField.value = `${street}, ${city}, ${state} ${zip}`.trim();
+        // Save to localStorage
+        const saved = JSON.parse(localStorage.getItem('cleanzatx_quote_draft') || '{}');
+        saved['q-address'] = addressField.value;
+        localStorage.setItem('cleanzatx_quote_draft', JSON.stringify(saved));
+      } catch(e) {}
+      gpsBtn.textContent = '📍 Use My Location';
+      gpsBtn.disabled = false;
+    }, () => {
+      gpsBtn.textContent = '📍 Use My Location';
+      gpsBtn.disabled = false;
+    });
+  });
+})();
+
+/* ---------- #30 Confetti on quote submission ---------- */
+function launchConfetti() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20,
+    w: 8 + Math.random() * 8,
+    h: 4 + Math.random() * 4,
+    color: ['#0ea5e9','#34d399','#f59e0b','#ec4899','#8b5cf6','#fff'][Math.floor(Math.random()*6)],
+    vx: (Math.random()-0.5)*3,
+    vy: 2 + Math.random()*3,
+    rot: Math.random()*360,
+    rotV: (Math.random()-0.5)*6
+  }));
+  
+  let frame;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+    });
+    if (pieces.some(p => p.y < canvas.height + 20)) {
+      frame = requestAnimationFrame(draw);
+    } else {
+      canvas.remove();
+    }
+  }
+  draw();
+  setTimeout(() => { cancelAnimationFrame(frame); canvas.remove(); }, 4000);
+}
+
+// Hook confetti to form submit
+const origSubmitBtn = document.getElementById('q-submit');
+if (origSubmitBtn) {
+  origSubmitBtn.addEventListener('click', () => setTimeout(launchConfetti, 300));
+}
+
+/* ---------- #6 Exit-intent popup ---------- */
+(function() {
+  const popup = document.getElementById('exitPopup');
+  if (!popup) return;
+  let shown = false;
+  let timer;
+
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 10 && !shown && !sessionStorage.getItem('exitShown')) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        popup.classList.add('active');
+        shown = true;
+        sessionStorage.setItem('exitShown', '1');
+      }, 200);
+    }
+  });
+
+  // Mobile: show after 40s of inactivity
+  if (window.innerWidth < 768) {
+    setTimeout(() => {
+      if (!shown && !sessionStorage.getItem('exitShown')) {
+        popup.classList.add('active');
+        shown = true;
+        sessionStorage.setItem('exitShown', '1');
+      }
+    }, 40000);
+  }
+
+  document.getElementById('exitPopupClose')?.addEventListener('click', () => popup.classList.remove('active'));
+  document.getElementById('exitPopupSkip')?.addEventListener('click', () => popup.classList.remove('active'));
+  popup.addEventListener('click', (e) => { if (e.target === popup) popup.classList.remove('active'); });
+})();
+
+/* ---------- #12 Booking notifications ---------- */
+(function() {
+  const notif = document.getElementById('bookingNotif');
+  if (!notif) return;
+
+  const bookings = [
+    { name: 'Sarah K.', msg: 'from Lakeway just booked a quarterly plan' },
+    { name: 'Mike D.', msg: 'from Bee Cave just requested a quote' },
+    { name: 'Jennifer R.', msg: 'from Rough Hollow just booked exterior cleaning' },
+    { name: 'Tom & Linda B.', msg: 'from Spillman Ranch joined the quarterly plan' },
+    { name: 'Amanda P.', msg: 'from Lakeway renewed her quarterly plan' },
+    { name: 'Chris M.', msg: 'from Serene Hills just booked same-week service' },
+    { name: 'Rachel W.', msg: 'from Four Points requested a power wash quote' },
+    { name: 'David L.', msg: 'from Falconhead booked exterior + screens' },
+  ];
+
+  let idx = 0;
+  function showNotif() {
+    const b = bookings[idx % bookings.length];
+    document.getElementById('bookingNotifName').textContent = b.name;
+    document.getElementById('bookingNotifMsg').textContent = b.msg;
+    notif.classList.add('show');
+    setTimeout(() => notif.classList.remove('show'), 4000);
+    idx++;
+  }
+
+  // First show after 8 seconds, then every 18 seconds
+  setTimeout(() => {
+    showNotif();
+    setInterval(showNotif, 18000);
+  }, 8000);
+})();
+
+/* ---------- #7 Urgency widget rotation ---------- */
+(function() {
+  const el = document.getElementById('urgencyText');
+  if (!el) return;
+  const msgs = [
+    'Only <strong>4 spots</strong> available this week in Lakeway & Bee Cave',
+    '<strong>Same-week</strong> appointments still available — book now',
+    'Spots filling up fast — <strong>3 openings</strong> left this week',
+    '<strong>Spring pollen season</strong> — our busiest time, book early',
+  ];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % msgs.length;
+    el.style.opacity = '0';
+    setTimeout(() => { el.innerHTML = msgs[i]; el.style.opacity = '1'; }, 300);
+  }, 5000);
+})();
+
+/* ---------- #31 FAQ accordion ---------- */
+document.querySelectorAll('.faq-acc-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item-acc').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* ---------- Quote mode toggle (#5) ---------- */
+(function() {
+  const instantBtn = document.getElementById('qmtInstant');
+  const simpleBtn = document.getElementById('qmtSimple');
+  const wizard = document.getElementById('quoteWizard');
+  const simpleForm = document.getElementById('simpleQuote');
+  if (!instantBtn || !simpleBtn) return;
+
+  instantBtn.addEventListener('click', () => {
+    instantBtn.classList.add('qmt-btn--active');
+    simpleBtn.classList.remove('qmt-btn--active');
+    if (wizard) wizard.style.display = '';
+    if (simpleForm) simpleForm.style.display = 'none';
+  });
+  simpleBtn.addEventListener('click', () => {
+    simpleBtn.classList.add('qmt-btn--active');
+    instantBtn.classList.remove('qmt-btn--active');
+    if (wizard) wizard.style.display = 'none';
+    if (simpleForm) simpleForm.style.display = '';
+  });
+
+  // Simple form size → price estimate
+  document.getElementById('sq-size')?.addEventListener('change', function() {
+    const prices = { small: '$150 – $250', medium: '$250 – $400', large: '$400 – $600', xlarge: 'Custom quote' };
+    const est = document.getElementById('sqEstimate');
+    const priceEl = document.getElementById('sqPrice');
+    if (this.value && est) {
+      priceEl.textContent = prices[this.value];
+      est.style.display = '';
+    }
+  });
+
+  // Simple form submit
+  document.getElementById('sq-submit')?.addEventListener('click', () => {
+    const name = document.getElementById('sq-name')?.value.trim();
+    const phone = document.getElementById('sq-phone')?.value.trim();
+    if (!name || !phone) return;
+    
+    // Send via EmailJS
+    if (typeof emailjs !== 'undefined') {
+      emailjs.send('service_xsex2ss', 'template_536xvvp', {
+        first_name: name,
+        phone: phone,
+        address: document.getElementById('sq-address')?.value || '',
+        sqft: document.getElementById('sq-size')?.value || '',
+        exterior_windows: 'Yes',
+        service_plan: 'Simple Request',
+      }).catch(() => {});
+    }
+
+    // GA4
+    if (typeof gtag !== 'undefined') gtag('event', 'generate_lead', { lead_source: 'simple_form' });
+    
+    document.getElementById('sq-submit').style.display = 'none';
+    document.getElementById('sqConfirm').style.display = '';
+  });
+})();
+
+/* ---------- #49 Quote abandonment email ---------- */
+(function() {
+  let maxStep = 0;
+  let abandonTimer;
+  
+  // Track max step reached (main.js trackStep calls gtag — we also track here)
+  const origGoToStep = window._origGoToStep;
+  
+  document.addEventListener('quote_step_reached', (e) => {
+    if (e.detail > maxStep) maxStep = e.detail;
+  });
+
+  // Listen for page unload if past step 2
+  window.addEventListener('beforeunload', () => {
+    if (maxStep >= 2 && !sessionStorage.getItem('quoteSubmitted')) {
+      // Send abandonment notification via EmailJS
+      const fname = document.getElementById('q-fname')?.value?.trim();
+      const phone = document.getElementById('q-phone')?.value?.trim();
+      if (phone) {
+        emailjs.send('service_xsex2ss', 'template_536xvvp', {
+          first_name: fname || 'Visitor',
+          phone: phone,
+          address: document.getElementById('q-address')?.value || '',
+          sqft: document.getElementById('q-sqft')?.value || '',
+          service_plan: 'ABANDONED — reached step ' + maxStep,
+          exterior_windows: 'Abandoned',
+          timeline: 'Abandoned at step ' + maxStep,
+        }).catch(() => {});
+      }
+    }
+  });
+
+  // Mark as submitted
+  document.getElementById('q-submit')?.addEventListener('click', () => {
+    sessionStorage.setItem('quoteSubmitted', '1');
+  });
+})();
+
+/* ---------- #11 Before/After Drag Slider ---------- */
+(function() {
+  document.querySelectorAll('.ba-slider').forEach(slider => {
+    const handle = slider.querySelector('.ba-handle');
+    const afterLayer = slider.querySelector('.ba-after');
+    let dragging = false;
+
+    function setPos(x) {
+      const rect = slider.getBoundingClientRect();
+      let pct = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
+      afterLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+      handle.style.left = pct + '%';
+    }
+
+    handle.addEventListener('mousedown', () => dragging = true);
+    handle.addEventListener('touchstart', () => dragging = true, { passive: true });
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('touchend', () => dragging = false);
+    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+    window.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX); }, { passive: true });
+    
+    // Initialize at 50%
+    slider.addEventListener('click', e => setPos(e.clientX));
+    setPos(slider.getBoundingClientRect().left + slider.getBoundingClientRect().width * 0.5);
+  });
+})();
+
+/* ---------- Mobile CTA bar hide when quote form visible ---------- */
+(function() {
+  const bar = document.getElementById('mobileCTABar');
+  if (!bar) return;
+  const quoteSection = document.getElementById('quote');
+  if (!quoteSection) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => bar.classList.toggle('hidden', e.isIntersecting));
+  }, { threshold: 0.3 });
+  obs.observe(quoteSection);
+})();

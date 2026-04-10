@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGY563H3P8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LGY563H3P8');
+    gtag('event', 'page_view', { page_title: 'Gallery', page_location: '/gallery' });
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Before & After Gallery | CleanzATX Window Cleaning Lakeway TX</title>
+  <meta name="description" content="See real before & after photos from CleanzATX window cleaning, pressure washing, and exterior cleaning jobs in Lakeway, Bee Cave, and Lake Travis, TX.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Before & After Gallery | CleanzATX Window Cleaning">
+  <meta property="og:description" content="Real results from real Lakeway & Bee Cave homes. Window cleaning, power washing, screen cleaning, and more.">
+  <meta property="og:url" content="https://cleanzatx.com/gallery">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://cleanzatx.com/logo.png">
+
+  <link rel="canonical" href="https://cleanzatx.com/gallery/">
+  <link rel="icon" href="/logo.png" type="image/png">
+
+  <!-- JSON-LD: LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "CleanzATX",
+    "image": "https://cleanzatx.com/logo.png",
+    "url": "https://cleanzatx.com",
+    "telephone": "+15125180512",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1020 Challenger",
+      "addressLocality": "Lakeway",
+      "addressRegion": "TX",
+      "postalCode": "78734",
+      "addressCountry": "US"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "167"
+    }
+  }
+  </script>
+
+  <link rel="preload" href="/hero-photo.jpg" as="image">
+  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Gallery Page Specific Styles ===== */
+    .gallery-hero {
+      background: var(--navy);
+      padding: 140px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .gallery-hero__tag {
+      display: inline-block;
+      background: rgba(14,165,233,.12);
+      color: var(--sky);
+      border: 1px solid rgba(14,165,233,.25);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 20px;
+    }
+    .gallery-hero h1 {
+      font-family: var(--head);
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .gallery-hero h1 span { color: var(--sky); }
+    .gallery-hero p {
+      color: rgba(255,255,255,.65);
+      font-size: 18px;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .gallery-hero__stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .gallery-hero__stat { text-align: center; }
+    .gallery-hero__stat strong { display: block; font-family: var(--head); font-size: 28px; font-weight: 800; color: var(--sky); }
+    .gallery-hero__stat span { color: rgba(255,255,255,.5); font-size: 13px; }
+
+    /* Masonry Grid */
+    .gallery-page-section { background: var(--navy-2); }
+    .gallery-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .gf-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.7);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .gf-btn:hover, .gf-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+
+    .masonry-grid {
+      columns: 3;
+      column-gap: 20px;
+      gap: 20px;
+    }
+    @media(max-width:900px) { .masonry-grid { columns: 2; } }
+    @media(max-width:560px) { .masonry-grid { columns: 1; } }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .masonry-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    }
+    .masonry-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .masonry-caption {
+      padding: 16px 18px;
+    }
+    .masonry-caption__tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .mc-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 3px 10px;
+      border-radius: 50px;
+      background: rgba(14,165,233,.15);
+      color: var(--sky);
+      border: 1px solid rgba(14,165,233,.2);
+    }
+    .mc-tag--location {
+      background: rgba(52,211,153,.1);
+      color: #34d399;
+      border-color: rgba(52,211,153,.2);
+    }
+    .masonry-caption strong {
+      display: block;
+      color: var(--white);
+      font-family: var(--head);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .masonry-caption p {
+      color: rgba(255,255,255,.5);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* CTA Section */
+    .gallery-cta {
+      background: var(--navy);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .gallery-cta h2 {
+      font-family: var(--head);
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .gallery-cta p { color: rgba(255,255,255,.6); font-size: 18px; margin-bottom: 32px; }
+    .gallery-cta__btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="/" class="nav__logo">
+        <img src="/logo.png" alt="Cleanz ATX — Exterior Cleaning Experts" class="nav__logo-img" />
+      </a>
+      <ul class="nav__links">
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#why-us">Why Us</a></li>
+        <li><a href="/#reviews">Reviews</a></li>
+        <li><a href="/#areas">Areas</a></li>
+        <li><a href="tel:5125180512" class="nav__phone">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          (512) 518-0512
+        </a></li>
+        <li><a href="/#quote" class="btn btn--nav">Free Quote</a></li>
+      </ul>
+      <button class="nav__burger" id="burger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav__mobile" id="mobileMenu">
+      <a href="/#services">Services</a>
+      <a href="/#about">About</a>
+      <a href="/#why-us">Why Us</a>
+      <a href="/#reviews">Reviews</a>
+      <a href="/#areas">Service Areas</a>
+      <a href="tel:5125180512">Call (512) 518-0512</a>
+      <a href="/#quote" class="btn btn--primary">Get a Free Quote</a>
+    </div>
+  </nav>
+
+  <!-- ===== GALLERY HERO ===== -->
+  <section class="gallery-hero">
+    <div class="container">
+      <span class="gallery-hero__tag">Our Work</span>
+      <h1>Before &amp; After <span>Gallery</span></h1>
+      <p>Real results from real Lakeway, Bee Cave, and Lake Travis homes. Over 1,000 homes cleaned — see the difference professional exterior cleaning makes.</p>
+      <div class="gallery-hero__stats">
+        <div class="gallery-hero__stat">
+          <strong>5.0 ★</strong>
+          <span>Star Rating</span>
+        </div>
+        <div class="gallery-hero__stat">
+          <strong>167</strong>
+          <span>Google Reviews</span>
+        </div>
+        <div class="gallery-hero__stat">
+          <strong>1,000+</strong>
+          <span>Homes Cleaned</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY GRID ===== -->
+  <section class="gallery-page-section section">
+    <div class="container">
+
+      <div class="gallery-filters">
+        <button class="gf-btn active" data-filter="all">All Work</button>
+        <button class="gf-btn" data-filter="windows">Window Cleaning</button>
+        <button class="gf-btn" data-filter="pressure">Pressure Washing</button>
+        <button class="gf-btn" data-filter="screens">Screens</button>
+        <button class="gf-btn" data-filter="exterior">Exterior</button>
+      </div>
+
+      <div class="masonry-grid" id="masonryGrid">
+
+        <div class="masonry-item" data-category="windows">
+          <img src="window-2.jpg" alt="Interior window cleaning before and after — Austin TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Window Cleaning</span>
+              <span class="mc-tag mc-tag--location">Austin, TX</span>
+            </div>
+            <strong>Interior Windows — Fogged Glass Restored</strong>
+            <p>Before & after interior window cleaning. Fogged glass restored to crystal clarity using professional mop and squeegee method.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="screens">
+          <img src="screen-1.jpg" alt="Window screen cleaning before and after — Lakeway TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Screen Cleaning</span>
+              <span class="mc-tag mc-tag--location">Lakeway, TX</span>
+            </div>
+            <strong>Dirty Screen Restored</strong>
+            <p>Removed, cleaned, and reinstalled screens. $5 per screen — one of our most popular add-ons.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="exterior">
+          <img src="stone-1.jpg" alt="Limestone wall algae removal before and after — Lakeway TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Exterior</span>
+              <span class="mc-tag mc-tag--location">Lakeway, TX</span>
+            </div>
+            <strong>Limestone Wall — Algae Removal</strong>
+            <p>Heavy algae and organic growth removed from limestone retaining wall. Soft wash technique preserves stone surface.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="exterior">
+          <img src="stone-2.jpg" alt="Stone house exterior cleaning — Bee Cave TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Exterior</span>
+              <span class="mc-tag mc-tag--location">Bee Cave, TX</span>
+            </div>
+            <strong>Stone Exterior — Heavy Stain Removal</strong>
+            <p>Multi-year buildup of mineral stains and algae cleared from stone exterior. Our 8 GPM power washer makes this look easy.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="pressure">
+          <img src="wash-1.jpg" alt="Pool deck pressure washing before and after — Austin TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Pressure Washing</span>
+              <span class="mc-tag mc-tag--location">Austin, TX</span>
+            </div>
+            <strong>Pool Deck Wash — Luxury Home</strong>
+            <p>Travertine pool deck cleaned to like-new condition. Algae, mold, and grime removed without damaging surface.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="exterior">
+          <img src="wash-4.jpg" alt="Estate stone wall cleaning — Lakeway TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Exterior</span>
+              <span class="mc-tag mc-tag--location">Lakeway, TX</span>
+            </div>
+            <strong>Estate Exterior — Stone Wall Restoration</strong>
+            <p>Full estate exterior cleaning. Stone wall and hardscape restored with soft wash. Before & after results speak for themselves.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="pressure">
+          <img src="driveway-1.jpg" alt="Brick paver driveway cleaning before and after — Austin TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Pressure Washing</span>
+              <span class="mc-tag mc-tag--location">Austin, TX</span>
+            </div>
+            <strong>Brick Paver Driveway — Spanish-Style Home</strong>
+            <p>Brick paver driveway cleaned with precision. Years of oil, grime, and organic growth removed in a single visit.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="pressure">
+          <img src="garage-1.jpg" alt="Garage floor oil stain removal — Austin TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Pressure Washing</span>
+              <span class="mc-tag mc-tag--location">Austin, TX</span>
+            </div>
+            <strong>Garage Floor — Oil Stain Removal</strong>
+            <p>Stubborn oil stains removed from concrete garage floor. Treated with degreaser and hot-water pressure washing.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="windows">
+          <img src="window-1.jpg" alt="Exterior window cleaning before and after — Lakeway TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Window Cleaning</span>
+              <span class="mc-tag mc-tag--location">Lakeway, TX</span>
+            </div>
+            <strong>Exterior Windows — Water-Fed Pole Method</strong>
+            <p>De-ionized water-fed pole system cleans exterior windows from the ground — no ladders on your roof, streak-free results.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="windows">
+          <img src="window-3.jpg" alt="Two-story home window cleaning — Bee Cave TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Window Cleaning</span>
+              <span class="mc-tag mc-tag--location">Bee Cave, TX</span>
+            </div>
+            <strong>Two-Story Home — Full Exterior</strong>
+            <p>Full exterior clean on two-story home. Our poles reach up to 3 stories safely from the ground.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="pressure">
+          <img src="wash-2.jpg" alt="Driveway and walkway pressure washing — Austin TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">Pressure Washing</span>
+              <span class="mc-tag mc-tag--location">Austin, TX</span>
+            </div>
+            <strong>Driveway & Walkway — Full Property</strong>
+            <p>Complete driveway and front walkway pressure washing. Instantly improves curb appeal before listing or just for pride of ownership.</p>
+          </div>
+        </div>
+
+        <div class="masonry-item" data-category="exterior">
+          <img src="wash-3.jpg" alt="House washing before and after — Lakeway TX" loading="lazy" />
+          <div class="masonry-caption">
+            <div class="masonry-caption__tags">
+              <span class="mc-tag">House Washing</span>
+              <span class="mc-tag mc-tag--location">Lakeway, TX</span>
+            </div>
+            <strong>House Washing — Siding Restored</strong>
+            <p>Full house washing with soft wash technique. Removes mold, mildew, and algae from siding without damage.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY CTA ===== -->
+  <section class="gallery-cta">
+    <div class="container">
+      <h2>Ready to See Results Like These at Your Home?</h2>
+      <p>Get your instant quote in 60 seconds — no phone tag, no waiting.</p>
+      <div class="gallery-cta__btns">
+        <a href="/#quote" class="btn btn--primary btn--lg">
+          Get a Free Quote →
+        </a>
+        <a href="tel:5125180512" class="btn btn--glass btn--lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Call (512) 518-0512
+        </a>
+      </div>
+      <p style="margin-top:24px;font-size:13px">
+        <a href="/" style="color:rgba(255,255,255,.4)">← Back to Homepage</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.instagram.com/cleanzatx/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.4)">Follow @cleanzatx on Instagram</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__main">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo">
+          <img src="/logo.png" alt="CleanzATX — Exterior Cleaning Experts" loading="lazy" />
+        </a>
+        <p>Lakeway's #1 residential window cleaning service. Locally owned, fully insured, streak-free results since 2020.</p>
+        <div class="footer__rating">
+          <span class="fr-stars">★★★★★</span>
+          <span>5.0 · 167 Google Reviews</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/#services">Residential Window Cleaning</a></li>
+          <li><a href="/#services">Recurring Maintenance Plans</a></li>
+          <li><a href="/#services">Soft Wash</a></li>
+          <li><a href="/#services">Pressure Washing</a></li>
+          <li><a href="/#services">Screen &amp; Track Cleaning</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Service Areas</h4>
+        <ul>
+          <li><a href="/window-cleaning-lakeway">Lakeway</a></li>
+          <li><a href="/window-cleaning-bee-cave">Bee Cave</a></li>
+          <li><a href="/#areas">Westlake</a></li>
+          <li><a href="/#areas">Lake Travis</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:5125180512">(512) 518-0512</a></li>
+          <li><a href="mailto:cleanzatx@gmail.com">cleanzatx@gmail.com</a></li>
+          <li><a href="https://www.instagram.com/cleanzatx/" target="_blank" rel="noopener">@cleanzatx</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span>© 2026 CleanzATX · Lakeway, TX · All rights reserved</span>
+        <span>Licensed &amp; Insured · $1M Liability Coverage</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav burger
+    const burger = document.getElementById('burger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (burger && mobileMenu) {
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+      });
+      mobileMenu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          burger.classList.remove('active');
+          mobileMenu.classList.remove('open');
+        });
+      });
+    }
+
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('nav--scrolled', window.scrollY > 40);
+    });
+
+    // Gallery filters
+    const filterBtns = document.querySelectorAll('.gf-btn');
+    const masonryItems = document.querySelectorAll('.masonry-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        masonryItems.forEach(item => {
+          if (filter === 'all' || item.dataset.category === filter) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        // GA4 tracking
+        if (typeof gtag !== 'undefined') gtag('event', 'gallery_filter', { filter_category: filter });
+      });
+    });
+  </script>
+</body>
+</html>
