@@ -17,6 +17,16 @@
         "DATABASE_URL": "file:./dev.db"
       },
       "cwd": "/Users/user/Desktop/CleanzATX Claude Code/detailflow-crm"
+    },
+    {
+      "name": "Tracker",
+      "runtimeExecutable": "/Users/user/.nvm/versions/node/v20.20.2/bin/node",
+      "runtimeArgs": ["/Users/user/.nvm/versions/node/v20.20.2/bin/npx", "next", "dev", "--port", "3002"],
+      "port": 3002,
+      "env": {
+        "PATH": "/Users/user/.nvm/versions/node/v20.20.2/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      },
+      "cwd": "/Users/user/Desktop/CleanzATX Claude Code/cleanzatx-tracker"
     }
   ]
 }

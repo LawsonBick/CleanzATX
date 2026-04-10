@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGY563H3P8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LGY563H3P8');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pollen Season Ruining Your Windows? | CleanzATX Lakeway TX</title>
+  <meta name="description" content="Cedar pollen season is here — and it's coating every window in the Lake Travis area. CleanzATX removes it fast. 167 five-star reviews, same-week scheduling. Call (512) 518-0512.">
+  <link rel="canonical" href="https://cleanzatx.com/pollen">
+  <link rel="icon" href="/logo.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       POLLEN LANDING PAGE — Specific styles
+       ============================================================ */
+
+    /* Pollen particle canvas (sits over hero) */
+    #pollenCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Hero override — yellowish tint for pollen vibe */
+    .pollen-hero {
+      position: relative;
+      background: linear-gradient(145deg, #0c1a2e 0%, #1a1a00 60%, #0f2440 100%);
+      padding: 130px 0 90px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Pollen glow orbs (yellowy) */
+    .pollen-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .pollen-orb--1 {
+      width: 600px; height: 600px;
+      background: rgba(234, 179, 8, 0.12);
+      top: -200px; left: -100px;
+      animation: pollenDrift 12s ease-in-out infinite;
+    }
+    .pollen-orb--2 {
+      width: 400px; height: 400px;
+      background: rgba(234, 179, 8, 0.08);
+      bottom: -100px; right: 0;
+      animation: pollenDrift 15s ease-in-out infinite reverse;
+    }
+    @keyframes pollenDrift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 20px); }
+    }
+
+    /* Pollen-dusted headline container */
+    .pollen-headline-wrap {
+      position: relative;
+      z-index: 3;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* The actual headline with pollen wipe effect */
+    .pollen-h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0 0 24px;
+      color: #fff;
+    }
+
+    /* Pollen-coated word — starts yellow/covered then wipes clean */
+    .pollen-word {
+      position: relative;
+      display: inline-block;
+      color: #fff;
+    }
+    .pollen-word::after {
+      content: '';
+      position: absolute;
+      inset: -4px -2px;
+      background: linear-gradient(135deg, #ca8a04 0%, #eab308 40%, #fef08a 70%, #eab308 100%);
+      border-radius: 4px;
+      opacity: 0;
+      animation: pollenCoat 1.2s ease-out 0.8s forwards;
+    }
+    @keyframes pollenCoat {
+      0% { opacity: 0; transform: scaleX(0); transform-origin: left; }
+      40% { opacity: 0.85; transform: scaleX(1); }
+      100% { opacity: 0.75; transform: scaleX(1); }
+    }
+
+    /* Squeegee wipe reveal — the clean word underneath */
+    .clean-word {
+      position: relative;
+      display: inline-block;
+      color: #0ea5e9;
+      overflow: hidden;
+    }
+    .clean-word::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, #0ea5e9 20%, #0ea5e9 80%, transparent 100%);
+      transform: translateX(-110%);
+      animation: squeegeeWipe 0.7s cubic-bezier(0.4, 0, 0.2, 1) 2.5s forwards;
+    }
+    @keyframes squeegeeWipe {
+      0% { transform: translateX(-110%); opacity: 0.9; }
+      100% { transform: translateX(110%); opacity: 0; }
+    }
+
+    /* Subtext */
+    .pollen-sub {
+      position: relative;
+      z-index: 3;
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: rgba(255,255,255,0.75);
+      max-width: 600px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .pollen-sub .yellow { color: #eab308; font-weight: 600; }
+
+    /* Hero badge */
+    .pollen-badge {
+      position: relative;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(234,179,8,.1);
+      border: 1px solid rgba(234,179,8,.3);
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-size: 13px;
+      color: #fbbf24;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: .04em;
+    }
+    .pollen-badge__dot {
+      width: 7px; height: 7px;
+      background: #eab308;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* CTAs */
+    .pollen-ctas {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    /* Stats */
+    .pollen-stats {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pollen-stat { text-align: center; }
+    .pollen-stat__num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+    }
+    .pollen-stat__label { font-size: 13px; color: rgba(255,255,255,.5); }
+
+    /* Pollen season alert bar */
+    .pollen-alert {
+      background: linear-gradient(90deg, #78350f, #92400e, #78350f);
+      background-size: 200% 100%;
+      animation: alertSlide 3s linear infinite;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fef3c7;
+      letter-spacing: .04em;
+    }
+    @keyframes alertSlide { 0%{background-position:0%} 100%{background-position:200%} }
+    .pollen-alert span { margin: 0 24px; }
+
+    /* Pollen problem section */
+    .pollen-problem {
+      background: var(--navy-2);
+      padding: 80px 0;
+    }
+    .pollen-problem h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .pollen-problem p {
+      color: rgba(255,255,255,.7);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      max-width: 680px;
+    }
+    .pollen-problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    @media(max-width:700px) { .pollen-problem-grid { grid-template-columns: 1fr; } }
+
+    .pollen-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pollen-fact {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .pollen-fact__icon {
+      width: 44px; height: 44px;
+      background: rgba(234,179,8,.1);
+      border: 1px solid rgba(234,179,8,.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .pollen-fact__text strong { color: #fff; display: block; margin-bottom: 4px; font-size: 15px; }
+    .pollen-fact__text span { color: rgba(255,255,255,.55); font-size: 14px; line-height: 1.6; }
+
+    /* Solution callout */
+    .pollen-solution {
+      background: rgba(14,165,233,.08);
+      border: 1px solid rgba(14,165,233,.2);
+      border-radius: 20px;
+      padding: 32px;
+    }
+    .pollen-solution h3 { color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+    .pollen-solution ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .pollen-solution ul li { color: rgba(255,255,255,.8); font-size: 15px; display: flex; align-items: flex-start; gap: 10px; }
+    .pollen-solution ul li::before { content: "✓"; color: #0ea5e9; font-weight: 700; flex-shrink: 0; }
+
+    /* Social proof strip */
+    .pollen-proof {
+      background: var(--navy);
+      padding: 60px 0;
+      text-align: center;
+    }
+    .pollen-proof__title { color: rgba(255,255,255,.5); font-size: 13px; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 32px; }
+    .pollen-proof__numbers {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .ppn { text-align: center; }
+    .ppn__big { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 42px; font-weight: 900; color: #fff; }
+    .ppn__big span { color: #0ea5e9; }
+    .ppn__small { font-size: 14px; color: rgba(255,255,255,.5); margin-top: 4px; }
+
+    /* Review strip */
+    .pollen-reviews {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1000px;
+      margin: 40px auto 0;
+    }
+    @media(max-width:700px) { .pollen-reviews { grid-template-columns: 1fr; } }
+    .pr-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: left;
+    }
+    .pr-card__stars { color: #f59e0b; margin-bottom: 10px; }
+    .pr-card blockquote { color: rgba(255,255,255,.7); font-size: 14px; line-height: 1.7; font-style: italic; margin-bottom: 12px; }
+    .pr-card cite { color: rgba(255,255,255,.35); font-size: 12px; }
+
+    /* Form section */
+    .pollen-form-section {
+      background: var(--navy-2);
+      padding: 80px 0;
+    }
+    .pollen-form-wrap {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    @media(max-width:600px) { .pollen-form-wrap { padding: 32px 20px; } }
+    .pollen-form-wrap h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .pollen-form-wrap p { color: rgba(255,255,255,.6); font-size: 15px; margin-bottom: 28px; }
+    .pf-field { margin-bottom: 18px; }
+    .pf-field label { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .pf-field input, .pf-field select {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+    .pf-field input::placeholder { color: rgba(255,255,255,.3); }
+    .pf-field select option { background: #0f2440; }
+    .pollen-form-submit {
+      background: #eab308;
+      color: #1a1000;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 16px 32px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      transition: background .2s, transform .1s;
+      margin-top: 8px;
+    }
+    .pollen-form-submit:hover { background: #ca8a04; transform: translateY(-1px); }
+    .pf-or { text-align: center; color: rgba(255,255,255,.3); font-size: 13px; margin: 16px 0; }
+    .pf-sms { display: flex; align-items: center; justify-content: center; gap: 8px; color: #0ea5e9; font-size: 14px; font-weight: 600; }
+
+    /* Footer strip */
+    .pollen-footer {
+      background: var(--navy);
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .pollen-footer p { color: rgba(255,255,255,.4); font-size: 13px; }
+    .pollen-footer a { color: #0ea5e9; }
+
+    /* Confirmation */
+    .pf-confirm { display: none; text-align: center; padding: 20px 0; }
+    .pf-confirm .cf-check { font-size: 56px; margin-bottom: 16px; }
+    .pf-confirm h3 { color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .pf-confirm p { color: rgba(255,255,255,.6); font-size: 15px; }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+  </style>
+</head>
+<body>
+
+  <!-- Pollen Season Alert Bar -->
+  <div class="pollen-alert">
+    <span>🌿 Cedar Pollen Season is PEAK right now in Lakeway & Bee Cave</span>
+    <span>•</span>
+    <span>Your windows are covered — we fix that fast</span>
+    <span>•</span>
+    <span>📞 (512) 518-0512</span>
+  </div>
+
+  <!-- Minimal Nav -->
+  <nav class="nav scrolled" style="position:relative;top:auto;">
+    <div class="container nav__inner">
+      <a href="/" class="nav__logo"><img src="/logo.png" alt="CleanzATX Window Cleaning" class="nav__logo-img" /></a>
+      <ul class="nav__links">
+        <li><a href="tel:5125180512" class="nav__phone">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          (512) 518-0512
+        </a></li>
+        <li><a href="#pollen-form" class="btn btn--nav" style="background:#eab308;border-color:#eab308;color:#1a1000;">Get Pollen Removed</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="pollen-hero">
+    <!-- Pollen particle canvas -->
+    <canvas id="pollenCanvas"></canvas>
+
+    <!-- Background orbs -->
+    <div class="pollen-orb pollen-orb--1"></div>
+    <div class="pollen-orb pollen-orb--2"></div>
+
+    <div class="container" style="position:relative;z-index:3;">
+
+      <div class="pollen-badge">
+        <div class="pollen-badge__dot"></div>
+        🌿 Peak Cedar Pollen Season — Lakeway & Bee Cave
+      </div>
+
+      <!-- THE HEADLINE -->
+      <div class="pollen-headline-wrap">
+        <h1 class="pollen-h1">
+          Pollen Got Your<br>
+          Home <span class="pollen-word">Dirty?</span><br>
+          We Make It <span class="clean-word">Spotless.</span>
+        </h1>
+      </div>
+
+      <p class="pollen-sub">
+        Every spring, <span class="yellow">cedar pollen</span> coats every window, screen, and surface in the Lake Travis area. CleanzATX removes it completely — de-ionized water, no chemicals, streak-free results guaranteed.
+      </p>
+
+      <div class="pollen-ctas">
+        <a href="#pollen-form" class="btn btn--lg" style="background:#eab308;color:#1a1000;font-weight:800;border:none;padding:16px 32px;font-size:16px;border-radius:10px;">
+          🌿 Remove My Pollen Now →
+        </a>
+        <a href="tel:5125180512" class="btn btn--glass btn--lg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          (512) 518-0512
+        </a>
+      </div>
+
+      <div class="pollen-stats">
+        <div class="pollen-stat">
+          <span class="pollen-stat__num">5.0 ★</span>
+          <span class="pollen-stat__label">Google Rating</span>
+        </div>
+        <div class="pollen-stat">
+          <span class="pollen-stat__num">167</span>
+          <span class="pollen-stat__label">5-Star Reviews</span>
+        </div>
+        <div class="pollen-stat">
+          <span class="pollen-stat__num">1,000+</span>
+          <span class="pollen-stat__label">Homes Cleaned</span>
+        </div>
+        <div class="pollen-stat">
+          <span class="pollen-stat__num">7-Day</span>
+          <span class="pollen-stat__label">Rain Guarantee</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== POLLEN PROBLEM ===== -->
+  <section class="pollen-problem">
+    <div class="container">
+      <div class="pollen-problem-grid">
+        <div>
+          <h2>Why Lakeway Windows Get So Yellow</h2>
+          <p>Mountain cedar pollen season hits the Lake Travis corridor every winter and spring — and it's one of the worst in the country. The fine yellow dust penetrates screens, bonds to glass with morning dew, and builds up on every horizontal surface.</p>
+          <p>By the time pollen season peaks, most Lakeway and Bee Cave homeowners are dealing with windows so coated they look frosted — and no amount of rain washes it off completely.</p>
+
+          <div class="pollen-facts">
+            <div class="pollen-fact">
+              <div class="pollen-fact__icon">🌬️</div>
+              <div class="pollen-fact__text">
+                <strong>Pollen bonds to glass with moisture</strong>
+                <span>Morning dew activates tree pollen's sticky proteins, causing it to adhere to window glass — regular rain doesn't remove it.</span>
+              </div>
+            </div>
+            <div class="pollen-fact">
+              <div class="pollen-fact__icon">🪟</div>
+              <div class="pollen-fact__text">
+                <strong>Screens trap it, making it worse</strong>
+                <span>Pollen particles get caught in screen mesh, turning screens into yellow filters that block light and spread dust inside when opened.</span>
+              </div>
+            </div>
+            <div class="pollen-fact">
+              <div class="pollen-fact__icon">💧</div>
+              <div class="pollen-fact__text">
+                <strong>Hard water multiplies the problem</strong>
+                <span>Lakeway's limestone-heavy water leaves mineral deposits when pollen-contaminated water dries on glass — creating a permanent haze without professional treatment.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pollen-solution">
+          <h3>How We Remove It Completely</h3>
+          <ul>
+            <li>De-ionized (purified) water system dissolves and lifts pollen without leaving mineral residue</li>
+            <li>Professional water-fed pole reaches 3 stories from the ground — safe, fast, thorough</li>
+            <li>Screen cleaning removes trapped pollen particles from mesh — stops indoor spread</li>
+            <li>8 GPM power wash option for heavy pollen buildup on driveways, siding, and patios</li>
+            <li>7-day rain guarantee — if pollen-laden rain immediately re-coats your windows, we return free</li>
+            <li>Quarterly maintenance plan keeps your home pollen-free all year, automatically</li>
+          </ul>
+
+          <div style="margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);text-align:center;">
+            <a href="#pollen-form" class="btn btn--primary btn--lg" style="justify-content:center;width:100%;">
+              Book Pollen Removal →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOCIAL PROOF ===== -->
+  <section class="pollen-proof">
+    <div class="container">
+      <div class="pollen-proof__title">Trusted by 1,000+ Lakeway & Bee Cave Homeowners</div>
+      <div class="pollen-proof__numbers">
+        <div class="ppn">
+          <div class="ppn__big">5.<span>0</span>★</div>
+          <div class="ppn__small">Google Rating</div>
+        </div>
+        <div class="ppn">
+          <div class="ppn__big"><span>167</span></div>
+          <div class="ppn__small">Five-Star Reviews</div>
+        </div>
+        <div class="ppn">
+          <div class="ppn__big"><span>3x</span></div>
+          <div class="ppn__small">Nextdoor Neighborhood Fave</div>
+        </div>
+        <div class="ppn">
+          <div class="ppn__big"><span>$1M</span></div>
+          <div class="ppn__small">Liability Insurance</div>
+        </div>
+      </div>
+
+      <div class="pollen-reviews">
+        <div class="pr-card">
+          <div class="pr-card__stars">★★★★★</div>
+          <blockquote>"We had so much cedar pollen built up from two winters that our windows looked frosted. CleanzATX came out same week and they look brand new. Incredible."</blockquote>
+          <cite>— Jennifer R., Rough Hollow, Lakeway TX</cite>
+        </div>
+        <div class="pr-card">
+          <div class="pr-card__stars">★★★★★</div>
+          <blockquote>"Tyler's team handled the pollen buildup on our lake-view windows that we'd been putting off for years. Streak-free, no spots, done in under 3 hours."</blockquote>
+          <cite>— Chris M., Serene Hills, Lakeway TX</cite>
+        </div>
+        <div class="pr-card">
+          <div class="pr-card__stars">★★★★★</div>
+          <blockquote>"Signed up for the quarterly plan after pollen season destroyed our windows twice in a row. Now they handle it automatically. Best decision."</blockquote>
+          <cite>— Amanda P., Lakeway TX · Quarterly Plan</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUOTE FORM ===== -->
+  <section class="pollen-form-section" id="pollen-form">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:40px;">
+        <span style="display:inline-block;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);color:#fbbf24;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:6px 16px;border-radius:20px;margin-bottom:16px;">Get Your Quote</span>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;margin-bottom:12px;">Ready to See Out Your Windows Again?</h2>
+        <p style="color:rgba(255,255,255,.6);font-size:16px;max-width:500px;margin:0 auto;">Fill out the form below — we'll send your quote within the hour and get you scheduled this week.</p>
+      </div>
+
+      <div class="pollen-form-wrap">
+        <div id="pollenFormFields">
+          <div class="pf-field">
+            <label>Your Name *</label>
+            <input type="text" id="pf-name" placeholder="Jane Smith" />
+          </div>
+          <div class="pf-field">
+            <label>Phone Number *</label>
+            <input type="tel" id="pf-phone" placeholder="(512) 000-0000" />
+          </div>
+          <div class="pf-field">
+            <label>Address or Neighborhood</label>
+            <input type="text" id="pf-address" placeholder="Lakeway, TX or 123 Main St" />
+          </div>
+          <div class="pf-field">
+            <label>Home Size (approximate)</label>
+            <select id="pf-size">
+              <option value="">Select size...</option>
+              <option value="Small (under 2,000 sqft)">Small — under 2,000 sqft</option>
+              <option value="Medium (2,000–3,500 sqft)">Medium — 2,000–3,500 sqft</option>
+              <option value="Large (3,500–5,000 sqft)">Large — 3,500–5,000 sqft</option>
+              <option value="XL (5,000+ sqft)">XL — 5,000+ sqft (custom quote)</option>
+            </select>
+          </div>
+          <div class="pf-field">
+            <label>What do you need cleaned?</label>
+            <select id="pf-service">
+              <option value="Windows (pollen removal)">Windows (pollen removal)</option>
+              <option value="Windows + Screens">Windows + Screens</option>
+              <option value="Full exterior (windows + power wash)">Full exterior (windows + power wash)</option>
+              <option value="Power wash only">Power wash/driveway only</option>
+              <option value="Not sure — send me options">Not sure — send me options</option>
+            </select>
+          </div>
+
+          <button type="button" class="pollen-form-submit" id="pollenSubmitBtn">
+            🌿 Remove My Pollen →
+          </button>
+
+          <div class="pf-or">— or —</div>
+          <a href="sms:5125180512?body=Hi Tyler! I need help with pollen on my windows. Can you give me a quote?" class="pf-sms">
+            📱 Text a photo of your home for a 5-minute quote
+          </a>
+        </div>
+
+        <!-- Confirmation -->
+        <div class="pf-confirm" id="pollenConfirm">
+          <div class="cf-check">✅</div>
+          <h3>Got it! Tyler will reach out within the hour.</h3>
+          <p>Keep an eye on your phone — we'll confirm your appointment and send a price shortly.</p>
+          <div style="margin-top:24px;">
+            <a href="tel:5125180512" class="btn btn--primary btn--lg" style="justify-content:center;">
+              Can't wait? Call us now →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;">
+        <p style="color:rgba(255,255,255,.35);font-size:13px;">⚡ Most quotes sent within 60 minutes · Same-week scheduling available · 7-day rain guarantee included</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="pollen-footer">
+    <div class="container">
+      <p>CleanzATX · Lakeway, TX · <a href="tel:5125180512">(512) 518-0512</a> · 5.0★ · 167 Google Reviews · Licensed & Insured · $1M Liability</p>
+      <p style="margin-top:8px;"><a href="/">← Back to cleanzatx.com</a></p>
+    </div>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init('pEcuEf_nmG3f4FLX1');</script>
+
+  <script>
+    /* ============================================================
+       POLLEN CANVAS — Animated floating pollen particles
+       ============================================================ */
+    (function() {
+      const canvas = document.getElementById('pollenCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Create pollen particles
+      const particles = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 1.5 + Math.random() * 3,
+        opacity: 0.15 + Math.random() * 0.5,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -0.2 - Math.random() * 0.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.01 + Math.random() * 0.02,
+        color: Math.random() > 0.3
+          ? `rgba(234, 179, 8, ${0.4 + Math.random() * 0.4})`   // yellow pollen
+          : `rgba(163, 230, 53, ${0.2 + Math.random() * 0.3})`,  // green tinge
+      }));
+
+      // Occasional pollen "burst" from left side (like wind blowing)
+      function spawnBurst() {
+        for (let i = 0; i < 8; i++) {
+          particles.push({
+            x: -10,
+            y: canvas.height * 0.2 + Math.random() * canvas.height * 0.6,
+            r: 2 + Math.random() * 4,
+            opacity: 0.6 + Math.random() * 0.3,
+            vx: 1.5 + Math.random() * 2,
+            vy: (Math.random() - 0.5) * 0.8,
+            wobble: 0,
+            wobbleSpeed: 0.03,
+            color: `rgba(234, 179, 8, ${0.7 + Math.random() * 0.3})`,
+            burst: true,
+            life: 1,
+          });
+        }
+        // Remove oldest burst particles to keep count manageable
+        while (particles.length > 180) particles.splice(120, 1);
+      }
+      setInterval(spawnBurst, 3000);
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+          // Draw pollen grain (small circle with slight halo)
+          ctx.save();
+          ctx.globalAlpha = p.opacity;
+
+          // Outer glow
+          const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+          grd.addColorStop(0, p.color);
+          grd.addColorStop(1, 'transparent');
+          ctx.fillStyle = grd;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Core dot
+          ctx.globalAlpha = p.opacity * 1.5;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 0.6, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+
+          // Move
+          p.wobble += p.wobbleSpeed;
+          p.x += p.vx + Math.sin(p.wobble) * 0.3;
+          p.y += p.vy;
+
+          // Fade burst particles
+          if (p.burst) {
+            p.opacity -= 0.005;
+            if (p.opacity <= 0) { particles.splice(i, 1); return; }
+          }
+
+          // Wrap around
+          if (p.y < -20) p.y = canvas.height + 10;
+          if (p.x > canvas.width + 20) p.x = -10;
+          if (p.x < -20) p.x = canvas.width + 10;
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ============================================================
+       POLLEN FORM SUBMIT
+       ============================================================ */
+    document.getElementById('pollenSubmitBtn')?.addEventListener('click', function() {
+      const name = document.getElementById('pf-name')?.value.trim();
+      const phone = document.getElementById('pf-phone')?.value.trim();
+      if (!name || !phone) {
+        if (!name) document.getElementById('pf-name').style.borderColor = '#ef4444';
+        if (!phone) document.getElementById('pf-phone').style.borderColor = '#ef4444';
+        return;
+      }
+
+      // Send via EmailJS
+      if (typeof emailjs !== 'undefined') {
+        emailjs.send('service_xsex2ss', 'template_536xvvp', {
+          first_name: name,
+          phone: phone,
+          address: document.getElementById('pf-address')?.value || '',
+          sqft: document.getElementById('pf-size')?.value || '',
+          exterior_windows: document.getElementById('pf-service')?.value || 'Pollen removal',
+          service_plan: 'Pollen Landing Page Lead',
+          interior_windows: 'No',
+          screens: 'See service selection',
+          tracks: 'No',
+          referral_source: 'Google Ads - Pollen',
+          timeline: 'ASAP',
+        }).catch(() => {});
+      }
+
+      // GA4
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'generate_lead', { lead_source: 'pollen_landing_page', currency: 'USD' });
+      }
+
+      // Show confirmation
+      document.getElementById('pollenFormFields').style.display = 'none';
+      document.getElementById('pollenConfirm').style.display = 'block';
+
+      // Confetti in yellow
+      launchPollenConfetti();
+    });
+
+    function launchPollenConfetti() {
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const pieces = Array.from({length: 100}, () => ({
+        x: Math.random() * canvas.width,
+        y: -20,
+        r: 4 + Math.random() * 6,
+        color: ['#eab308','#fbbf24','#fef08a','#84cc16','#0ea5e9'][Math.floor(Math.random()*5)],
+        vx: (Math.random()-0.5)*3,
+        vy: 2 + Math.random()*3,
+      }));
+      let frame;
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pieces.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = 0.8;
+          ctx.fill();
+          p.x += p.vx; p.y += p.vy;
+        });
+        if (pieces.some(p => p.y < canvas.height + 20)) frame = requestAnimationFrame(draw);
+        else canvas.remove();
+      }
+      draw();
+      setTimeout(() => { cancelAnimationFrame(frame); canvas.remove(); }, 3500);
+    }
+  </script>
+
+</body>
+</html>
