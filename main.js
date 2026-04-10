@@ -749,46 +749,6 @@ sections.forEach(s => sectionObserver.observe(s));
   });
 })();
 
-/* ---------- #48 GPS address auto-fill ---------- */
-(function() {
-  const addressField = document.getElementById('q-address');
-  if (!addressField || !navigator.geolocation) return;
-  
-  // Add a GPS button next to address field
-  const gpsBtn = document.createElement('button');
-  gpsBtn.type = 'button';
-  gpsBtn.className = 'gps-btn';
-  gpsBtn.innerHTML = '📍 Use My Location';
-  gpsBtn.title = 'Auto-fill your address';
-  addressField.parentNode.appendChild(gpsBtn);
-  
-  gpsBtn.addEventListener('click', () => {
-    gpsBtn.textContent = '📍 Locating...';
-    gpsBtn.disabled = true;
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      try {
-        const { latitude, longitude } = pos.coords;
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-        const data = await res.json();
-        const addr = data.address;
-        const street = (addr.house_number ? addr.house_number + ' ' : '') + (addr.road || '');
-        const city = addr.city || addr.town || addr.village || '';
-        const state = addr.state_code || addr.state || '';
-        const zip = addr.postcode || '';
-        if (street) addressField.value = `${street}, ${city}, ${state} ${zip}`.trim();
-        // Save to localStorage
-        const saved = JSON.parse(localStorage.getItem('cleanzatx_quote_draft') || '{}');
-        saved['q-address'] = addressField.value;
-        localStorage.setItem('cleanzatx_quote_draft', JSON.stringify(saved));
-      } catch(e) {}
-      gpsBtn.textContent = '📍 Use My Location';
-      gpsBtn.disabled = false;
-    }, () => {
-      gpsBtn.textContent = '📍 Use My Location';
-      gpsBtn.disabled = false;
-    });
-  });
-})();
 
 /* ---------- #30 Confetti on quote submission ---------- */
 function launchConfetti() {
