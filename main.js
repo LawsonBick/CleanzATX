@@ -1092,8 +1092,106 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   if (!bar) return;
   const quoteSection = document.getElementById('quote');
   if (!quoteSection) return;
+  // Hide bar while quote section is visible OR above it (start hidden, show after scrolling past)
+  bar.classList.add('hidden');
   const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => bar.classList.toggle('hidden', e.isIntersecting));
-  }, { threshold: 0.3 });
+    entries.forEach(e => {
+      // Show bar only when quote section has fully scrolled out of view (below or above)
+      if (e.isIntersecting) {
+        bar.classList.add('hidden');
+      } else {
+        // Only show if we've scrolled PAST the quote section (not before it)
+        const rect = quoteSection.getBoundingClientRect();
+        if (rect.bottom < 0) bar.classList.remove('hidden');
+      }
+    });
+  }, { threshold: 0.05 });
   obs.observe(quoteSection);
+})();
+
+/* ---------- Address Autofill (Nominatim) ---------- */
+(function() {
+  function initAddressAutofill(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    // Create dropdown
+    const wrap = input.parentElement;
+    wrap.style.position = 'relative';
+    const dropdown = document.createElement('ul');
+    dropdown.className = 'addr-dropdown';
+    dropdown.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;list-style:none;margin:0;padding:4px 0;background:#0f2440;border:1px solid rgba(14,165,233,.3);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto;';
+    wrap.appendChild(dropdown);
+
+    let debounceTimer;
+    let currentResults = [];
+
+    function closeDropdown() {
+      dropdown.style.display = 'none';
+      dropdown.innerHTML = '';
+    }
+
+    function renderResults(results) {
+      dropdown.innerHTML = '';
+      if (!results.length) { closeDropdown(); return; }
+      results.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = r.display_name;
+        li.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:.9rem;color:rgba(255,255,255,.85);border-bottom:1px solid rgba(255,255,255,.06);line-height:1.4;';
+        li.addEventListener('mouseenter', () => li.style.background = 'rgba(14,165,233,.15)');
+        li.addEventListener('mouseleave', () => li.style.background = '');
+        li.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          input.value = r.display_name;
+          closeDropdown();
+          input.dispatchEvent(new Event('change'));
+        });
+        dropdown.appendChild(li);
+      });
+      dropdown.style.display = 'block';
+    }
+
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const q = input.value.trim();
+      if (q.length < 3) { closeDropdown(); return; }
+      debounceTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&countrycodes=us&q=${encodeURIComponent(q + ' Texas')}`);
+          const data = await res.json();
+          currentResults = data;
+          renderResults(data);
+        } catch(e) { closeDropdown(); }
+      }, 300);
+    });
+
+    input.addEventListener('keydown', e => {
+      const items = dropdown.querySelectorAll('li');
+      const active = dropdown.querySelector('li.active');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = active ? active.nextElementSibling : items[0];
+        if (active) active.classList.remove('active');
+        if (next) { next.classList.add('active'); next.style.background = 'rgba(14,165,233,.2)'; }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = active ? active.previousElementSibling : items[items.length - 1];
+        if (active) { active.classList.remove('active'); active.style.background = ''; }
+        if (prev) { prev.classList.add('active'); prev.style.background = 'rgba(14,165,233,.2)'; }
+      } else if (e.key === 'Enter' && active) {
+        e.preventDefault();
+        input.value = active.textContent;
+        closeDropdown();
+      } else if (e.key === 'Escape') {
+        closeDropdown();
+      }
+    });
+
+    document.addEventListener('click', e => {
+      if (!wrap.contains(e.target)) closeDropdown();
+    });
+  }
+
+  initAddressAutofill('q-address');
+  initAddressAutofill('sq-address');
 })();
