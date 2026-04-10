@@ -3044,15 +3044,28 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     min-height: 48px;
   }
 
-  /* ── Hero ────────────────────────────────────────── */
+  /* ── Hero: full-screen on mobile, scroll cue pinned to bottom ── */
   .hero {
-    padding-top: calc(var(--nav-h) + 10px);
-    padding-bottom: 0;
-    min-height: auto;
+    padding-top: calc(var(--nav-h) + 16px);
+    padding-bottom: 28px;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
   }
   .hero__content {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 0;
+    width: 100%;
+    /* fill the hero height so stats can push to bottom */
+    min-height: calc(100svh - var(--nav-h) - 44px - 16px);
+    display: flex;
+    flex-direction: column;
+  }
+  .hero__text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
   .hero__title {
     font-size: clamp(1.9rem, 8vw, 3.2rem);
@@ -3091,12 +3104,13 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     color: rgba(255,255,255,.45);
     margin-top: 2px;
   }
-  /* Stats row compact */
+  /* Stats: push content down to fill the screen */
   .hero__stats {
     width: 100%;
     flex-wrap: nowrap;
     gap: 8px;
-    margin-top: 0;
+    margin-top: auto;
+    padding-top: 20px;
   }
   .hero__stats .stat:nth-child(3) {
     flex: 1 1 auto;
@@ -3108,15 +3122,22 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   }
   .stat__num { font-size: 18px; }
   .stat__label { font-size: 10px; }
-  /* Show scroll cue on mobile, tight margin */
+  /* Scroll cue: pinned to bottom of hero */
   .hero__scroll-cue {
     display: inline-flex;
-    margin-top: 14px;
-    font-size: 12px;
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
-  .hero__photo {
-    display: none;
-  }
+  .hero__photo { display: none; }
   .hero__logo-badge { display: none; }
 
   /* ── Quote Trust Bar ─────────────────────────────── */
