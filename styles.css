@@ -488,23 +488,27 @@ input, select, textarea { font-family: var(--font); }
 }
 .hero__badge .stars { color: var(--gold); letter-spacing: 1px; }
 
-/* Animated scroll arrow beneath the reviews badge */
+/* Animated scroll arrow — sits inline after stats row */
 .hero__scroll-arrow {
-  display: block;
-  color: rgba(255,255,255,.35);
-  margin-bottom: 18px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex-shrink: 0;
+  color: rgba(255,255,255,.38);
   text-decoration: none;
   transition: color .2s;
-  line-height: 1;
+  padding: 0 4px;
 }
-.hero__scroll-arrow:hover { color: rgba(255,255,255,.7); }
+.hero__scroll-arrow:hover { color: rgba(255,255,255,.75); }
 .hero__scroll-arrow svg {
   animation: arrowBounce 1.6s ease-in-out infinite;
   display: block;
 }
 @keyframes arrowBounce {
-  0%, 100% { transform: translateY(0); opacity: .4; }
-  50%       { transform: translateY(6px); opacity: 1; }
+  0%, 100% { transform: translateY(0); opacity: .38; }
+  50%       { transform: translateY(7px); opacity: 1; }
 }
 
 .hero__title {
