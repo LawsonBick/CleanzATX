@@ -87,6 +87,8 @@ input, select, textarea { font-family: var(--font); }
   padding-inline: 28px;
 }
 .section { padding-block: var(--py); }
+/* Offset scroll targets so fixed nav doesn't cover section tops */
+section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 
 /* ============================================================
    BUTTONS
