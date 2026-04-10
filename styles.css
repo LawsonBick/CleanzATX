@@ -2629,7 +2629,20 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .plans-how__step h4 { color: var(--white); font-family: var(--head); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
 .plans-how__step p { color: rgba(255,255,255,.6); font-size: 14px; line-height: 1.6; }
 .plans-how__arrow { color: var(--sky); font-size: 24px; padding-top: 16px; flex-shrink: 0; }
-@media(max-width:768px) { .plans-how__arrow { display: none; } .plans-how__step { min-width: 50%; } }
+@media(max-width:768px) {
+  .plans-how__arrow { display: none; }
+  .plans-how { gap: 20px; margin-bottom: 36px; }
+  .plans-how__step {
+    min-width: 100%; max-width: 100%; padding: 0;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 4px 14px;
+  }
+  .plans-how__num { grid-row: 1 / -1; align-self: center; margin: 0; }
+  .plans-how__step h4 { grid-column: 2; margin-bottom: 0; font-size: 15px; }
+  .plans-how__step p { grid-column: 2; font-size: 13px; line-height: 1.45; }
+}
 
 .plans-grid {
   display: grid;
@@ -3293,6 +3306,11 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     gap: 16px;
   }
 
+  /* ── Section spacing: tighten gaps between sections ── */
+  .about.section { padding-top: 32px; }
+  .gallery.section,
+  .why-us.section { padding-top: 36px; }
+
   /* ── Tyler Intro (unused section, keep for compat) ── */
   .tyler-intro__badges {
     flex-direction: column;
@@ -3539,8 +3557,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   /* ── Pricing example: smaller padding ───────────── */
   .pricing-example { padding: 20px 16px; }
 
-  /* ── Plans how-to strip: 2-per-row ──────────────── */
-  .plans-how__step { min-width: 40%; }
+  /* ── Plans how-to: single-column rows ────────────── */
+  .plans-how__step { min-width: 100%; max-width: 100%; }
 }
 
 /* ---------- Very small phones (max 400px) ---------- */

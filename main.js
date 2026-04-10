@@ -275,7 +275,7 @@ if (qwiz) {
 
     // Label
     const label = document.getElementById('qwizStepLabel');
-    label.textContent = `Step ${step} of 5 — ${stepLabels[step] || ''}`;
+    label.textContent = `Step ${step} of 5: ${stepLabels[step] || ''}`;
 
     // Pre-populate chips when entering step 2
     if (step === 2) {
@@ -948,8 +948,8 @@ if (origSubmitBtn) {
   const msgs = [
     'Only <strong>4 spots</strong> left this week in Lakeway',
     '<strong>3 homeowners</strong> got quotes in the last hour',
-    'Next opening: this week — <strong>spots filling fast</strong>',
-    'Book today — get cleaned <strong>this week</strong>',
+    'Next opening: this week, <strong>spots filling fast</strong>',
+    'Book today, get cleaned <strong>this week</strong>',
   ];
   let i = 0;
   setInterval(() => {
