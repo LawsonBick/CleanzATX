@@ -524,10 +524,24 @@ input, select, textarea { font-family: var(--font); }
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+  align-items: center;
   margin-bottom: 64px;
   opacity: 0;
   transform: translateY(20px);
 }
+/* Compact text-link call button — used on mobile */
+.hero__cta-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,.55);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color .2s;
+}
+.hero__cta-call:hover { color: rgba(255,255,255,.85); }
 
 .hero__stats {
   display: flex;
@@ -3032,8 +3046,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 
   /* ── Hero ────────────────────────────────────────── */
   .hero {
-    padding-top: calc(var(--nav-h) + 12px);
-    padding-bottom: 28px;
+    padding-top: calc(var(--nav-h) + 10px);
+    padding-bottom: 0;
     min-height: auto;
   }
   .hero__content {
@@ -3062,14 +3076,20 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   }
   .hero__ctas {
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 14px;
+    align-items: flex-start;
   }
-  .hero__ctas .btn {
+  .hero__cta-main {
     width: 100%;
     justify-content: center;
     min-height: 50px;
     font-size: 15px;
+  }
+  .hero__cta-call {
+    font-size: 13px;
+    color: rgba(255,255,255,.45);
+    margin-top: 2px;
   }
   /* Stats row compact */
   .hero__stats {
@@ -3112,7 +3132,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 
   /* ── Quote Section ───────────────────────────────── */
   .quote-section {
-    padding-top: 48px;
+    padding-top: 32px;
     padding-bottom: 48px;
   }
   /* Full-bleed card on mobile — breaks out of 16px container padding */
