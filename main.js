@@ -206,7 +206,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    ============================================================ */
 const qwiz = document.getElementById('quoteWizard');
 if (qwiz) {
-  const state = {
+  const state = window.__qwizState = {
     step: 1,
     address: '', sqft: 0, stories: 0,
     propertyType: 'Residential',
@@ -258,6 +258,8 @@ if (qwiz) {
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
     const panel = qwiz.querySelector(`[data-panel="${step}"]`);
     if (panel) panel.classList.add('active');
+    // Fire event for plan auto-select
+    document.dispatchEvent(new CustomEvent('qwiz:step', { detail: { step } }));
 
     // Progress bar
     const fill = document.getElementById('qwizBarFill');
@@ -924,15 +926,15 @@ if (origSubmitBtn) {
     document.getElementById('bookingNotifName').textContent = b.name;
     document.getElementById('bookingNotifMsg').textContent = b.msg;
     notif.classList.add('show');
-    setTimeout(() => notif.classList.remove('show'), 4000);
+    setTimeout(() => notif.classList.remove('show'), 2500);
     idx++;
   }
 
-  // First show after 8 seconds, then every 18 seconds
+  // First show after 20 seconds, then every 35 seconds
   setTimeout(() => {
     showNotif();
-    setInterval(showNotif, 18000);
-  }, 8000);
+    setInterval(showNotif, 35000);
+  }, 20000);
 })();
 
 /* ---------- #7 Urgency widget rotation ---------- */
@@ -1194,4 +1196,37 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 
   initAddressAutofill('q-address');
   initAddressAutofill('sq-address');
+})();
+
+/* ---------- Plan card → auto-select in quote wizard ---------- */
+(function() {
+  document.querySelectorAll('.plan-card__cta[data-plan]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const plan = this.getAttribute('data-plan');
+      if (!plan) return;
+      // Store chosen plan so wizard can pick it up
+      sessionStorage.setItem('cleanzatx_chosen_plan', plan);
+    });
+  });
+
+  // When the wizard renders step 3 (plan selection), check for a pre-chosen plan
+  // Hook into goToStep — patch it after it's defined
+  const _origGoToStep = window.__goToStep;
+  document.addEventListener('qwiz:step', function(e) {
+    if (e.detail && e.detail.step === 3) applyPreChosenPlan();
+  });
+
+  function applyPreChosenPlan() {
+    const plan = sessionStorage.getItem('cleanzatx_chosen_plan');
+    if (!plan) return;
+    const planEl = document.querySelector(`.qwiz__plan[data-plan="${plan}"]`);
+    if (planEl) {
+      // Deselect all, select this one
+      document.querySelectorAll('.qwiz__plan').forEach(p => p.classList.remove('selected'));
+      planEl.classList.add('selected');
+      // Update state if available
+      if (window.__qwizState) window.__qwizState.plan = plan;
+      sessionStorage.removeItem('cleanzatx_chosen_plan');
+    }
+  }
 })();
