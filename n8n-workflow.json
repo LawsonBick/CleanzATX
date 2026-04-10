@@ -1,0 +1,209 @@
+{
+  "name": "CleanzATX Quote Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "4b3e4d54-9dff-46a2-8bab-b20b172397ab",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "first_name", "value": "={{ $json.body.first_name }}", "type": "string" },
+            { "id": "2", "name": "last_name", "value": "={{ $json.body.last_name }}", "type": "string" },
+            { "id": "3", "name": "phone", "value": "={{ $json.body.phone }}", "type": "string" },
+            { "id": "4", "name": "email", "value": "={{ $json.body.email }}", "type": "string" },
+            { "id": "5", "name": "address", "value": "={{ $json.body.address }}", "type": "string" },
+            { "id": "6", "name": "sqft", "value": "={{ $json.body.sqft }}", "type": "string" },
+            { "id": "7", "name": "stories", "value": "={{ $json.body.stories }}", "type": "string" },
+            { "id": "8", "name": "last_cleaned", "value": "={{ $json.body.last_cleaned }}", "type": "string" },
+            { "id": "9", "name": "service_plan", "value": "={{ $json.body.service_plan }}", "type": "string" },
+            { "id": "10", "name": "auto_billing", "value": "={{ $json.body.auto_billing }}", "type": "string" },
+            { "id": "11", "name": "exterior_price", "value": "={{ $json.body.exterior_price }}", "type": "string" },
+            { "id": "12", "name": "interior_price", "value": "={{ $json.body.interior_price }}", "type": "string" },
+            { "id": "13", "name": "screen_price", "value": "={{ $json.body.screen_price }}", "type": "string" },
+            { "id": "14", "name": "track_price", "value": "={{ $json.body.track_price }}", "type": "string" },
+            { "id": "15", "name": "discount", "value": "={{ $json.body.discount }}", "type": "string" },
+            { "id": "16", "name": "total_price", "value": "={{ $json.body.total_price }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-fields-node-001",
+      "name": "Set Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openphone.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"New Quote Request\\nName: \" + $json.first_name + \" \" + ($json.last_name || \"\") + \"\\nEmail: \" + ($json.email || \"N/A\") + \"\\nPhone: \" + $json.phone + \"\\nAddress: \" + ($json.address || \"N/A\") + \"\\nStories: \" + $json.stories + \"\\nSqft: \" + $json.sqft + \"\\nLast Cleaned: \" + ($json.last_cleaned || \"N/A\") + \"\\nPlan: \" + $json.service_plan + \"\\nAuto-Bill: \" + $json.auto_billing }) }}",
+        "options": {}
+      },
+      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "name": "Send Profile Text",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 400]
+    },
+    {
+      "parameters": { "amount": 10, "unit": "seconds" },
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "name": "Wait 10s A",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [860, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openphone.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "{\"from\":\"+17372774533\",\"to\":[\"+19498286231\"],\"content\":\"Yes\"}",
+        "options": {}
+      },
+      "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+      "name": "Send Yes 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1080, 400]
+    },
+    {
+      "parameters": { "amount": 10, "unit": "seconds" },
+      "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+      "name": "Wait 10s B",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1300, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openphone.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"Estimate for \" + $('Set Fields').first().json.first_name + \" \" + ($('Set Fields').first().json.last_name || \"\") + \":\\nExterior Windows: $\" + $('Set Fields').first().json.exterior_price + (parseFloat($('Set Fields').first().json.interior_price) > 0 ? \"\\nInterior Windows: $\" + $('Set Fields').first().json.interior_price : \"\") + (parseFloat($('Set Fields').first().json.screen_price) > 0 ? \"\\nScreen Cleaning: $\" + $('Set Fields').first().json.screen_price : \"\") + (parseFloat($('Set Fields').first().json.track_price) > 0 ? \"\\nTrack Cleaning: $\" + $('Set Fields').first().json.track_price : \"\") + (parseFloat($('Set Fields').first().json.discount) > 0 ? \"\\nPlan Discount: -$\" + $('Set Fields').first().json.discount : \"\") + \"\\nTotal: $\" + $('Set Fields').first().json.total_price + \"\\nAssign: Tyler & Kyson\" }) }}",
+        "options": {}
+      },
+      "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+      "name": "Send Estimate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1520, 400]
+    },
+    {
+      "parameters": { "amount": 10, "unit": "seconds" },
+      "id": "a7b8c9d0-e1f2-3456-abcd-567890123456",
+      "name": "Wait 10s C",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1740, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openphone.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "{\"from\":\"+17372774533\",\"to\":[\"+19498286231\"],\"content\":\"Yes\"}",
+        "options": {}
+      },
+      "id": "b8c9d0e1-f2a3-4567-bcde-678901234567",
+      "name": "Send Yes 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1960, 400]
+    },
+    {
+      "parameters": { "amount": 10, "unit": "seconds" },
+      "id": "c9d0e1f2-a3b4-5678-cdef-789012345678",
+      "name": "Wait 10s D",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2180, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openphone.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "6ffcddd1ba558eaa826649002cacd63aedf01f691a826e50a042ce9ee7afdfdd" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "{\"from\":\"+17372774533\",\"to\":[\"+19498286231\"],\"content\":\"Yes\"}",
+        "options": {}
+      },
+      "id": "d0e1f2a3-b4c5-6789-defa-890123456789",
+      "name": "Send Yes 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2400, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Set Fields", "type": "main", "index": 0 }]] },
+    "Set Fields": { "main": [[{ "node": "Send Profile Text", "type": "main", "index": 0 }]] },
+    "Send Profile Text": { "main": [[{ "node": "Wait 10s A", "type": "main", "index": 0 }]] },
+    "Wait 10s A": { "main": [[{ "node": "Send Yes 1", "type": "main", "index": 0 }]] },
+    "Send Yes 1": { "main": [[{ "node": "Wait 10s B", "type": "main", "index": 0 }]] },
+    "Wait 10s B": { "main": [[{ "node": "Send Estimate", "type": "main", "index": 0 }]] },
+    "Send Estimate": { "main": [[{ "node": "Wait 10s C", "type": "main", "index": 0 }]] },
+    "Wait 10s C": { "main": [[{ "node": "Send Yes 2", "type": "main", "index": 0 }]] },
+    "Send Yes 2": { "main": [[{ "node": "Wait 10s D", "type": "main", "index": 0 }]] },
+    "Wait 10s D": { "main": [[{ "node": "Send Yes 3", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

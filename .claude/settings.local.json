@@ -22,7 +22,13 @@
       "Bash(brew list:*)",
       "Bash(brew install:*)",
       "Bash(printf \".DS_Store\\\\n*.pyc\\\\n__pycache__/\\\\n\")",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "mcp__Claude_Preview__preview_start",
+      "WebSearch",
+      "Bash(gh auth:*)",
+      "Bash(kill 26271)",
+      "Bash(cd ~/Desktop/\"CleanzATX Claude Code\")",
+      "Bash(zip -r detailflow-crm.zip detailflow-crm/ -x \"detailflow-crm/node_modules/*\" -x \"detailflow-crm/.next/*\" -x \"detailflow-crm/dev.db\")"
     ]
   }
 }
