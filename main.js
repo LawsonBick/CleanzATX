@@ -522,8 +522,12 @@ if (qwiz) {
       } else {
         state.plan = null;
       }
-      document.getElementById('skipPlanBtn').style.display = state.plan ? 'none' : '';
-      document.getElementById('selectPlanBtn').style.display = state.plan ? '' : 'none';
+      const skipBtn = document.getElementById('skipPlanBtn');
+      const selectBtn = document.getElementById('selectPlanBtn');
+      const skipLink = document.getElementById('skipPlanLink');
+      if (skipBtn) skipBtn.style.display = state.plan ? 'none' : '';
+      if (selectBtn) selectBtn.style.display = state.plan ? '' : 'none';
+      if (skipLink) skipLink.style.display = state.plan ? '' : 'none';
     });
   });
 
