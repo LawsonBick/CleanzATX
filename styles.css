@@ -1237,7 +1237,10 @@ input, select, textarea { font-family: var(--font); }
 /* ============================================================
    GALLERY / BEFORE & AFTER
    ============================================================ */
-.gallery { background: var(--white); }
+.gallery { background: var(--navy-2); }
+.gallery .section__title { color: var(--white); }
+.gallery .section__tag { color: var(--sky); background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.gallery .section__sub { color: rgba(255,255,255,.65); }
 .gallery__stack {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1314,7 +1317,7 @@ input, select, textarea { font-family: var(--font); }
 .gallery__note {
   text-align: center;
   font-size: 14px;
-  color: var(--mid);
+  color: rgba(255,255,255,.55);
   margin-top: 32px;
 }
 .gallery__note a { color: var(--sky); font-weight: 600; }
@@ -2550,8 +2553,17 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 
 /* ---------- FAQ Accordion ---------- */
 .faq-section { background: var(--navy-2); }
+.faq-section .section__title { color: var(--white); }
+.faq-section .section__tag { color: var(--sky); background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.faq-section .section__sub { color: rgba(255,255,255,.65); }
 .faq-accordion { max-width: 760px; margin: 0 auto; }
-.faq-item-acc { border-bottom: 1px solid rgba(255,255,255,.08); }
+.faq-item-acc {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  padding: 0 20px;
+}
 .faq-acc-btn {
   width: 100%;
   background: none;
@@ -2578,7 +2590,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .faq-item-acc.open .faq-acc-icon { transform: rotate(45deg); }
 .faq-acc-body { display: none; padding: 0 0 20px; }
 .faq-item-acc.open .faq-acc-body { display: block; }
-.faq-acc-body p { color: rgba(255,255,255,.65); font-size: 15px; line-height: 1.75; }
+.faq-acc-body p { color: rgba(255,255,255,.75); font-size: 15px; line-height: 1.75; }
 .faq-acc-body strong { color: var(--white); }
 
 /* ---------- Competitor Comparison ---------- */
@@ -2680,7 +2692,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
    MERGED WHY-US + COMPARE LAYOUT
    ============================================================ */
 .why-us { background: var(--navy-2); }
-.why-us .section__title { color: var(--white); }
+.why-us .section__tag { color: var(--sky); background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.2); }
+.why-us .section__title { color: var(--white); text-align: center; }
 .why-us .section__sub { color: rgba(255,255,255,.65); }
 .why-compare-grid {
   display: grid;
@@ -2703,9 +2716,9 @@ a.area-pill { text-decoration: none; cursor: pointer; }
    BOTTOM CTA SECTION
    ============================================================ */
 .bottom-cta {
-  background: linear-gradient(135deg, var(--navy) 0%, rgba(14,165,233,.08) 50%, var(--navy) 100%);
-  border-top: 1px solid rgba(14,165,233,.15);
-  border-bottom: 1px solid rgba(14,165,233,.08);
+  background: linear-gradient(135deg, #0c1a2e 0%, #0f2440 100%);
+  border-top: 1px solid rgba(14,165,233,.12);
+  border-bottom: 1px solid rgba(14,165,233,.06);
   padding: 80px 0;
 }
 .bottom-cta__inner {
@@ -2728,7 +2741,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   line-height: 1.2;
 }
 .bottom-cta p {
-  color: rgba(255,255,255,.65);
+  color: rgba(255,255,255,.75);
   font-size: 16px;
   line-height: 1.7;
   margin-bottom: 20px;
@@ -2739,7 +2752,11 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   gap: 10px;
   flex-wrap: wrap;
   font-size: 13px;
-  color: rgba(255,255,255,.45);
+  color: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 10px 16px;
 }
 .bottom-cta__right {
   display: flex;
@@ -2778,3 +2795,83 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .about .nd-review__header strong { color: var(--white); }
 .about .nd-review__header span { color: rgba(255,255,255,.4); }
 .about .about__card-header span { color: rgba(255,255,255,.6); }
+
+/* ── Tyler Intro ─────────────────────────── */
+.tyler-intro {
+  background: var(--navy-2);
+  padding: 80px 0;
+}
+.tyler-intro__grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.tyler-intro__img-wrap {
+  position: relative;
+}
+.tyler-intro__img {
+  width: 100%;
+  border-radius: 20px;
+  border: 3px solid rgba(14,165,233,.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  display: block;
+}
+.tyler-intro__avatar-fallback {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--sky), #0369a1);
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  font-weight: 800;
+  color: white;
+}
+.tyler-intro__eyebrow {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--sky);
+  margin-bottom: 8px;
+}
+.tyler-intro__name {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+.tyler-intro__bio {
+  color: rgba(255,255,255,.78);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.tyler-intro__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+.tyler-badge {
+  background: rgba(14,165,233,.12);
+  border: 1px solid rgba(14,165,233,.3);
+  color: #7dd3fc;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+@media(max-width:768px){
+  .tyler-intro__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .tyler-intro__img-wrap {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  .tyler-intro__name { font-size: 1.8rem; }
+}
