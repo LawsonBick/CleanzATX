@@ -3063,36 +3063,85 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     min-height: 48px;
   }
 
-  /* ── Hero: mobile ── */
-  .hero__content { grid-template-columns: 1fr; }
-  .hero__photo {
-    max-height: 280px;
-    aspect-ratio: 4/3;
-    order: 2;
-    margin-top: 24px;
-    transform: none;
+  /* ── Hero: full-screen on mobile, photo fills remaining space ── */
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: calc(var(--nav-h) + 14px);
+    padding-bottom: 0;
+    min-height: 100svh;
   }
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0;
+  }
+  /* Tighten text spacing so photo has room */
+  .hero__brand-title { margin-bottom: 8px; }
+  .hero__badge { margin-bottom: 8px; }
   .hero__title {
-    font-size: clamp(1.9rem, 8vw, 3rem);
+    font-size: clamp(1.75rem, 8vw, 2.8rem);
     line-height: 1.08;
+    margin-bottom: 10px;
+  }
+  .hero__sub {
+    font-size: .875rem;
+    line-height: 1.5;
+    margin-bottom: 14px;
   }
   .hero__ctas {
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 14px;
   }
   .hero__ctas .btn {
-    flex: 1 1 calc(50% - 5px);
-    min-width: 140px;
+    flex: 1;
     justify-content: center;
+    font-size: 14px;
+    min-height: 44px;
+    padding: 10px 14px;
   }
   .hero__stats {
     flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-bottom: 0;
   }
-  .stat { flex: 1; min-width: 90px; padding: 14px 10px; }
-  .stat__num { font-size: 20px; }
+  .stat { flex: 1; min-width: 0; padding: 10px 6px; }
+  .stat__num { font-size: 17px; }
+  .stat__label { font-size: 9px; }
+  /* Photo fills remaining space below text */
+  .hero__photo {
+    flex: 1;
+    min-height: 160px;
+    max-height: none;
+    aspect-ratio: unset;
+    order: 2;
+    margin-top: 14px;
+    margin-left: -16px;
+    margin-right: -16px;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+  /* Gradient fade at bottom of photo = scroll prompt */
+  .hero__photo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(10,20,40,.75));
+    pointer-events: none;
+  }
   .hero__logo-badge { display: none; }
 
   /* ── Quote Trust Bar ─────────────────────────────── */
