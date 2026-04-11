@@ -1106,18 +1106,17 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   .reviews__track {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    touch-action: pan-y;        /* browser handles vertical; JS handles horizontal */
     gap: 16px;
     padding: 8px 24px 20px;
     margin: 0 -20px 8px;
     grid-template-columns: unset;
+    -webkit-overflow-scrolling: auto;
   }
   .reviews__track::-webkit-scrollbar { display: none; }
   .reviews__track .review-card {
-    scroll-snap-align: center;
     flex-shrink: 0;
     width: min(82vw, 360px);
   }
@@ -2901,9 +2900,9 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .plans-grid {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: auto;
     scrollbar-width: none;
     gap: 16px;
     padding: 12px 40px 8px;
@@ -2914,7 +2913,6 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .plans-grid::-webkit-scrollbar { display: none; }
 
   .plan-card {
-    scroll-snap-align: center;
     flex-shrink: 0;
     width: min(82vw, 340px);
   }
@@ -4100,8 +4098,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: auto;
     gap: 14px;
     padding-bottom: 12px;
     /* hide scrollbar but keep functionality */
@@ -4110,7 +4108,6 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .gallery__carousel::-webkit-scrollbar { display: none; }
   .gallery__carousel .gallery__item {
     flex: 0 0 82vw;
-    scroll-snap-align: start;
     min-width: 0;
   }
   .gallery__carousel .gallery__item img {

@@ -162,6 +162,26 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
   prevBtn?.addEventListener('click', () => scrollToCard(current - 1));
   nextBtn?.addEventListener('click', () => scrollToCard(current + 1));
 
+  // Directional-lock touch events — intercept horizontal swipes only
+  let rTsX = 0, rTsY = 0, rLock = null;
+  track.addEventListener('touchstart', e => {
+    rTsX = e.touches[0].clientX;
+    rTsY = e.touches[0].clientY;
+    rLock = null;
+  }, { passive: true });
+  track.addEventListener('touchmove', e => {
+    const dx = Math.abs(e.touches[0].clientX - rTsX);
+    const dy = Math.abs(e.touches[0].clientY - rTsY);
+    if (!rLock && (dx > 8 || dy > 8)) rLock = dx > dy ? 'x' : 'y';
+    if (rLock === 'x') e.preventDefault();
+  }, { passive: false });
+  track.addEventListener('touchend', e => {
+    if (rLock !== 'x') return;
+    const dx = e.changedTouches[0].clientX - rTsX;
+    if (Math.abs(dx) > 45) scrollToCard(dx < 0 ? current + 1 : current - 1);
+    else scrollToCard(current);
+  });
+
   // Init
   function init() {
     // Reset any inline display overrides from old paginator
@@ -1228,11 +1248,11 @@ if (origSubmitBtn) {
     setTimeout(() => notif.classList.remove('show'), 2500);
   }
 
-  // First show after 20 s, then every 35 s
+  // First show after 60 s, then every 60 s
   setTimeout(() => {
     showNotif();
-    setInterval(showNotif, 35000);
-  }, 20000);
+    setInterval(showNotif, 60000);
+  }, 60000);
 })();
 
 /* ---------- #7 Urgency widget rotation ---------- */
@@ -1462,6 +1482,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   let cloned = false;
   let currentIdx = 0; // real card index (0-based among origCards)
   let jumping = false; // prevent recursive scroll handling
+  let touching = false; // true while finger is on screen — defer jumpToReal
 
   // Build clone-based infinite loop:
   // DOM order: [clone-of-last][orig0][orig1][orig2][clone-of-first]
@@ -1521,6 +1542,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     if (jumping) return;
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(() => {
+      if (touching) return; // wait until finger lifts
       if (!isCarouselActive() || !cloned) return;
       const cw = cardWidth();
       const sl = carousel.scrollLeft;
@@ -1544,6 +1566,32 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
       currentIdx = Math.min(Math.max(realSlot - 1, 0), N - 1);
       updateDots();
     }, 80);
+  });
+
+  // Directional-lock touch events — intercept horizontal swipes only
+  let pTsX = 0, pTsY = 0, pLock = null;
+  carousel.addEventListener('touchstart', e => {
+    pTsX = e.touches[0].clientX;
+    pTsY = e.touches[0].clientY;
+    pLock = null;
+    touching = true;
+  }, { passive: true });
+  carousel.addEventListener('touchmove', e => {
+    const dx = Math.abs(e.touches[0].clientX - pTsX);
+    const dy = Math.abs(e.touches[0].clientY - pTsY);
+    if (!pLock && (dx > 8 || dy > 8)) pLock = dx > dy ? 'x' : 'y';
+    if (pLock === 'x') e.preventDefault();
+  }, { passive: false });
+  carousel.addEventListener('touchend', e => {
+    touching = false;
+    if (pLock !== 'x') return;
+    const dx = e.changedTouches[0].clientX - pTsX;
+    if (Math.abs(dx) > 45) {
+      const next = dx < 0 ? (currentIdx + 1) % N : (currentIdx - 1 + N) % N;
+      slideTo(next);
+    } else {
+      slideTo(currentIdx);
+    }
   });
 
   // Arrow buttons
@@ -1576,6 +1624,50 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   // Use requestAnimationFrame to wait for layout, then init — avoids page jump
   requestAnimationFrame(() => requestAnimationFrame(initCarousel));
   window.addEventListener('resize', () => setTimeout(initCarousel, 150));
+})();
+
+/* ---------- Gallery carousel (directional-lock touch) ---------- */
+(function() {
+  const carousel = document.querySelector('.gallery__carousel');
+  if (!carousel) return;
+
+  function isCarouselActive() { return window.innerWidth <= 768; }
+
+  const items = Array.from(carousel.querySelectorAll('.gallery__item'));
+  let current = 0;
+
+  function itemWidth() {
+    const item = items[0];
+    if (!item) return 0;
+    const gap = 14; // matches CSS gap
+    return item.offsetWidth + gap;
+  }
+
+  function scrollToItem(idx) {
+    idx = Math.max(0, Math.min(idx, items.length - 1));
+    current = idx;
+    carousel.scrollTo({ left: idx * itemWidth(), behavior: 'smooth' });
+  }
+
+  // Directional-lock touch events
+  let gTsX = 0, gTsY = 0, gLock = null;
+  carousel.addEventListener('touchstart', e => {
+    gTsX = e.touches[0].clientX;
+    gTsY = e.touches[0].clientY;
+    gLock = null;
+  }, { passive: true });
+  carousel.addEventListener('touchmove', e => {
+    const dx = Math.abs(e.touches[0].clientX - gTsX);
+    const dy = Math.abs(e.touches[0].clientY - gTsY);
+    if (!gLock && (dx > 8 || dy > 8)) gLock = dx > dy ? 'x' : 'y';
+    if (gLock === 'x') e.preventDefault();
+  }, { passive: false });
+  carousel.addEventListener('touchend', e => {
+    if (gLock !== 'x') return;
+    const dx = e.changedTouches[0].clientX - gTsX;
+    if (Math.abs(dx) > 45) scrollToItem(dx < 0 ? current + 1 : current - 1);
+    else scrollToItem(current);
+  });
 })();
 
 /* ---------- Plan card → auto-select in quote wizard ---------- */
