@@ -986,91 +986,114 @@
 
   <!-- ===== SERVICE PLANS ===== -->
   <section class="plans-section section" id="plans">
+    <div class="plans-section__glow" aria-hidden="true"></div>
     <div class="container">
       <div class="section__header">
         <span class="section__tag">Maintenance Plans</span>
-        <h2 class="section__title">Set It & Forget It. We Handle Everything</h2>
-        <p class="section__sub">Most homeowners spend 20 minutes every few months trying to remember to book a window cleaner. Our plan members spend zero minutes. We auto-schedule, send reminders, and show up. No calls needed.</p>
+        <h2 class="section__title">Set It &amp; Forget It. We Handle Everything</h2>
+        <p class="section__sub">Most homeowners spend 20 minutes every few months trying to remember to book a window cleaner. Our plan members spend zero. We auto-schedule, send reminders, and show up.</p>
       </div>
 
+      <!-- How it works -->
       <div class="plans-how">
         <div class="plans-how__step">
-          <div class="plans-how__num">1</div>
-          <h4>Pick Your Plan</h4>
-          <p>Choose monthly, quarterly, or bi-annual. Takes 30 seconds in our quote form.</p>
+          <div class="plans-how__icon-wrap">
+            <div class="plans-how__num">1</div>
+          </div>
+          <div class="plans-how__text">
+            <h4>Pick Your Plan</h4>
+            <p>Choose monthly, quarterly, or bi-annual. 30 seconds in our quote form.</p>
+          </div>
         </div>
-        <div class="plans-how__arrow">→</div>
+        <div class="plans-how__connector" aria-hidden="true"></div>
         <div class="plans-how__step">
-          <div class="plans-how__num">2</div>
-          <h4>We Auto-Schedule</h4>
-          <p>We book your next appointment automatically. You'll get a reminder 48 hours, 24 hours, and morning-of.</p>
+          <div class="plans-how__icon-wrap">
+            <div class="plans-how__num">2</div>
+          </div>
+          <div class="plans-how__text">
+            <h4>We Auto-Schedule</h4>
+            <p>We book your next visit automatically and send 3 reminders before we arrive.</p>
+          </div>
         </div>
-        <div class="plans-how__arrow">→</div>
+        <div class="plans-how__connector" aria-hidden="true"></div>
         <div class="plans-how__step">
-          <div class="plans-how__num">3</div>
-          <h4>We Show Up</h4>
-          <p>Tyler's team arrives on time, does the work, and leaves your home spotless. No oversight needed.</p>
+          <div class="plans-how__icon-wrap">
+            <div class="plans-how__num">3</div>
+          </div>
+          <div class="plans-how__text">
+            <h4>We Show Up</h4>
+            <p>Tyler's team arrives on time and leaves your home spotless. No oversight needed.</p>
+          </div>
         </div>
-        <div class="plans-how__arrow">→</div>
+        <div class="plans-how__connector" aria-hidden="true"></div>
         <div class="plans-how__step">
-          <div class="plans-how__num">4</div>
-          <h4>Repeat</h4>
-          <p>Your home stays clean year-round at a discounted rate. You never think about it again.</p>
+          <div class="plans-how__icon-wrap">
+            <div class="plans-how__num">4</div>
+          </div>
+          <div class="plans-how__text">
+            <h4>Repeat</h4>
+            <p>Spotless windows year-round at a discounted rate. You never think about it again.</p>
+          </div>
         </div>
       </div>
 
+      <!-- Plan cards -->
       <div class="plans-grid">
+
         <div class="plan-card">
+          <div class="plan-card__accent plan-card__accent--blue"></div>
           <div class="plan-card__header">
             <h3>Bi-Annual Plan</h3>
-            <div class="plan-card__price">$50 <span>off each visit</span></div>
+            <div class="plan-card__price"><span class="plan-card__price-num">$50</span><span class="plan-card__price-label">off each visit</span></div>
           </div>
           <ul class="plan-card__features">
-            <li>✓ 2 visits per year</li>
-            <li>✓ Auto-scheduling</li>
-            <li>✓ Triple reminders</li>
-            <li>✓ 7-day rain guarantee</li>
-            <li>✓ Optional auto-billing</li>
+            <li>2 visits per year</li>
+            <li>Auto-scheduling</li>
+            <li>Triple reminders</li>
+            <li>7-day rain guarantee</li>
+            <li>Optional auto-billing</li>
           </ul>
-          <a href="#quoteWizard" class="btn btn--ghost btn--full plan-card__cta" data-plan="6month">Get Started</a>
+          <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="6month">Get Started</a>
         </div>
 
         <div class="plan-card plan-card--featured">
+          <div class="plan-card__accent plan-card__accent--sky"></div>
           <div class="plan-card__badge">Most Popular</div>
           <div class="plan-card__header">
             <h3>Quarterly Plan</h3>
-            <div class="plan-card__price">$100 <span>off each visit</span></div>
+            <div class="plan-card__price"><span class="plan-card__price-num">$100</span><span class="plan-card__price-label">off each visit</span></div>
           </div>
           <ul class="plan-card__features">
-            <li>✓ 4 visits per year</li>
-            <li>✓ Auto-scheduling</li>
-            <li>✓ Triple reminders</li>
-            <li>✓ Priority scheduling</li>
-            <li>✓ 5 hard water windows free</li>
-            <li>✓ Free track dusting</li>
-            <li>✓ 7-day rain guarantee</li>
-            <li>✓ Optional auto-billing</li>
+            <li>4 visits per year</li>
+            <li>Auto-scheduling</li>
+            <li>Triple reminders</li>
+            <li>Priority scheduling</li>
+            <li>5 hard water windows free</li>
+            <li>Free track dusting</li>
+            <li>7-day rain guarantee</li>
+            <li>Optional auto-billing</li>
           </ul>
           <a href="#quoteWizard" class="btn btn--primary btn--full plan-card__cta" data-plan="quarterly">Get Started</a>
         </div>
 
         <div class="plan-card">
+          <div class="plan-card__accent plan-card__accent--purple"></div>
           <div class="plan-card__header">
             <h3>Monthly Plan</h3>
-            <div class="plan-card__price">$150 <span>off each visit</span></div>
+            <div class="plan-card__price"><span class="plan-card__price-num">$150</span><span class="plan-card__price-label">off each visit</span></div>
           </div>
           <ul class="plan-card__features">
-            <li>✓ 12 visits per year</li>
-            <li>✓ All quarterly perks</li>
-            <li>✓ Maximum savings</li>
-            <li>✓ Auto-scheduling</li>
-            <li>✓ Triple reminders</li>
-            <li>✓ Optional auto-billing</li>
+            <li>12 visits per year</li>
+            <li>All quarterly perks</li>
+            <li>Maximum savings</li>
+            <li>Auto-scheduling</li>
+            <li>Triple reminders</li>
+            <li>Optional auto-billing</li>
           </ul>
-          <a href="#quoteWizard" class="btn btn--ghost btn--full plan-card__cta" data-plan="monthly">Get Started</a>
+          <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="monthly">Get Started</a>
         </div>
-      </div>
 
+      </div>
     </div>
   </section>
 
