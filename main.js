@@ -724,6 +724,7 @@ if (qwiz) {
   });
 
   // Sqft threshold listener
+  let sqftWasBlocked = false;
   document.getElementById('q-sqft')?.addEventListener('input', function() {
     const val = parseInt(this.value) || 0;
     const advisory = document.getElementById('q-sqft-advisory');
@@ -732,6 +733,13 @@ if (qwiz) {
     if (advisory) advisory.style.display = (val >= 3500 && val < 3700) ? '' : 'none';
     if (blocked) blocked.style.display = (val >= 3700) ? '' : 'none';
     if (nextBtn) nextBtn.disabled = false; // 3700+ sqft users can proceed to get custom quote
+    // Auto-open the contact modal the first time sqft crosses 3700
+    if (val >= 3700 && !sqftWasBlocked) {
+      sqftWasBlocked = true;
+      if (window.openPhoneModal) window.openPhoneModal();
+    } else if (val < 3700) {
+      sqftWasBlocked = false; // reset so it fires again if they re-enter a large number
+    }
   });
 
   // Service checkboxes (residential)
@@ -1069,10 +1077,13 @@ if (qwiz) {
   if (!overlay) return;
 
   function openModal(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
+
+  // Expose globally so other code (e.g. sqft threshold) can trigger it
+  window.openPhoneModal = openModal;
 
   function closeModal() {
     overlay.classList.remove('active');
