@@ -1761,6 +1761,9 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .quote-section .section__title { color: var(--white); }
 .quote-section .section__sub { color: rgba(255,255,255,.65); }
 
+/* Scroll target: land on the wizard card, not the section header */
+#quoteWizard { scroll-margin-top: var(--nav-h); }
+
 .qwiz {
   max-width: 720px;
   margin: 0 auto;
