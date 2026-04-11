@@ -1075,7 +1075,8 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   line-height: 1;
   letter-spacing: -.04em;
 }
-.or-stars { display: block; font-size: 22px; color: var(--gold); letter-spacing: 2px; margin-bottom: 4px; }
+.or-mid { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.or-stars { display: block; font-size: 22px; color: var(--gold); letter-spacing: 2px; margin-bottom: 2px; }
 .or-count { display: block; font-size: 14px; color: rgba(255,255,255,.5); }
 .or-link {
   display: inline-flex;
@@ -1165,9 +1166,9 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .rc-stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; flex-shrink: 0; }
 
 .review-card blockquote {
-  font-size: 14px;
-  color: rgba(255,255,255,.7);
-  line-height: 1.75;
+  font-size: 15px;
+  color: rgba(255,255,255,.75);
+  line-height: 1.7;
   font-style: italic;
   flex-grow: 1;
   margin-bottom: 20px;
@@ -1399,6 +1400,8 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   color: #fff;
   z-index: 2;
   pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
 }
 .gallery__badge--before {
   left: 12px;
@@ -3652,10 +3655,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     margin-left: auto;
     flex-shrink: 0;
   }
-  .review-card blockquote {
-    font-size: 15px;
-    line-height: 1.65;
-  }
+  /* blockquote base already 15px — no override needed */
 
   /* ── Meet the Owner / Tyler ──────────────────────── */
   .about__inner {
