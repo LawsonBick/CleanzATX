@@ -4022,9 +4022,12 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .hero__scroll-cue { margin-top: 20px; }
 }
 
-/* ── Compare mobile: Us vs Them table (hidden on desktop) ── */
+/* ── Compare mobile: Us vs Them table ── */
+/* Hidden on desktop only — media queries below show it on mobile */
+@media(min-width: 961px) {
+  .compare-mobile { display: none; }
+}
 .compare-mobile {
-  display: none;
   background: rgba(255,255,255,.03);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 16px;
