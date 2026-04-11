@@ -1439,7 +1439,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 
   const cards = Array.from(carousel.querySelectorAll('.plan-card'));
   const dots  = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.plans-dot')) : [];
-  let currentIdx = 1; // start on the featured Quarterly card
+  let currentIdx = 0; // start on the first card
 
   function isCarouselActive() {
     return getComputedStyle(carousel).display === 'flex';
@@ -1494,8 +1494,8 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     if (!isCarouselActive()) { updateDots(); updateArrows(); return; }
     updateDots();
     updateArrows();
-    // Scroll to featured card without animation on init
-    cards[1]?.scrollIntoView({ block: 'nearest', inline: 'center' });
+    // Scroll to first card without animation on init
+    cards[0]?.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
   // Small delay to let layout settle
