@@ -1013,6 +1013,13 @@ if (qwiz) {
 
     // Hide progress
     qwiz.querySelector('.qwiz__progress').style.display = 'none';
+
+    // Scroll so the urgency bar sits flush below the fixed nav — exactly as designed
+    requestAnimationFrame(() => {
+      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      const wizTop = qwiz.getBoundingClientRect().top + window.scrollY - navH;
+      window.scrollTo({ top: wizTop, behavior: 'smooth' });
+    });
   }
 
   document.getElementById('q-submit')?.addEventListener('click', handleSubmit);
