@@ -193,12 +193,12 @@
   }
   </script>
   <link rel="icon" href="logo.png" type="image/png">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" as="style">
-  <link rel="preload" href="hero-photo.jpg" as="image">
+  <link rel="preload" href="hero-photo.jpg" as="image" fetchpriority="high">
   <link rel="stylesheet" href="styles.css?v=3" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 </head>
 <body>
 
@@ -206,7 +206,7 @@
   <nav class="nav" id="nav">
     <div class="container nav__inner">
       <a href="#home" class="nav__logo">
-        <img src="logo.png" alt="Cleanz ATX: Exterior Cleaning Experts" class="nav__logo-img" />
+        <img src="logo.png" alt="Cleanz ATX: Exterior Cleaning Experts" class="nav__logo-img" width="120" height="40" />
       </a>
       <ul class="nav__links">
         <li><a href="#plans">Services</a></li>
@@ -290,13 +290,13 @@
         </div>
       </div>
 
-      <div class="hero__photo" aria-hidden="true">
-        <img src="hero-photo.jpg" alt="CleanzATX window cleaning" />
+      <div class="hero__photo">
+        <img src="hero-photo.jpg" alt="CleanzATX window cleaning" width="1200" height="800" fetchpriority="high" loading="eager" />
       </div>
 
       <!-- Floating trust badge -->
       <div class="hero__logo-badge">
-        <img src="logo.png" alt="CleanzATX" />
+        <img src="logo.png" alt="CleanzATX" width="80" height="27" loading="lazy" />
       </div>
     </div>
 
@@ -1095,7 +1095,7 @@
         </div>
         <div class="about__right" data-aos>
           <div class="about__photo">
-            <img src="photos/tyler-truck.jpg" alt="Tyler, owner of CleanzATX, sitting on his wrapped truck in front of the Austin skyline" loading="lazy" />
+            <img src="photos/tyler-truck.jpg" alt="Tyler, owner of CleanzATX, sitting on his wrapped truck in front of the Austin skyline" loading="lazy" width="600" height="400" />
           </div>
         </div>
       </div>
@@ -1119,7 +1119,7 @@
             <div class="plans-how__num">1</div>
           </div>
           <div class="plans-how__text">
-            <h4>Pick Your Plan</h4>
+            <h3>Pick Your Plan</h3>
             <p>Choose monthly, quarterly, or bi-annual. 30 seconds in our quote form.</p>
           </div>
         </div>
@@ -1129,7 +1129,7 @@
             <div class="plans-how__num">2</div>
           </div>
           <div class="plans-how__text">
-            <h4>We Auto-Schedule</h4>
+            <h3>We Auto-Schedule</h3>
             <p>We book your next visit automatically and send 3 reminders before we arrive.</p>
           </div>
         </div>
@@ -1139,7 +1139,7 @@
             <div class="plans-how__num">3</div>
           </div>
           <div class="plans-how__text">
-            <h4>We Show Up</h4>
+            <h3>We Show Up</h3>
             <p>Tyler's team arrives on time and leaves your home spotless. No oversight needed.</p>
           </div>
         </div>
@@ -1149,7 +1149,7 @@
             <div class="plans-how__num">4</div>
           </div>
           <div class="plans-how__text">
-            <h4>Repeat</h4>
+            <h3>Repeat</h3>
             <p>Spotless windows year-round at a discounted rate. You never think about it again.</p>
           </div>
         </div>
@@ -1252,7 +1252,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2 L2 7 L12 12 L22 7 Z"/><path d="M2 17 L12 22 L22 17"/><path d="M2 12 L12 17 L22 12"/></svg>
             </div>
             <div>
-              <h4>De-Ionized Water Technology</h4>
+              <h3>De-Ionized Water Technology</h3>
               <p>Commercial-grade pure water leaves zero spots or streaks. Results stay cleaner, longer.</p>
             </div>
           </div>
@@ -1261,7 +1261,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </div>
             <div>
-              <h4>Ground-Level Safety Up to 3 Stories</h4>
+              <h3>Ground-Level Safety Up to 3 Stories</h3>
               <p>Water-fed extension poles mean no ladders on your roof and full safety on every job.</p>
             </div>
           </div>
@@ -1270,7 +1270,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
             <div>
-              <h4>Fully Insured: $1M Liability</h4>
+              <h3>Fully Insured: $1M Liability</h3>
               <p>Your home and property are protected. We carry full insurance so you never have to worry.</p>
             </div>
           </div>
@@ -1279,7 +1279,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <h4>Same-Week Scheduling</h4>
+              <h3>Same-Week Scheduling</h3>
               <p>Free quotes same day. Flexible appointments that work around your schedule.</p>
             </div>
           </div>
@@ -1288,7 +1288,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
             </div>
             <div>
-              <h4>Locally Owned Since 2020</h4>
+              <h3>Locally Owned Since 2020</h3>
               <p>Tyler is a Lakeway local, your actual neighbor. Not a call center. Genuine, personal service rooted in this community.</p>
             </div>
           </div>
@@ -1416,7 +1416,7 @@
       </div>
       <div class="gallery__stack gallery__carousel">
 <div class="gallery__item" data-aos>
-          <img src="gallery/window-2.jpg" alt="Interior window cleaning before and after — hazy to crystal clear" loading="lazy" />
+          <img src="gallery/window-2.jpg" alt="Interior window cleaning before and after — hazy to crystal clear" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1425,7 +1425,7 @@
           </div>
         </div>
 <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/screen-1.jpg" alt="Window screen cleaning before and after" loading="lazy" />
+          <img src="gallery/screen-1.jpg" alt="Window screen cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1434,7 +1434,7 @@
           </div>
         </div>
         <div class="gallery__item" data-aos>
-          <img src="gallery/stone-1.jpg" alt="Stone column algae and buildup removal before and after" loading="lazy" />
+          <img src="gallery/stone-1.jpg" alt="Stone column algae and buildup removal before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1443,7 +1443,7 @@
           </div>
         </div>
         <div class="gallery__item" data-aos>
-          <img src="gallery/stone-2.jpg" alt="Stone stairway cleaning before and after" loading="lazy" />
+          <img src="gallery/stone-2.jpg" alt="Stone stairway cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1452,7 +1452,7 @@
           </div>
         </div>
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/wash-1.jpg" alt="Travertine pool deck pressure washing before and after" loading="lazy" />
+          <img src="gallery/wash-1.jpg" alt="Travertine pool deck pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1461,7 +1461,7 @@
           </div>
         </div>
 <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/wash-4.jpg" alt="House siding soft wash before and after" loading="lazy" />
+          <img src="gallery/wash-4.jpg" alt="House siding soft wash before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1470,7 +1470,7 @@
           </div>
         </div>
         <div class="gallery__item" data-aos>
-          <img src="gallery/driveway-1.jpg" alt="Brick paver driveway pressure washing before and after" loading="lazy" />
+          <img src="gallery/driveway-1.jpg" alt="Brick paver driveway pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1479,7 +1479,7 @@
           </div>
         </div>
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/garage-1.jpg" alt="Garage floor pressure washing before and after" loading="lazy" />
+          <img src="gallery/garage-1.jpg" alt="Garage floor pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1489,7 +1489,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/garage-2.jpg" alt="Glass garage door window cleaning before and after" loading="lazy" />
+          <img src="gallery/garage-2.jpg" alt="Glass garage door window cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1499,7 +1499,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/patio-1.jpg" alt="Rooftop travertine patio pressure washing before and after" loading="lazy" />
+          <img src="gallery/patio-1.jpg" alt="Rooftop travertine patio pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1509,7 +1509,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/stone-5.jpg" alt="Large estate limestone retaining wall cleaning before and after" loading="lazy" />
+          <img src="gallery/stone-5.jpg" alt="Large estate limestone retaining wall cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1519,7 +1519,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/stone-6.jpg" alt="Stone home exterior corner cleaning before and after" loading="lazy" />
+          <img src="gallery/stone-6.jpg" alt="Stone home exterior corner cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1529,7 +1529,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/stone-7.jpg" alt="Stone wall corner algae and moss removal before and after" loading="lazy" />
+          <img src="gallery/stone-7.jpg" alt="Stone wall corner algae and moss removal before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1539,7 +1539,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/wash-2.jpg" alt="Stone house front facade soft wash before and after" loading="lazy" />
+          <img src="gallery/wash-2.jpg" alt="Stone house front facade soft wash before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1549,7 +1549,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/stone-8.jpg" alt="Flagstone pathway and courtyard cleaning before and after" loading="lazy" />
+          <img src="gallery/stone-8.jpg" alt="Flagstone pathway and courtyard cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1559,7 +1559,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/stone-9.jpg" alt="Limestone retaining wall pressure washing before and after" loading="lazy" />
+          <img src="gallery/stone-9.jpg" alt="Limestone retaining wall pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1569,7 +1569,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/roof-1.jpg" alt="Clay tile roof soft wash cleaning before and after" loading="lazy" />
+          <img src="gallery/roof-1.jpg" alt="Clay tile roof soft wash cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1579,7 +1579,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/driveway-2.jpg" alt="Curved concrete driveway and patio pressure washing before and after" loading="lazy" />
+          <img src="gallery/driveway-2.jpg" alt="Curved concrete driveway and patio pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1589,7 +1589,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/window-3.jpg" alt="Single window exterior cleaning before and after" loading="lazy" />
+          <img src="gallery/window-3.jpg" alt="Single window exterior cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1599,7 +1599,7 @@
         </div>
 
         <div class="gallery__item" data-aos>
-          <img src="gallery/window-4.jpg" alt="Tall double windows on brick home cleaned before and after" loading="lazy" />
+          <img src="gallery/window-4.jpg" alt="Tall double windows on brick home cleaned before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1609,7 +1609,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/deck-1.jpg" alt="Wood deck pressure washing before and after" loading="lazy" />
+          <img src="gallery/deck-1.jpg" alt="Wood deck pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1619,7 +1619,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/patio-2.jpg" alt="Flagstone entrance walkway pressure washing before and after" loading="lazy" />
+          <img src="gallery/patio-2.jpg" alt="Flagstone entrance walkway pressure washing before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1629,7 +1629,7 @@
         </div>
 
         <div class="gallery__item gallery__item--stacked" data-aos>
-          <img src="gallery/patio-3.jpg" alt="Flagstone backyard patio cleaning before and after" loading="lazy" />
+          <img src="gallery/patio-3.jpg" alt="Flagstone backyard patio cleaning before and after" loading="lazy" width="800" height="600" />
           <span class="gallery__badge gallery__badge--before">Before</span>
           <span class="gallery__badge gallery__badge--after">After</span>
           <div class="gallery__caption">
@@ -1795,7 +1795,7 @@
     <div class="container footer__main">
       <div class="footer__brand">
         <a href="#home" class="footer__logo">
-          <img src="logo.png" alt="CleanzATX: Exterior Cleaning Experts" />
+          <img src="logo.png" alt="CleanzATX: Exterior Cleaning Experts" width="120" height="40" loading="lazy" />
         </a>
         <p>Lakeway's #1 residential window cleaning service. Locally owned, fully insured, streak-free results since 2020.</p>
         <div class="footer__rating">
