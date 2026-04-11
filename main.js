@@ -587,7 +587,7 @@ if (qwiz) {
       addLine(`Track Cleaning (${state.trackCount})`, p.tracks);
     }
     if (p.discount > 0) {
-      const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan;
+      const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan;
       addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
     }
     if (state.promoDiscount > 0) {
@@ -795,7 +795,7 @@ if (qwiz) {
     submitted = true;
     const p = calcPrice();
     const isLarge = state.propertyType === 'Residential' && state.sqft >= 3700;
-    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : 'None (One-Time)';
+    const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : 'None (One-Time)';
     const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
 
     // Silent EmailJS send
@@ -1388,18 +1388,15 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 
 /* ---------- Plan card → auto-select in quote wizard ---------- */
 (function() {
+  // Marketing plan card "Get Started" buttons store the chosen plan
   document.querySelectorAll('.plan-card__cta[data-plan]').forEach(btn => {
-    btn.addEventListener('click', function(e) {
+    btn.addEventListener('click', function() {
       const plan = this.getAttribute('data-plan');
-      if (!plan) return;
-      // Store chosen plan so wizard can pick it up
-      sessionStorage.setItem('cleanzatx_chosen_plan', plan);
+      if (plan) sessionStorage.setItem('cleanzatx_chosen_plan', plan);
     });
   });
 
-  // When the wizard renders step 3 (plan selection), check for a pre-chosen plan
-  // Hook into goToStep — patch it after it's defined
-  const _origGoToStep = window.__goToStep;
+  // Apply a pre-chosen plan whenever step 3 is rendered
   document.addEventListener('qwiz:step', function(e) {
     if (e.detail && e.detail.step === 3) applyPreChosenPlan();
   });
@@ -1407,12 +1404,11 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   function applyPreChosenPlan() {
     const plan = sessionStorage.getItem('cleanzatx_chosen_plan');
     if (!plan) return;
+    // Try the residential plan list first, then commercial
     const planEl = document.querySelector(`.qwiz__plan[data-plan="${plan}"]`);
     if (planEl) {
-      // Deselect all, select this one
       document.querySelectorAll('.qwiz__plan').forEach(p => p.classList.remove('selected'));
       planEl.classList.add('selected');
-      // Update state if available
       if (window.__qwizState) window.__qwizState.plan = plan;
       sessionStorage.removeItem('cleanzatx_chosen_plan');
     }
