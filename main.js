@@ -1152,27 +1152,70 @@ if (origSubmitBtn) {
   if (!notif) return;
 
   const bookings = [
-    { name: 'Sarah K.', msg: 'from Lakeway just booked a quarterly plan' },
-    { name: 'Mike D.', msg: 'from Bee Cave just requested a quote' },
-    { name: 'Jennifer R.', msg: 'from Rough Hollow just booked exterior cleaning' },
-    { name: 'Tom & Linda B.', msg: 'from Spillman Ranch joined the quarterly plan' },
-    { name: 'Amanda P.', msg: 'from Lakeway renewed her quarterly plan' },
-    { name: 'Chris M.', msg: 'from Serene Hills just booked same-week service' },
-    { name: 'Rachel W.', msg: 'from Four Points requested a power wash quote' },
-    { name: 'David L.', msg: 'from Falconhead booked exterior + screens' },
+    // ── existing ──
+    { name: 'Sarah K.',        msg: 'from Lakeway just booked a quarterly plan' },
+    { name: 'Mike D.',         msg: 'from Bee Cave just requested a quote' },
+    { name: 'Jennifer R.',     msg: 'from Rough Hollow just booked exterior cleaning' },
+    { name: 'Tom & Linda B.',  msg: 'from Spillman Ranch joined the quarterly plan' },
+    { name: 'Amanda P.',       msg: 'from Lakeway renewed her quarterly plan' },
+    { name: 'Chris M.',        msg: 'from Serene Hills just booked same-week service' },
+    { name: 'Rachel W.',       msg: 'from Four Points requested a quote' },
+    { name: 'David L.',        msg: 'from Falconhead booked exterior + screens' },
+    // ── 30 new ──
+    { name: 'Maria T.',        msg: 'from Rough Hollow just booked exterior cleaning' },
+    { name: 'James R.',        msg: 'from Serene Hills joined the bi-annual plan' },
+    { name: 'Lauren H.',       msg: 'from Lake Travis booked full interior + exterior' },
+    { name: 'Kevin B.',        msg: 'from Westlake Hills just requested a quote' },
+    { name: 'Stephanie N.',    msg: 'from Hudson Bend booked same-week service' },
+    { name: 'Brian & Carol T.',msg: 'from Steiner Ranch signed up for monthly plan' },
+    { name: 'Megan F.',        msg: 'from The Hills just booked screen cleaning' },
+    { name: 'Patrick O.',      msg: 'from Barton Creek booked exterior + tracks' },
+    { name: 'Nicole S.',       msg: 'from Lakeway joined the quarterly plan' },
+    { name: 'Greg A.',         msg: 'from Bee Cave just booked a same-week clean' },
+    { name: 'Tiffany C.',      msg: 'from Flintrock Falls renewed her monthly plan' },
+    { name: 'Derek M.',        msg: 'from Lake Pointe booked exterior cleaning' },
+    { name: 'Ashley V.',       msg: 'from Rough Hollow just requested a quote' },
+    { name: 'Mark & Susan E.', msg: 'from Spillman Ranch booked full-home clean' },
+    { name: 'Courtney J.',     msg: 'from Serene Hills just booked interior windows' },
+    { name: 'Tyler H.',        msg: 'from Lakeway booked exterior + screens + tracks' },
+    { name: 'Melissa G.',      msg: 'from Falconhead joined the bi-annual plan' },
+    { name: 'Brandon K.',      msg: 'from Four Points just requested a quote' },
+    { name: 'Heather L.',      msg: 'from Bee Cave booked same-week exterior clean' },
+    { name: 'Josh & Amy R.',   msg: 'from Hudson Bend signed up for quarterly plan' },
+    { name: 'Danielle B.',     msg: 'from Steiner Ranch booked window cleaning' },
+    { name: 'Eric P.',         msg: 'from Westlake Hills just requested a quote' },
+    { name: 'Kristen N.',      msg: 'from Lakeway renewed her bi-annual plan' },
+    { name: 'Ryan C.',         msg: 'from Lake Travis booked exterior + screens' },
+    { name: 'Lisa M.',         msg: 'from Barton Creek just booked a quarterly plan' },
+    { name: 'Scott & Dana W.', msg: 'from The Hills signed up for monthly plan' },
+    { name: 'Amber F.',        msg: 'from Rough Hollow just requested a quote' },
+    { name: 'Nathan O.',       msg: 'from Falconhead booked full interior + exterior' },
   ];
 
-  let idx = 0;
+  // Fisher-Yates shuffle — produces a random order with no repeats
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Shuffle once per session; walk through the deck — never repeat
+  let deck = shuffle(bookings);
+  let pos = 0;
+
   function showNotif() {
-    const b = bookings[idx % bookings.length];
+    if (pos >= deck.length) return; // full deck shown — stop for this session
+    const b = deck[pos++];
     document.getElementById('bookingNotifName').textContent = b.name;
     document.getElementById('bookingNotifMsg').textContent = b.msg;
     notif.classList.add('show');
     setTimeout(() => notif.classList.remove('show'), 2500);
-    idx++;
   }
 
-  // First show after 20 seconds, then every 35 seconds
+  // First show after 20 s, then every 35 s
   setTimeout(() => {
     showNotif();
     setInterval(showNotif, 35000);
