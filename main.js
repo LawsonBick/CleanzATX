@@ -445,7 +445,7 @@ if (qwiz) {
         state.stories = parseInt(stories) || 0;
         state.lastCleaned = lastCleaned;
         if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
-        if (sqft >= 3700) return false; // Blocked by threshold
+        // 3700+ sqft: warn but allow through — will show custom quote path at Step 5
         if (!stories) { flashError('q-stories'); return false; }
         if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
       }
@@ -523,9 +523,12 @@ if (qwiz) {
     else if (state.plan === 'monthly') discount = 150;
 
     const subtotal = exterior + interior + screens + tracks + frenchPanes;
-    const total = Math.max(0, subtotal - discount - state.promoDiscount);
+    const rawTotal = Math.max(0, subtotal - discount - state.promoDiscount);
+    const MINIMUM = 100;
+    const total = rawTotal > 0 ? Math.max(MINIMUM, rawTotal) : 0;
+    const hitMinimum = rawTotal > 0 && rawTotal < MINIMUM;
 
-    return { exterior, interior, screens, tracks, frenchPanes, discount, subtotal, total, tracksFree, planName: state.plan };
+    return { exterior, interior, screens, tracks, frenchPanes, discount, subtotal, total, rawTotal, hitMinimum, tracksFree, planName: state.plan };
   }
 
   // Job duration estimate
@@ -583,6 +586,10 @@ if (qwiz) {
     }
     // Flat price — no range
     document.getElementById('q-price-total').textContent = '$' + Math.round(p.total);
+
+    // Minimum job notice
+    const minNotice = document.getElementById('q-minimum-notice');
+    if (minNotice) minNotice.style.display = p.hitMinimum ? '' : 'none';
   }
 
   // Wire up Next/Back buttons
@@ -623,7 +630,7 @@ if (qwiz) {
     const nextBtn = document.getElementById('step1Next');
     if (advisory) advisory.style.display = (val >= 3500 && val < 3700) ? '' : 'none';
     if (blocked) blocked.style.display = (val >= 3700) ? '' : 'none';
-    if (nextBtn) nextBtn.disabled = (val >= 3700);
+    if (nextBtn) nextBtn.disabled = false; // 3700+ sqft users can proceed to get custom quote
   });
 
   // Service checkboxes (residential)
@@ -923,7 +930,18 @@ if (qwiz) {
     const confirmPanel = qwiz.querySelector('[data-panel="confirm"]');
     confirmPanel.style.display = '';
     confirmPanel.classList.add('active');
-    document.getElementById('q-confirm-msg').textContent = `Thanks! We'll be in touch with your quote shortly.`;
+
+    const confirmTextEl = document.getElementById('q-confirm-text');
+    const confirmTextBtn = document.getElementById('q-confirm-text-now');
+    if (isLarge) {
+      document.getElementById('q-confirm-msg').textContent = `Got it! We'll reach out with your custom quote shortly.`;
+      if (confirmTextEl) confirmTextEl.textContent = `Your home is over 3,700 sqft so we'll review the details and contact you with a price as fast as possible. Don't want to wait?`;
+      if (confirmTextBtn) confirmTextBtn.style.display = '';
+    } else {
+      document.getElementById('q-confirm-msg').textContent = `Thanks! We'll be in touch with your quote shortly.`;
+      if (confirmTextEl) confirmTextEl.textContent = `Keep an eye on your phone and email. We'll have a formal quote sent over to you within the hour. We look forward to working with you!`;
+      if (confirmTextBtn) confirmTextBtn.style.display = 'none';
+    }
 
     // Hide progress
     qwiz.querySelector('.qwiz__progress').style.display = 'none';

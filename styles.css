@@ -2584,6 +2584,22 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   pointer-events: none;
 }
 
+/* ---------- Minimum charge notice ---------- */
+.qwiz__minimum-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(251,191,36,.12);
+  border: 1px solid rgba(251,191,36,.35);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #fbbf24;
+}
+.qwiz__minimum-notice svg { flex-shrink: 0; margin-top: 1px; }
+
 /* ---------- Expanded Plan Card Layout ---------- */
 .qwiz__plan-header {
   display: flex;
