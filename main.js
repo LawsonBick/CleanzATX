@@ -110,82 +110,70 @@ const counterObserver = new IntersectionObserver(
 );
 document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 
-/* ---------- Reviews carousel (mobile) ---------- */
-const track = document.getElementById('reviewsTrack');
-const dotsContainer = document.getElementById('reviewDots');
-const prevBtn = document.getElementById('reviewPrev');
-const nextBtn = document.getElementById('reviewNext');
+/* ---------- Reviews carousel (swipeable scroll-snap) ---------- */
+(function() {
+  const track    = document.getElementById('reviewsTrack');
+  const prevBtn  = document.getElementById('reviewPrev');
+  const nextBtn  = document.getElementById('reviewNext');
+  const fill     = document.getElementById('reviewProgressFill');
+  const counter  = document.getElementById('reviewCounter');
+  if (!track) return;
 
-let currentPage = 0;
-let perPage = 3;
+  const cards = Array.from(track.querySelectorAll('.review-card'));
+  const total = cards.length;
+  let current = 0;
 
-function getPerPage() {
-  if (window.innerWidth <= 640) return 1;
-  if (window.innerWidth <= 900) return 2;
-  return 3;
-}
+  function isCarouselActive() { return window.innerWidth < 960; }
 
-function buildDots(total) {
-  dotsContainer.innerHTML = '';
-  for (let i = 0; i < total; i++) {
-    const dot = document.createElement('button');
-    dot.className = 'rnav-dot' + (i === currentPage ? ' active' : '');
-    dot.setAttribute('aria-label', `Page ${i + 1}`);
-    dot.addEventListener('click', () => goToPage(i));
-    dotsContainer.appendChild(dot);
-  }
-}
-
-function goToPage(page) {
-  const cards = track.querySelectorAll('.review-card');
-  perPage = getPerPage();
-  const totalPages = Math.ceil(cards.length / perPage);
-  currentPage = Math.max(0, Math.min(page, totalPages - 1));
-
-  cards.forEach((card, i) => {
-    const show = i >= currentPage * perPage && i < (currentPage + 1) * perPage;
-    card.style.display = show ? 'flex' : 'none';
-  });
-
-  // Update dots
-  dotsContainer.querySelectorAll('.rnav-dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === currentPage);
-  });
-
-  prevBtn.disabled = currentPage === 0;
-  nextBtn.disabled = currentPage >= totalPages - 1;
-}
-
-function initCarousel() {
-  const cards = track.querySelectorAll('.review-card');
-  perPage = getPerPage();
-  const totalPages = Math.ceil(cards.length / perPage);
-
-  // Show all on desktop (no carousel)
-  if (perPage >= cards.length) {
-    cards.forEach(c => c.style.display = 'flex');
-    dotsContainer.innerHTML = '';
-    prevBtn.style.display = 'none';
-    nextBtn.style.display = 'none';
-    return;
+  function updateUI(idx) {
+    current = Math.max(0, Math.min(idx, total - 1));
+    if (counter) counter.textContent = `${current + 1} / ${total}`;
+    if (fill)    fill.style.width = `${((current + 1) / total) * 100}%`;
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.disabled = current === total - 1;
   }
 
-  prevBtn.style.display = '';
-  nextBtn.style.display = '';
-  buildDots(totalPages);
-  goToPage(0);
-}
+  function scrollToCard(idx) {
+    idx = Math.max(0, Math.min(idx, total - 1));
+    const card = cards[idx];
+    // Center card inside the scroll container
+    const trackCenter = track.offsetWidth / 2;
+    const cardCenter  = card.offsetLeft + card.offsetWidth / 2;
+    track.scrollTo({ left: cardCenter - trackCenter, behavior: 'smooth' });
+    updateUI(idx);
+  }
 
-if (track) {
-  prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-  nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-
-  initCarousel();
-  window.addEventListener('resize', () => {
-    currentPage = 0;
-    initCarousel();
+  // Debounced scroll listener: detect which card is centered
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      if (!isCarouselActive()) return;
+      const mid = track.scrollLeft + track.offsetWidth / 2;
+      let closest = 0, minDist = Infinity;
+      cards.forEach((c, i) => {
+        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      updateUI(closest);
+    }, 80);
   });
-}
+
+  prevBtn?.addEventListener('click', () => scrollToCard(current - 1));
+  nextBtn?.addEventListener('click', () => scrollToCard(current + 1));
+
+  // Init
+  function init() {
+    // Reset any inline display overrides from old paginator
+    cards.forEach(c => { c.style.display = ''; });
+    if (!isCarouselActive()) return; // desktop: grid, no nav needed
+    track.scrollLeft = 0;
+    updateUI(0);
+  }
+
+  requestAnimationFrame(() => requestAnimationFrame(init));
+  window.addEventListener('resize', () => setTimeout(init, 150));
+})();
 
 /* ---------- Smooth anchor scrolling with offset ---------- */
 document.querySelectorAll('a[href^="#"]').forEach(a => {

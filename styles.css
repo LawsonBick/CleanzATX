@@ -1100,6 +1100,28 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   margin-bottom: 40px;
 }
 
+/* Swipeable on tablet/mobile */
+@media (max-width: 960px) {
+  .reviews__track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 16px;
+    padding: 8px 24px 20px;
+    margin: 0 -20px 8px;
+    grid-template-columns: unset;
+  }
+  .reviews__track::-webkit-scrollbar { display: none; }
+  .reviews__track .review-card {
+    scroll-snap-align: center;
+    flex-shrink: 0;
+    width: min(82vw, 360px);
+  }
+}
+
 .review-card {
   background: rgba(255,255,255,.05);
   border: 1px solid rgba(255,255,255,.07);
@@ -1164,13 +1186,17 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 }
 
 .reviews__nav {
-  display: flex;
+  display: none; /* hidden on desktop — all cards visible in grid */
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
+  margin-top: 8px;
+}
+@media (max-width: 960px) {
+  .reviews__nav { display: flex; }
 }
 .rnav-btn {
-  width: 40px; height: 40px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   background: rgba(255,255,255,.07);
   border: 1px solid rgba(255,255,255,.12);
@@ -1180,17 +1206,40 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   justify-content: center;
   cursor: pointer;
   transition: all .2s;
+  flex-shrink: 0;
 }
 .rnav-btn:hover { background: rgba(255,255,255,.15); color: var(--white); }
-.rnav-dots { display: flex; gap: 7px; }
-.rnav-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.2);
-  cursor: pointer;
-  transition: all .2s;
+.rnav-btn:disabled { opacity: .35; cursor: default; }
+
+/* Progress bar + counter (replaces 20 dots) */
+.rnav-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  max-width: 200px;
 }
-.rnav-dot.active { background: var(--sky); width: 22px; border-radius: 4px; }
+.rnav-progress {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rnav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky), #38bdf8);
+  border-radius: 2px;
+  transition: width .35s ease;
+  width: 5%; /* will be set by JS */
+}
+.rnav-counter {
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  font-weight: 500;
+  letter-spacing: .5px;
+}
 
 /* ============================================================
    ABOUT / MEET THE OWNER
@@ -1708,8 +1757,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .proof-grid { display: contents; }
   .proof-quote { grid-column: 1/-1; }
 
-  .reviews__track { grid-template-columns: 1fr 1fr; }
-  .reviews__track .review-card:last-child { display: none; }
+  /* reviews__track is now flex scroll-snap at ≤960px — no grid override needed */
 
   .areas__inner { grid-template-columns: 1fr; gap: 40px; }
 
@@ -1730,8 +1778,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .services__grid { grid-template-columns: 1fr; }
   .services__grid .svc-card:last-child { max-width: none; grid-column: auto; }
 
-  .reviews__track { grid-template-columns: 1fr; }
-  .reviews__track .review-card:last-child { display: flex; }
+  /* reviews__track — scroll-snap handled in dedicated block above */
 
   .areas__grid { grid-template-columns: 1fr 1fr; }
 
@@ -3534,12 +3581,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .qwiz__plans { grid-template-columns: 1fr; }
   /* Quote Mode Toggle: full-width stacked */
   /* ── Reviews ─────────────────────────────────────── */
-  .reviews__track {
-    grid-template-columns: 1fr;
-  }
-  .review-card {
-    width: 100%;
-  }
+  /* scroll-snap handled in ≤960px block above */
   .rc-header {
     display: flex;
     align-items: center;
