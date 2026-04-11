@@ -1037,62 +1037,79 @@
         </div>
       </div>
 
-      <!-- Plan cards -->
-      <div class="plans-grid">
+      <!-- Plan cards carousel -->
+      <div class="plans-carousel-wrap">
+        <!-- Prev / Next arrows -->
+        <button class="plans-carousel-arrow plans-carousel-arrow--prev" id="plansPrev" aria-label="Previous plan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="plans-carousel-arrow plans-carousel-arrow--next" id="plansNext" aria-label="Next plan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
 
-        <div class="plan-card">
-          <div class="plan-card__accent plan-card__accent--blue"></div>
-          <div class="plan-card__header">
-            <h3>Bi-Annual Plan</h3>
-            <div class="plan-card__price"><span class="plan-card__price-num">$50</span><span class="plan-card__price-label">off each visit</span></div>
+        <div class="plans-grid" id="plansCarousel">
+
+          <div class="plan-card">
+            <div class="plan-card__accent plan-card__accent--blue"></div>
+            <div class="plan-card__header">
+              <h3>Bi-Annual Plan</h3>
+              <div class="plan-card__price"><span class="plan-card__price-num">$50</span><span class="plan-card__price-label">off each visit</span></div>
+            </div>
+            <ul class="plan-card__features">
+              <li>2 visits per year</li>
+              <li>Auto-scheduling</li>
+              <li>Triple reminders</li>
+              <li>7-day rain guarantee</li>
+              <li>Optional auto-billing</li>
+            </ul>
+            <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="6month">Get Started</a>
           </div>
-          <ul class="plan-card__features">
-            <li>2 visits per year</li>
-            <li>Auto-scheduling</li>
-            <li>Triple reminders</li>
-            <li>7-day rain guarantee</li>
-            <li>Optional auto-billing</li>
-          </ul>
-          <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="6month">Get Started</a>
+
+          <div class="plan-card plan-card--featured">
+            <div class="plan-card__accent plan-card__accent--sky"></div>
+            <div class="plan-card__badge">Most Popular</div>
+            <div class="plan-card__header">
+              <h3>Quarterly Plan</h3>
+              <div class="plan-card__price"><span class="plan-card__price-num">$100</span><span class="plan-card__price-label">off each visit</span></div>
+            </div>
+            <ul class="plan-card__features">
+              <li>4 visits per year</li>
+              <li>Auto-scheduling</li>
+              <li>Triple reminders</li>
+              <li>Priority scheduling</li>
+              <li>5 hard water windows free</li>
+              <li>Free track dusting</li>
+              <li>7-day rain guarantee</li>
+              <li>Optional auto-billing</li>
+            </ul>
+            <a href="#quoteWizard" class="btn btn--primary btn--full plan-card__cta" data-plan="quarterly">Get Started</a>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card__accent plan-card__accent--purple"></div>
+            <div class="plan-card__header">
+              <h3>Monthly Plan</h3>
+              <div class="plan-card__price"><span class="plan-card__price-num">$150</span><span class="plan-card__price-label">off each visit</span></div>
+            </div>
+            <ul class="plan-card__features">
+              <li>12 visits per year</li>
+              <li>All quarterly perks</li>
+              <li>Maximum savings</li>
+              <li>Auto-scheduling</li>
+              <li>Triple reminders</li>
+              <li>Optional auto-billing</li>
+            </ul>
+            <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="monthly">Get Started</a>
+          </div>
+
         </div>
 
-        <div class="plan-card plan-card--featured">
-          <div class="plan-card__accent plan-card__accent--sky"></div>
-          <div class="plan-card__badge">Most Popular</div>
-          <div class="plan-card__header">
-            <h3>Quarterly Plan</h3>
-            <div class="plan-card__price"><span class="plan-card__price-num">$100</span><span class="plan-card__price-label">off each visit</span></div>
-          </div>
-          <ul class="plan-card__features">
-            <li>4 visits per year</li>
-            <li>Auto-scheduling</li>
-            <li>Triple reminders</li>
-            <li>Priority scheduling</li>
-            <li>5 hard water windows free</li>
-            <li>Free track dusting</li>
-            <li>7-day rain guarantee</li>
-            <li>Optional auto-billing</li>
-          </ul>
-          <a href="#quoteWizard" class="btn btn--primary btn--full plan-card__cta" data-plan="quarterly">Get Started</a>
+        <!-- Dot indicators -->
+        <div class="plans-carousel-dots" id="plansDots">
+          <button class="plans-dot" data-idx="0" aria-label="Bi-Annual Plan"></button>
+          <button class="plans-dot" data-idx="1" aria-label="Quarterly Plan"></button>
+          <button class="plans-dot" data-idx="2" aria-label="Monthly Plan"></button>
         </div>
-
-        <div class="plan-card">
-          <div class="plan-card__accent plan-card__accent--purple"></div>
-          <div class="plan-card__header">
-            <h3>Monthly Plan</h3>
-            <div class="plan-card__price"><span class="plan-card__price-num">$150</span><span class="plan-card__price-label">off each visit</span></div>
-          </div>
-          <ul class="plan-card__features">
-            <li>12 visits per year</li>
-            <li>All quarterly perks</li>
-            <li>Maximum savings</li>
-            <li>Auto-scheduling</li>
-            <li>Triple reminders</li>
-            <li>Optional auto-billing</li>
-          </ul>
-          <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="monthly">Get Started</a>
-        </div>
-
       </div>
     </div>
   </section>

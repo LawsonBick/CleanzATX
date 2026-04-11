@@ -1429,6 +1429,80 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   // sq-address removed (Simple Request deleted)
 })();
 
+/* ---------- Plans carousel ---------- */
+(function() {
+  const carousel = document.getElementById('plansCarousel');
+  const dotsWrap = document.getElementById('plansDots');
+  const prevBtn  = document.getElementById('plansPrev');
+  const nextBtn  = document.getElementById('plansNext');
+  if (!carousel) return;
+
+  const cards = Array.from(carousel.querySelectorAll('.plan-card'));
+  const dots  = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.plans-dot')) : [];
+  let currentIdx = 1; // start on the featured Quarterly card
+
+  function isCarouselActive() {
+    return getComputedStyle(carousel).display === 'flex';
+  }
+
+  function scrollToCard(idx) {
+    if (idx < 0 || idx >= cards.length) return;
+    currentIdx = idx;
+    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    updateDots();
+    updateArrows();
+  }
+
+  function updateDots() {
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+  }
+
+  function updateArrows() {
+    prevBtn?.classList.toggle('hidden', currentIdx === 0);
+    nextBtn?.classList.toggle('hidden', currentIdx === cards.length - 1);
+  }
+
+  // Sync active dot while user swipes
+  let scrollTimer;
+  carousel.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      if (!isCarouselActive()) return;
+      let closest = 0;
+      let minDist = Infinity;
+      cards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        const carRect = carousel.getBoundingClientRect();
+        const dist = Math.abs(rect.left + rect.width / 2 - (carRect.left + carRect.width / 2));
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      currentIdx = closest;
+      updateDots();
+      updateArrows();
+    }, 80);
+  });
+
+  // Dot clicks
+  dots.forEach((dot, i) => dot.addEventListener('click', () => scrollToCard(i)));
+
+  // Arrow clicks
+  prevBtn?.addEventListener('click', () => scrollToCard(currentIdx - 1));
+  nextBtn?.addEventListener('click', () => scrollToCard(currentIdx + 1));
+
+  // On load and resize: snap to featured card (idx 1) if carousel is active
+  function initCarousel() {
+    if (!isCarouselActive()) { updateDots(); updateArrows(); return; }
+    updateDots();
+    updateArrows();
+    // Scroll to featured card without animation on init
+    cards[1]?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
+
+  // Small delay to let layout settle
+  setTimeout(initCarousel, 100);
+  window.addEventListener('resize', () => setTimeout(initCarousel, 150));
+})();
+
 /* ---------- Plan card → auto-select in quote wizard ---------- */
 (function() {
   // Marketing plan card "Get Started" buttons store the chosen plan
