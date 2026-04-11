@@ -1251,11 +1251,11 @@ if (origSubmitBtn) {
   document.getElementById('exitPopupCTA')?.addEventListener('click', () => {
     localStorage.setItem('cleanzatx_promo', JSON.stringify({ code: 'CLEAN25', discount: 25, source: 'exit_popup' }));
     popup.classList.remove('active');
-    const quoteSection = document.getElementById('quote');
-    if (quoteSection) {
-      const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-      const top = quoteSection.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: 'smooth' });
+    // Scroll so the urgency bar sits flush below the nav — same position as post-submit
+    const qwiz = document.getElementById('quoteWizard');
+    if (qwiz) {
+      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      window.scrollTo({ top: qwiz.getBoundingClientRect().top + window.scrollY - navH, behavior: 'smooth' });
     }
   });
 })();
