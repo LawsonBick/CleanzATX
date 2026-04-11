@@ -647,8 +647,20 @@
 
   <script>
     /* ===== NAV burger ===== */
-    document.getElementById('burger').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.toggle('open');
+    const burgerBtn = document.getElementById('burger');
+    const mobileMenuEl = document.getElementById('mobileMenu');
+    burgerBtn.addEventListener('click', () => {
+      const open = mobileMenuEl.classList.toggle('open');
+      burgerBtn.classList.toggle('open', open);
+      burgerBtn.setAttribute('aria-expanded', open);
+    });
+    // Close on nav link click
+    mobileMenuEl.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenuEl.classList.remove('open');
+        burgerBtn.classList.remove('open');
+        burgerBtn.setAttribute('aria-expanded', 'false');
+      });
     });
 
     /* ===== Filter logic ===== */

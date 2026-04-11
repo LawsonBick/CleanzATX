@@ -2722,6 +2722,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   overflow: hidden;
   cursor: ew-resize;
   user-select: none;
+  touch-action: none;
   aspect-ratio: 16/9;
   max-height: 400px;
 }
@@ -2741,6 +2742,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   background: #fff;
   transform: translateX(-50%);
   cursor: ew-resize;
+  touch-action: none;
   display: flex;
   align-items: center;
   justify-content: center;

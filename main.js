@@ -136,16 +136,10 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
   function scrollToCard(idx) {
     idx = Math.max(0, Math.min(idx, total - 1));
     const card = cards[idx];
-    // First card: snap to left edge (padding handles visual alignment)
-    // Other cards: center in the track
-    let left;
-    if (idx === 0) {
-      left = 0;
-    } else {
-      const trackCenter = track.offsetWidth / 2;
-      const cardCenter  = card.offsetLeft + card.offsetWidth / 2;
-      left = cardCenter - trackCenter;
-    }
+    // Center every card in the track viewport
+    const trackCenter = track.offsetWidth / 2;
+    const cardCenter  = card.offsetLeft + card.offsetWidth / 2;
+    const left = Math.max(0, cardCenter - trackCenter);
     track.scrollTo({ left, behavior: 'smooth' });
     updateUI(idx);
   }
@@ -202,8 +196,7 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
     // Reset any inline display overrides from old paginator
     cards.forEach(c => { c.style.display = ''; });
     if (!isCarouselActive()) return; // desktop: grid, no nav needed
-    track.scrollLeft = 0;
-    updateUI(0);
+    scrollToCard(0);
   }
 
   requestAnimationFrame(() => requestAnimationFrame(init));
@@ -468,7 +461,7 @@ if (qwiz) {
         const stored = localStorage.getItem('cleanzatx_promo');
         if (stored) {
           const promo = JSON.parse(stored);
-          if (promo && promo.code === 'SAVE25' && state.promoDiscount === 0) {
+          if (promo && (promo.code === 'SAVE25' || promo.code === 'CLEAN25') && state.promoDiscount === 0) {
             const promoInput = document.getElementById('q-promo');
             if (promoInput) {
               promoInput.value = promo.code;
@@ -500,8 +493,8 @@ if (qwiz) {
     const msgEl = document.getElementById('q-promo-msg');
     const applyBtn = document.getElementById('q-promo-apply');
     if (!msgEl) return;
-    if (code === 'SAVE25') {
-      state.promoCode = 'SAVE25';
+    if (code === 'SAVE25' || code === 'CLEAN25') {
+      state.promoCode = code;
       state.promoDiscount = 25;
       msgEl.style.display = '';
       msgEl.style.color = '#22c55e';
@@ -1256,7 +1249,7 @@ if (origSubmitBtn) {
   popup.addEventListener('click', (e) => { if (e.target === popup) popup.classList.remove('active'); });
 
   document.getElementById('exitPopupCTA')?.addEventListener('click', () => {
-    localStorage.setItem('cleanzatx_promo', JSON.stringify({ code: 'SAVE25', discount: 25, source: 'exit_popup' }));
+    localStorage.setItem('cleanzatx_promo', JSON.stringify({ code: 'CLEAN25', discount: 25, source: 'exit_popup' }));
     popup.classList.remove('active');
     const quoteSection = document.getElementById('quote');
     if (quoteSection) {
@@ -1344,6 +1337,12 @@ if (origSubmitBtn) {
     clearTimeout(dismissTimer);
     dismissTimer = setTimeout(dismiss, 4000);
   }
+
+  // Close button
+  document.getElementById('bookingNotifClose')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dismiss();
+  });
 
   // Tap or swipe left to dismiss early
   notif.addEventListener('click', dismiss);
@@ -1486,13 +1485,20 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     const input = document.getElementById(inputId);
     if (!input) return;
 
-    // Create dropdown
+    // Create dropdown — use position:fixed so it escapes any overflow:hidden ancestors
     const wrap = input.parentElement;
-    wrap.style.position = 'relative';
     const dropdown = document.createElement('ul');
     dropdown.className = 'addr-dropdown';
-    dropdown.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;list-style:none;margin:0;padding:4px 0;background:#0f2440;border:1px solid rgba(14,165,233,.3);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto;';
-    wrap.appendChild(dropdown);
+    dropdown.style.cssText = 'display:none;position:fixed;z-index:9999;list-style:none;margin:0;padding:4px 0;background:#0f2440;border:1px solid rgba(14,165,233,.3);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto;';
+    document.body.appendChild(dropdown);
+
+    // Position the dropdown below the input
+    function positionDropdown() {
+      const rect = input.getBoundingClientRect();
+      dropdown.style.top  = (rect.bottom + 4) + 'px';
+      dropdown.style.left = rect.left + 'px';
+      dropdown.style.width = rect.width + 'px';
+    }
 
     let debounceTimer;
     let currentResults = [];
@@ -1519,6 +1525,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
         });
         dropdown.appendChild(li);
       });
+      positionDropdown();
       dropdown.style.display = 'block';
     }
 
@@ -1559,8 +1566,12 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     });
 
     document.addEventListener('click', e => {
-      if (!wrap.contains(e.target)) closeDropdown();
+      if (!wrap.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
     });
+
+    // Reposition on scroll/resize
+    window.addEventListener('scroll', positionDropdown, { passive: true });
+    window.addEventListener('resize', positionDropdown, { passive: true });
   }
 
   initAddressAutofill('q-address');
@@ -1719,14 +1730,28 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     }
   });
 
-  // Arrow buttons
+  // Arrow buttons — animate through clone on wrap for seamless infinite loop
   prevBtn?.addEventListener('click', () => {
-    const next = (currentIdx - 1 + N) % N;
-    slideTo(next);
+    if (currentIdx === 0) {
+      // Animate backward through clone-of-last, then jump to real last
+      jumping = true;
+      carousel.scrollTo({ left: 0, behavior: 'smooth' });
+      currentIdx = N - 1; updateDots();
+      setTimeout(() => { jumpToReal(N - 1); jumping = false; }, 420);
+    } else {
+      slideTo(currentIdx - 1);
+    }
   });
   nextBtn?.addEventListener('click', () => {
-    const next = (currentIdx + 1) % N;
-    slideTo(next);
+    if (currentIdx === N - 1) {
+      // Animate forward through clone-of-first, then jump to real first
+      jumping = true;
+      carousel.scrollTo({ left: (N + 1) * cardWidth(), behavior: 'smooth' });
+      currentIdx = 0; updateDots();
+      setTimeout(() => { jumpToReal(0); jumping = false; }, 420);
+    } else {
+      slideTo(currentIdx + 1);
+    }
   });
 
   // Dot clicks
