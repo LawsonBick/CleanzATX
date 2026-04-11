@@ -3200,7 +3200,11 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 .why-compare-right { }
 @media(max-width:900px) {
-  .why-compare-grid { grid-template-columns: 1fr; gap: 40px; }
+  .why-compare-grid { grid-template-columns: 1fr; gap: 32px; }
+  /* Hide feature list on tablet/mobile — compare table takes full width */
+  .why-features { display: none; }
+  .compare-table--desktop { display: none; }
+  .compare-mobile { display: block; }
 }
 
 /* ============================================================
@@ -3658,12 +3662,41 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   /* ── Why Us + Comparison ─────────────────────────── */
   .why-compare-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 0;
   }
-  /* Comparison: hide desktop table, show mobile list */
+  /* Mobile: hide feature list, show compare table full-width */
+  .why-features { display: none; }
   .compare-table--desktop { display: none; }
-  .compare-mobile { display: block; }
+  .compare-mobile {
+    display: block;
+    border-radius: 14px;
+  }
   .why-compare-right { overflow: visible; }
+
+  /* Full-width compare table: bump padding and font sizes */
+  .compare-mobile__header {
+    padding: 12px 16px;
+  }
+  .compare-mobile__col-label {
+    font-size: 13px;
+    min-width: 110px;
+    padding: 0 8px;
+    letter-spacing: .3px;
+  }
+  .compare-mobile__row {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .compare-mobile__feature {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .cmb {
+    font-size: 12px;
+    padding: 5px 12px;
+    min-width: 96px;
+    border-radius: 20px;
+  }
 
   .feature-item {
     gap: 12px;
