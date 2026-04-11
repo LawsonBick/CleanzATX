@@ -286,6 +286,70 @@ if (qwiz) {
     });
   }
 
+  // Build chips where the last option ('Custom') morphs into an inline number input
+  function buildChipsWithCustom(container, options, stateKey) {
+    container.innerHTML = '';
+    const numerics = options.filter(v => v !== 'Custom');
+    const hasCustom = options.includes('Custom');
+
+    function deactivateAll() {
+      container.querySelectorAll('.qwiz__chip').forEach(c => c.classList.remove('active'));
+    }
+
+    numerics.forEach(val => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'qwiz__chip' + (state[stateKey] === val ? ' active' : '');
+      chip.textContent = val;
+      chip.addEventListener('click', () => {
+        state[stateKey] = val;
+        deactivateAll();
+        chip.classList.add('active');
+        // If there was an active inline input, restore Custom chip
+        const existing = container.querySelector('.qwiz__chip--custom-input');
+        if (existing) {
+          existing.replaceWith(makeCustomChip());
+        }
+      });
+      container.appendChild(chip);
+    });
+
+    function makeCustomChip() {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'qwiz__chip qwiz__chip--custom';
+      chip.textContent = 'Custom';
+      chip.addEventListener('click', () => {
+        // Morph chip into inline input
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '1';
+        input.placeholder = '#';
+        input.className = 'qwiz__chip qwiz__chip--custom-input active';
+        input.style.cssText = 'width:72px;text-align:center;-moz-appearance:textfield;';
+        deactivateAll();
+        chip.replaceWith(input);
+        input.focus();
+        input.addEventListener('input', () => {
+          state[stateKey] = parseInt(input.value) || 0;
+        });
+        // On blur: if empty restore chip, else keep showing the value
+        input.addEventListener('blur', () => {
+          if (!input.value || parseInt(input.value) < 1) {
+            input.replaceWith(makeCustomChip());
+            state[stateKey] = 0;
+          }
+        });
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') input.blur();
+        });
+      });
+      return chip;
+    }
+
+    if (hasCustom) container.appendChild(makeCustomChip());
+  }
+
   // Navigate steps
   function goToStep(step) {
     state.step = step;
@@ -372,41 +436,10 @@ if (qwiz) {
         customInput?.addEventListener('input', () => { state.windowCount = parseInt(customInput.value) || 0; });
 
         // Build screen/track chips based on window count
+        // Custom chip morphs inline into a number input when tapped
         const stOpts = getScreenTrackOptions(state.windowCount || 15);
-        buildChips(document.getElementById('q-screen-chips'), stOpts, 'screenCount');
-        buildChips(document.getElementById('q-track-chips'), stOpts, 'trackCount');
-
-        // Wire Custom chip for screens
-        const screenChipsEl = document.getElementById('q-screen-chips');
-        const screenCustomWrap = document.getElementById('q-screen-custom-wrap');
-        const screenCustomInput = document.getElementById('q-screen-custom');
-        screenChipsEl?.querySelectorAll('.qwiz__chip').forEach(chip => {
-          chip.addEventListener('click', () => {
-            if (chip.textContent === 'Custom') {
-              screenCustomWrap.style.display = '';
-              state.screenCount = parseInt(screenCustomInput?.value) || 0;
-            } else {
-              screenCustomWrap.style.display = 'none';
-            }
-          });
-        });
-        screenCustomInput?.addEventListener('input', () => { state.screenCount = parseInt(screenCustomInput.value) || 0; });
-
-        // Wire Custom chip for tracks
-        const trackChipsEl = document.getElementById('q-track-chips');
-        const trackCustomWrap = document.getElementById('q-track-custom-wrap');
-        const trackCustomInput = document.getElementById('q-track-custom');
-        trackChipsEl?.querySelectorAll('.qwiz__chip').forEach(chip => {
-          chip.addEventListener('click', () => {
-            if (chip.textContent === 'Custom') {
-              trackCustomWrap.style.display = '';
-              state.trackCount = parseInt(trackCustomInput?.value) || 0;
-            } else {
-              trackCustomWrap.style.display = 'none';
-            }
-          });
-        });
-        trackCustomInput?.addEventListener('input', () => { state.trackCount = parseInt(trackCustomInput.value) || 0; });
+        buildChipsWithCustom(document.getElementById('q-screen-chips'), stOpts, 'screenCount');
+        buildChipsWithCustom(document.getElementById('q-track-chips'), stOpts, 'trackCount');
       }
     }
 
@@ -1304,8 +1337,26 @@ if (origSubmitBtn) {
     dismissTimer = setTimeout(dismiss, 4000);
   }
 
-  // Tap anywhere on the notif to dismiss
-  notif.addEventListener('click', dismiss);
+  // Double-tap → soap bubble pop, then dismiss
+  function bubblePop() {
+    clearTimeout(dismissTimer);
+    notif.classList.remove('show');
+    notif.classList.add('pop');
+    notif.addEventListener('animationend', () => {
+      notif.classList.remove('pop');
+    }, { once: true });
+  }
+
+  let lastTap = 0;
+  notif.addEventListener('click', e => {
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      bubblePop();
+    } else {
+      dismiss();
+    }
+    lastTap = now;
+  });
 
   // Swipe left to dismiss
   let nTsX = 0;

@@ -1970,6 +1970,17 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   transition: all .2s;
 }
 .qwiz__chip:hover { border-color: rgba(255,255,255,.25); color: var(--white); }
+/* Inline custom-number input looks like a chip */
+input.qwiz__chip--custom-input {
+  outline: none;
+  font-family: var(--font);
+  font-size: 14px;
+  background: rgba(14,165,233,.12);
+  border-color: var(--sky);
+  color: var(--white);
+}
+input.qwiz__chip--custom-input::-webkit-inner-spin-button,
+input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .qwiz__chip.active {
   border-color: var(--sky);
   background: rgba(14,165,233,.12);
@@ -2527,6 +2538,18 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   transition: transform .35s cubic-bezier(.34,1.2,.64,1), opacity .35s ease;
 }
 .booking-notif.show { transform: translateX(0) translateY(0); opacity: 1; }
+
+/* Soap-bubble pop animation on double-tap */
+@keyframes bubble-pop {
+  0%   { transform: translateX(0) translateY(0) scale(1); opacity: 1; filter: blur(0); }
+  35%  { transform: translateX(0) translateY(-6px) scale(1.18); opacity: .9; filter: blur(0); }
+  60%  { transform: translateX(0) translateY(-8px) scale(1.28); opacity: .6; filter: blur(1px); }
+  100% { transform: translateX(0) translateY(-12px) scale(1.6); opacity: 0; filter: blur(6px); }
+}
+.booking-notif.pop {
+  animation: bubble-pop .42s cubic-bezier(.4,0,.2,1) forwards;
+  pointer-events: none;
+}
 .booking-notif__avatar { font-size: 20px; flex-shrink: 0; }
 .booking-notif__text { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
 .booking-notif__text strong { color: rgba(255,255,255,.9); font-size: 12.5px; }
