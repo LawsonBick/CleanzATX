@@ -1327,44 +1327,30 @@ if (origSubmitBtn) {
   let deck = shuffle(bookings);
   let pos = 0;
   let dismissTimer = null;
-  let isPopping = false;
 
-  // Pop + vanish (used for both tap-dismiss and auto-dismiss)
-  function bubblePop() {
-    if (isPopping) return;
-    isPopping = true;
+  function dismiss() {
     clearTimeout(dismissTimer);
     notif.classList.remove('show');
-    notif.classList.add('pop');
-    notif.addEventListener('animationend', () => {
-      notif.classList.remove('pop');
-      isPopping = false;
-    }, { once: true });
   }
 
   function showNotif() {
-    if (pos >= deck.length) return; // full deck shown — stop for this session
-    // Reset classes so the entry animation replays cleanly
-    notif.classList.remove('show', 'pop');
-    // Force reflow so the animation restarts
-    void notif.offsetWidth;
+    if (pos >= deck.length) return;
+    notif.classList.remove('show');
+    void notif.offsetWidth; // force reflow so slide-in replays
     const b = deck[pos++];
     document.getElementById('bookingNotifName').textContent = b.name;
     document.getElementById('bookingNotifMsg').textContent = b.msg;
     notif.classList.add('show');
-    // Auto-dismiss after 4 seconds via bubble pop
     clearTimeout(dismissTimer);
-    dismissTimer = setTimeout(bubblePop, 4000);
+    dismissTimer = setTimeout(dismiss, 4000);
   }
 
-  // Tap = bubble pop
-  notif.addEventListener('click', bubblePop);
-
-  // Swipe left to pop too
+  // Tap or swipe left to dismiss early
+  notif.addEventListener('click', dismiss);
   let nTsX = 0;
   notif.addEventListener('touchstart', e => { nTsX = e.touches[0].clientX; }, { passive: true });
   notif.addEventListener('touchend', e => {
-    if (e.changedTouches[0].clientX - nTsX < -40) bubblePop();
+    if (e.changedTouches[0].clientX - nTsX < -40) dismiss();
   });
 
   // First show after 60 s, then every 60 s
