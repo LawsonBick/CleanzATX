@@ -445,61 +445,72 @@
 
             <div class="qwiz__field">
               <label>Services</label>
-              <div class="qwiz__checks">
-                <label class="qwiz__check">
-                  <input type="checkbox" id="q-svc-exterior" />
-                  <span>Exterior Windows <em>($10/window)</em></span>
-                </label>
-                <label class="qwiz__check">
-                  <input type="checkbox" id="q-svc-interior" />
-                  <span>Interior Windows <em>($5/window)</em></span>
-                </label>
-                <label class="qwiz__check">
-                  <input type="checkbox" id="q-svc-screens" />
-                  <span>Screen Cleaning <em>($5/screen)</em></span>
-                </label>
-                <label class="qwiz__check">
-                  <input type="checkbox" id="q-svc-tracks" />
-                  <span>Track Cleaning <em>($5/track)</em></span>
-                </label>
-              </div>
-            </div>
+              <div class="qwiz__service-list">
 
-            <!-- French pane prompt (shown when any window service selected) -->
-            <div id="q-french-pane-prompt" class="qwiz__conditional" style="display:none">
-              <p style="color:rgba(255,255,255,.8);font-size:14px;margin-bottom:10px;">Does your home have French pane windows?</p>
-              <div style="display:flex;gap:10px;margin-bottom:10px">
-                <button type="button" class="btn btn--sky btn--sm" id="q-french-yes">Yes</button>
-                <button type="button" class="btn btn--ghost btn--sm" id="q-french-no">No</button>
-              </div>
-              <div id="q-french-count-wrap" class="qwiz__field" style="display:none">
-                <label for="q-french-count">How many French pane windows?</label>
-                <input type="number" id="q-french-count" placeholder="e.g. 8" min="1" max="200" />
-              </div>
-            </div>
-
-            <!-- Screen options (shown when screen cleaning checked) -->
-            <div class="qwiz__conditional" id="q-screen-options" style="display:none">
-              <div class="qwiz__row">
-                <div class="qwiz__field">
-                  <label>How many screens?</label>
-                  <div class="qwiz__chips" id="q-screen-chips"></div>
-                </div>
-                <div class="qwiz__field">
-                  <label>Screen Type</label>
-                  <div class="qwiz__checks">
-                    <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal Screens ($5 each)</span></label>
-                    <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar Screens ($10 each)</span></label>
+                <!-- Exterior Windows -->
+                <div class="qwiz__service-item">
+                  <label class="qwiz__check">
+                    <input type="checkbox" id="q-svc-exterior" />
+                    <span>Exterior Windows <em>($10/window)</em></span>
+                  </label>
+                  <div id="q-french-pane-prompt" class="qwiz__sub-prompt" style="display:none">
+                    <p class="qwiz__sub-prompt-q">Does your home have French pane windows?</p>
+                    <div class="qwiz__sub-prompt-btns">
+                      <button type="button" class="btn btn--sky btn--sm" id="q-french-yes">Yes</button>
+                      <button type="button" class="btn btn--ghost btn--sm" id="q-french-no">No</button>
+                    </div>
+                    <div id="q-french-count-wrap" class="qwiz__field" style="display:none">
+                      <label for="q-french-count">How many French pane windows?</label>
+                      <input type="number" id="q-french-count" placeholder="e.g. 8" min="1" max="200" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <!-- Track options (shown when track cleaning checked) -->
-            <div class="qwiz__conditional" id="q-track-options" style="display:none">
-              <div class="qwiz__field">
-                <label>How many tracks?</label>
-                <div class="qwiz__chips" id="q-track-chips"></div>
+                <!-- Interior Windows -->
+                <div class="qwiz__service-item">
+                  <label class="qwiz__check">
+                    <input type="checkbox" id="q-svc-interior" />
+                    <span>Interior Windows <em>($5/window)</em></span>
+                  </label>
+                </div>
+
+                <!-- Screen Cleaning -->
+                <div class="qwiz__service-item">
+                  <label class="qwiz__check">
+                    <input type="checkbox" id="q-svc-screens" />
+                    <span>Screen Cleaning <em>($5/screen)</em></span>
+                  </label>
+                  <div class="qwiz__sub-prompt" id="q-screen-options" style="display:none">
+                    <div class="qwiz__row">
+                      <div class="qwiz__field">
+                        <label>How many screens?</label>
+                        <div class="qwiz__chips" id="q-screen-chips"></div>
+                      </div>
+                      <div class="qwiz__field">
+                        <label>Screen Type</label>
+                        <div class="qwiz__checks">
+                          <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal ($5 each)</span></label>
+                          <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar ($10 each)</span></label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Track Cleaning -->
+                <div class="qwiz__service-item">
+                  <label class="qwiz__check">
+                    <input type="checkbox" id="q-svc-tracks" />
+                    <span>Track Cleaning <em>($5/track)</em></span>
+                  </label>
+                  <div class="qwiz__sub-prompt" id="q-track-options" style="display:none">
+                    <div class="qwiz__field">
+                      <label>How many tracks?</label>
+                      <div class="qwiz__chips" id="q-track-chips"></div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

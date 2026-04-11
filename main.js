@@ -639,27 +639,37 @@ if (qwiz) {
   });
 
   // Service checkboxes (residential)
-  function showFrenchPanePrompt() {
-    if (state._frenchPaneAsked) return;
-    const prompt = document.getElementById('q-french-pane-prompt');
-    if (prompt) prompt.style.display = '';
-  }
-
   document.getElementById('q-svc-exterior')?.addEventListener('change', e => {
     state.svcExterior = e.target.checked;
-    if (e.target.checked) showFrenchPanePrompt();
+    const prompt = document.getElementById('q-french-pane-prompt');
+    if (prompt) {
+      if (e.target.checked) {
+        prompt.style.display = '';
+      } else {
+        prompt.style.display = 'none';
+        // Reset french pane state when exterior unchecked
+        state.frenchPanes = false;
+        state.frenchPaneCount = 0;
+        state._frenchPaneAsked = false;
+        const countWrap = document.getElementById('q-french-count-wrap');
+        if (countWrap) countWrap.style.display = 'none';
+        const countInput = document.getElementById('q-french-count');
+        if (countInput) countInput.value = '';
+      }
+    }
   });
   document.getElementById('q-svc-interior')?.addEventListener('change', e => {
     state.svcInterior = e.target.checked;
-    if (e.target.checked) showFrenchPanePrompt();
   });
   document.getElementById('q-svc-screens')?.addEventListener('change', e => {
     state.svcScreens = e.target.checked;
-    document.getElementById('q-screen-options').style.display = e.target.checked ? 'block' : 'none';
+    const opts = document.getElementById('q-screen-options');
+    if (opts) opts.style.display = e.target.checked ? '' : 'none';
   });
   document.getElementById('q-svc-tracks')?.addEventListener('change', e => {
     state.svcTracks = e.target.checked;
-    document.getElementById('q-track-options').style.display = e.target.checked ? 'block' : 'none';
+    const opts = document.getElementById('q-track-options');
+    if (opts) opts.style.display = e.target.checked ? '' : 'none';
   });
 
   // French pane prompt handlers
