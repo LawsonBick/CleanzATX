@@ -311,61 +311,6 @@
         <p class="section__sub">Answer a few quick questions and get an instant quote. No waiting, no phone tag.</p>
       </div>
 
-      <div class="quote-mode-toggle">
-        <button class="qmt-btn qmt-btn--active" id="qmtInstant">
-          ⚡ Instant Price
-        </button>
-        <button class="qmt-btn" id="qmtSimple">
-          📋 Simple Request
-        </button>
-      </div>
-
-      <!-- Simple Quote Form (shown when Simple Request selected) -->
-      <div class="simple-quote" id="simpleQuote" style="display:none">
-        <div class="sq-field">
-          <label>Approximate Home Size</label>
-          <select id="sq-size">
-            <option value="">Select size...</option>
-            <option value="small">Small (under 2,000 sqft)</option>
-            <option value="medium">Medium (2,000–3,500 sqft)</option>
-            <option value="large">Large (3,500–5,000 sqft)</option>
-            <option value="xlarge">XL (5,000+ sqft)</option>
-          </select>
-        </div>
-        <div class="sq-estimate" id="sqEstimate" style="display:none">
-          <span class="sq-estimate__label">Estimated Price</span>
-          <span class="sq-estimate__price" id="sqPrice">$150 – $250</span>
-          <span class="sq-estimate__note">Exact quote sent within the hour</span>
-        </div>
-        <div class="sq-field">
-          <label>Your Name <span class="req">*</span></label>
-          <input type="text" id="sq-name" placeholder="Jane Smith" />
-        </div>
-        <div class="sq-field">
-          <label>Phone Number <span class="req">*</span></label>
-          <input type="tel" id="sq-phone" placeholder="(512) 000-0000" />
-        </div>
-        <div class="sq-field">
-          <label>Address or Neighborhood</label>
-          <input type="text" id="sq-address" placeholder="Lakeway, TX or 123 Main St" />
-        </div>
-        <div class="sq-sms-cta">
-          <a href="sms:5125180512?body=Hi Tyler, I'd like a quick quote for my home" class="btn btn--glass btn--lg sq-text-btn">
-            📱 Or text a photo of your home for a 5-minute quote
-          </a>
-        </div>
-        <button type="button" class="btn btn--primary btn--full btn--lg" id="sq-submit">
-          Send My Request →
-        </button>
-        <div class="sq-confirm" id="sqConfirm" style="display:none">
-          <div style="text-align:center;padding:32px 0">
-            <div style="font-size:48px">✅</div>
-            <h3 style="color:var(--white);margin:16px 0 8px">Got it! We'll reach out within the hour.</h3>
-            <p style="color:rgba(255,255,255,.6)">Keep an eye on your phone. Tyler will be in touch soon.</p>
-          </div>
-        </div>
-      </div>
-
       <div class="qwiz" id="quoteWizard">
         <!-- Urgency strip -->
         <div class="qwiz__urgency">
@@ -388,18 +333,79 @@
         <!-- Step 1: Property Info -->
         <div class="qwiz__panel active" data-panel="1">
           <h3 class="qwiz__panel-title">Property Information</h3>
+
+          <!-- Residential / Commercial toggle -->
+          <div class="qwiz__field">
+            <label>Property Type <span class="req">*</span></label>
+            <div class="qwiz__checks qwiz__checks--inline">
+              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-residential" value="Residential" checked /><span>Residential</span></label>
+              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-commercial" value="Commercial" /><span>Commercial</span></label>
+            </div>
+          </div>
+
           <div class="qwiz__field">
             <label for="q-address">Street Address <span class="req">*</span></label>
             <input type="text" id="q-address" placeholder="100 Lakeway Dr, Lakeway, TX 78734" required autocomplete="street-address" />
           </div>
-          <div class="qwiz__row">
-            <div class="qwiz__field">
-              <label for="q-sqft">Home Square Footage <span class="req">*</span></label>
-              <input type="number" id="q-sqft" placeholder="e.g. 2500" min="100" max="99999" required />
+
+          <!-- Residential-only fields -->
+          <div id="q-residential-fields">
+            <div class="qwiz__row">
+              <div class="qwiz__field">
+                <label for="q-sqft">Home Square Footage <span class="req">*</span></label>
+                <input type="number" id="q-sqft" placeholder="e.g. 2500" min="100" max="99999" required />
+                <!-- Sqft threshold messages -->
+                <div id="q-sqft-advisory" class="qwiz__advisory" style="display:none">
+                  <p>For homes this size, we recommend calling us for a custom quote.</p>
+                  <a href="tel:5125180512" class="btn btn--sky btn--sm" style="margin-top:8px">Call (512) 518-0512</a>
+                </div>
+                <div id="q-sqft-blocked" class="qwiz__blocked" style="display:none">
+                  <p>Properties over 3,700 sqft require a custom quote. Please call us to get started.</p>
+                  <a href="tel:5125180512" class="btn btn--primary btn--sm" style="margin-top:8px">Call (512) 518-0512</a>
+                </div>
+              </div>
+              <div class="qwiz__field">
+                <label for="q-stories">Number of Stories <span class="req">*</span></label>
+                <select id="q-stories" required>
+                  <option value="">Select...</option>
+                  <option value="1">1 Story</option>
+                  <option value="2">2 Stories</option>
+                  <option value="3">3+ Stories</option>
+                </select>
+              </div>
             </div>
             <div class="qwiz__field">
-              <label for="q-stories">Number of Stories <span class="req">*</span></label>
-              <select id="q-stories" required>
+              <label for="q-last-cleaned">When were your windows last cleaned? <span class="req">*</span></label>
+              <select id="q-last-cleaned" required>
+                <option value="">Select...</option>
+                <option value="0-1 year ago">0-1 year ago</option>
+                <option value="2 years ago">2 years ago</option>
+                <option value="3 years ago">3 years ago</option>
+                <option value="4 years ago">4 years ago</option>
+                <option value="5+ years ago">5+ years ago</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Commercial-only fields (hidden by default) -->
+          <div id="q-commercial-fields" style="display:none">
+            <div class="qwiz__field">
+              <label for="q-commercial-type">Property Type <span class="req">*</span></label>
+              <select id="q-commercial-type">
+                <option value="">Select...</option>
+                <option value="Storefront">Storefront</option>
+                <option value="Stand-alone">Stand-alone</option>
+                <option value="High Rise">High Rise</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="qwiz__field" id="q-commercial-desc-field" style="display:none">
+              <label for="q-commercial-desc">Please describe your property type</label>
+              <input type="text" id="q-commercial-desc" placeholder="e.g. 3-story office building" />
+            </div>
+            <div class="qwiz__field">
+              <label for="q-commercial-stories">Number of Stories <span class="req">*</span></label>
+              <select id="q-commercial-stories">
                 <option value="">Select...</option>
                 <option value="1">1 Story</option>
                 <option value="2">2 Stories</option>
@@ -407,20 +413,10 @@
               </select>
             </div>
           </div>
-          <div class="qwiz__field">
-            <label for="q-last-cleaned">When were your windows last cleaned? <span class="req">*</span></label>
-            <select id="q-last-cleaned" required>
-              <option value="">Select...</option>
-              <option value="0–1 year ago">0–1 year ago</option>
-              <option value="2 years ago">2 years ago</option>
-              <option value="3 years ago">3 years ago</option>
-              <option value="4 years ago">4 years ago</option>
-              <option value="5+ years ago">5+ years ago</option>
-            </select>
-          </div>
+
           <div class="qwiz__actions">
             <span></span>
-            <button type="button" class="btn btn--primary qwiz__next" data-next="2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button type="button" class="btn btn--primary qwiz__next" data-next="2" id="step1Next">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
 
@@ -428,66 +424,102 @@
         <div class="qwiz__panel" data-panel="2">
           <h3 class="qwiz__panel-title">Window &amp; Service Selection</h3>
 
-          <div class="qwiz__field">
-            <label>Property Type <span class="req">*</span></label>
-            <div class="qwiz__checks qwiz__checks--inline" style="margin-top:22px; margin-bottom:6px;">
-              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-residential" value="Residential" checked /><span style="margin-left:6px;">Residential</span></label>
-              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-commercial" value="Commercial" /><span style="margin-left:6px;">Commercial</span></label>
-            </div>
-          </div>
-
-          <div class="qwiz__field">
-            <label>How many windows does your home have? <span class="req">*</span></label>
-            <div class="qwiz__chips" id="q-window-chips"></div>
-            <div class="qwiz__custom-count" id="q-window-custom-wrap" style="display:none">
-              <input type="number" id="q-window-custom" placeholder="Enter exact count" min="1" max="999" />
-            </div>
-          </div>
-
-          <div class="qwiz__field">
-            <label>Services</label>
-            <div class="qwiz__checks">
-              <label class="qwiz__check">
-                <input type="checkbox" id="q-svc-exterior" checked disabled />
-                <span>Exterior Windows <em>(included, base service)</em></span>
-              </label>
-              <label class="qwiz__check">
-                <input type="checkbox" id="q-svc-interior" />
-                <span>Interior Windows <em>(+$0.05/sqft)</em></span>
-              </label>
-              <label class="qwiz__check">
-                <input type="checkbox" id="q-svc-screens" />
-                <span>Screen Cleaning</span>
-              </label>
-              <label class="qwiz__check">
-                <input type="checkbox" id="q-svc-tracks" />
-                <span>Track Cleaning</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Screen options (shown when screen cleaning checked) -->
-          <div class="qwiz__conditional" id="q-screen-options" style="display:none">
-            <div class="qwiz__row">
-              <div class="qwiz__field">
-                <label>How many screens?</label>
-                <div class="qwiz__chips" id="q-screen-chips"></div>
+          <!-- ─── Residential Step 2 ─── -->
+          <div id="q-residential-step2">
+            <div class="qwiz__field">
+              <label id="q-window-label">How many windows does your home have? <span class="req">*</span></label>
+              <div class="qwiz__chips" id="q-window-chips"></div>
+              <div class="qwiz__custom-count" id="q-window-custom-wrap" style="display:none">
+                <input type="number" id="q-window-custom" placeholder="Enter exact count" min="1" max="999" />
               </div>
-              <div class="qwiz__field">
-                <label>Screen Type</label>
-                <div class="qwiz__checks">
-                  <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal Screens ($5 each)</span></label>
-                  <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar Screens ($10 each)</span></label>
+            </div>
+
+            <!-- Custom layout prompt (shown when user overrides auto-suggest) -->
+            <div id="q-custom-layout-prompt" class="qwiz__conditional" style="display:none">
+              <p style="color:rgba(255,255,255,.8);font-size:14px;margin-bottom:10px;">Is this a custom or non-standard home layout?</p>
+              <div style="display:flex;gap:10px">
+                <button type="button" class="btn btn--sky btn--sm" id="q-custom-yes">Yes</button>
+                <button type="button" class="btn btn--ghost btn--sm" id="q-custom-no">No</button>
+              </div>
+            </div>
+
+            <div class="qwiz__field">
+              <label>Services</label>
+              <div class="qwiz__checks">
+                <label class="qwiz__check">
+                  <input type="checkbox" id="q-svc-exterior" />
+                  <span>Exterior Windows <em>($10/window)</em></span>
+                </label>
+                <label class="qwiz__check">
+                  <input type="checkbox" id="q-svc-interior" />
+                  <span>Interior Windows <em>($5/window)</em></span>
+                </label>
+                <label class="qwiz__check">
+                  <input type="checkbox" id="q-svc-screens" />
+                  <span>Screen Cleaning <em>($5/screen)</em></span>
+                </label>
+                <label class="qwiz__check">
+                  <input type="checkbox" id="q-svc-tracks" />
+                  <span>Track Cleaning <em>($5/track)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- French pane prompt (shown when any window service selected) -->
+            <div id="q-french-pane-prompt" class="qwiz__conditional" style="display:none">
+              <p style="color:rgba(255,255,255,.8);font-size:14px;margin-bottom:10px;">Does your home have French pane windows?</p>
+              <div style="display:flex;gap:10px;margin-bottom:10px">
+                <button type="button" class="btn btn--sky btn--sm" id="q-french-yes">Yes</button>
+                <button type="button" class="btn btn--ghost btn--sm" id="q-french-no">No</button>
+              </div>
+              <div id="q-french-count-wrap" class="qwiz__field" style="display:none">
+                <label for="q-french-count">How many French pane windows?</label>
+                <input type="number" id="q-french-count" placeholder="e.g. 8" min="1" max="200" />
+              </div>
+            </div>
+
+            <!-- Screen options (shown when screen cleaning checked) -->
+            <div class="qwiz__conditional" id="q-screen-options" style="display:none">
+              <div class="qwiz__row">
+                <div class="qwiz__field">
+                  <label>How many screens?</label>
+                  <div class="qwiz__chips" id="q-screen-chips"></div>
+                </div>
+                <div class="qwiz__field">
+                  <label>Screen Type</label>
+                  <div class="qwiz__checks">
+                    <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal Screens ($5 each)</span></label>
+                    <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar Screens ($10 each)</span></label>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- Track options (shown when track cleaning checked) -->
+            <div class="qwiz__conditional" id="q-track-options" style="display:none">
+              <div class="qwiz__field">
+                <label>How many tracks?</label>
+                <div class="qwiz__chips" id="q-track-chips"></div>
+              </div>
+            </div>
           </div>
 
-          <!-- Track options (shown when track cleaning checked) -->
-          <div class="qwiz__conditional" id="q-track-options" style="display:none">
+          <!-- ─── Commercial Step 2 ─── -->
+          <div id="q-commercial-step2" style="display:none">
             <div class="qwiz__field">
-              <label>How many tracks?</label>
-              <div class="qwiz__chips" id="q-track-chips"></div>
+              <label id="q-commercial-window-label">How many windows does the property have? <span class="req">*</span></label>
+              <div class="qwiz__chips" id="q-commercial-window-chips"></div>
+              <div class="qwiz__custom-count" id="q-commercial-window-custom-wrap" style="display:none">
+                <input type="number" id="q-commercial-window-custom" placeholder="Enter exact count" min="1" max="9999" />
+              </div>
+            </div>
+            <div class="qwiz__field">
+              <label>Services</label>
+              <div class="qwiz__checks">
+                <label class="qwiz__check"><input type="checkbox" id="q-csvc-exterior" /><span>Exterior Window Cleaning</span></label>
+                <label class="qwiz__check"><input type="checkbox" id="q-csvc-interior" /><span>Interior Window Cleaning</span></label>
+                <label class="qwiz__check"><input type="checkbox" id="q-csvc-screens-tracks" /><span>Screen &amp; Track Cleaning</span></label>
+              </div>
             </div>
           </div>
 
@@ -501,58 +533,96 @@
         <div class="qwiz__panel" data-panel="3">
           <h3 class="qwiz__panel-title">Want to save on every visit?</h3>
 
-          <div class="qwiz__plans">
-            <div class="qwiz__plan" data-plan="6month">
-              <div class="qwiz__plan-main">
-                <div class="qwiz__plan-info">
-                  <h4>6-Month Plan</h4>
-                  <ul class="qwiz__plan-perks">
-                    <li>✓ Auto-scheduling · 7-day guarantee</li>
-                  </ul>
-                </div>
-                <div class="qwiz__plan-right">
-                  <div class="qwiz__plan-price">$50 <span>off/visit</span></div>
-                  <div class="qwiz__plan-sel">Select →</div>
-                </div>
+          <!-- ─── Residential Plans ─── -->
+          <div id="q-residential-plans">
+            <div class="qwiz__plans">
+              <div class="qwiz__plan" data-plan="6month">
+                <div class="qwiz__plan-header"><h4>6-Month Plan</h4><div class="qwiz__plan-price">$50 <span>off/visit</span></div></div>
+                <ul class="qwiz__plan-perks">
+                  <li>2 visits per year</li>
+                  <li>Auto-scheduling</li>
+                  <li>7-day rain guarantee</li>
+                  <li>Optional auto-billing</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Enroll in auto-billing</span></label>
+              </div>
+
+              <div class="qwiz__plan qwiz__plan--popular" data-plan="quarterly">
+                <div class="qwiz__plan-badge">Most Popular</div>
+                <div class="qwiz__plan-header"><h4>Quarterly Plan</h4><div class="qwiz__plan-price">$100 <span>off/visit</span></div></div>
+                <ul class="qwiz__plan-perks">
+                  <li>4 visits per year</li>
+                  <li>Auto-scheduling</li>
+                  <li>Priority booking</li>
+                  <li>5 hard water windows free</li>
+                  <li>Free track cleaning</li>
+                  <li>Free track dusting</li>
+                  <li>7-day rain guarantee</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Enroll in auto-billing</span></label>
+              </div>
+
+              <div class="qwiz__plan" data-plan="monthly">
+                <div class="qwiz__plan-header"><h4>Monthly Plan</h4><div class="qwiz__plan-price">$150 <span>off/visit</span></div></div>
+                <ul class="qwiz__plan-perks">
+                  <li>12 visits per year</li>
+                  <li>All quarterly perks</li>
+                  <li>Maximum savings</li>
+                  <li>Auto-scheduling</li>
+                  <li>Triple reminders</li>
+                  <li>Optional auto-billing</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Enroll in auto-billing</span></label>
               </div>
             </div>
+          </div>
 
-            <div class="qwiz__plan qwiz__plan--popular" data-plan="quarterly">
-              <div class="qwiz__plan-badge">⭐ Most Popular</div>
-              <div class="qwiz__plan-main">
-                <div class="qwiz__plan-info">
-                  <h4>Quarterly Plan</h4>
-                  <ul class="qwiz__plan-perks">
-                    <li>✓ Hard water treatment · Priority booking</li>
-                  </ul>
+          <!-- ─── Commercial Plans ─── -->
+          <div id="q-commercial-plans" style="display:none">
+            <div class="qwiz__plans">
+              <div class="qwiz__plan" data-plan="weekly">
+                <div class="qwiz__plan-header">
+                  <h4>Weekly / Bi-weekly</h4>
+                  <div class="qwiz__plan-freq-toggle">
+                    <button type="button" class="qwiz__freq-btn active" data-freq="weekly">Weekly</button>
+                    <button type="button" class="qwiz__freq-btn" data-freq="biweekly">Bi-weekly</button>
+                  </div>
                 </div>
-                <div class="qwiz__plan-right">
-                  <div class="qwiz__plan-price">$100 <span>off/visit</span></div>
-                  <div class="qwiz__plan-sel">Select →</div>
-                </div>
+                <ul class="qwiz__plan-perks">
+                  <li>Maximum clean frequency</li>
+                  <li>Consistent storefront appearance</li>
+                  <li>Priority scheduling</li>
+                  <li>Auto-scheduling</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Auto-billing</span></label>
               </div>
-            </div>
 
-            <div class="qwiz__plan" data-plan="monthly">
-              <div class="qwiz__plan-main">
-                <div class="qwiz__plan-info">
-                  <h4>Monthly Plan</h4>
-                  <ul class="qwiz__plan-perks">
-                    <li>✓ All perks · Maximum savings</li>
-                  </ul>
-                </div>
-                <div class="qwiz__plan-right">
-                  <div class="qwiz__plan-price">$150 <span>off/visit</span></div>
-                  <div class="qwiz__plan-sel">Select →</div>
-                </div>
+              <div class="qwiz__plan" data-plan="monthly">
+                <div class="qwiz__plan-header"><h4>Monthly</h4></div>
+                <ul class="qwiz__plan-perks">
+                  <li>12 visits per year</li>
+                  <li>Auto-scheduling</li>
+                  <li>Priority booking</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Auto-billing</span></label>
+              </div>
+
+              <div class="qwiz__plan" data-plan="quarterly">
+                <div class="qwiz__plan-header"><h4>Quarterly</h4></div>
+                <ul class="qwiz__plan-perks">
+                  <li>4 visits per year</li>
+                  <li>Auto-scheduling</li>
+                  <li>Free track cleaning</li>
+                </ul>
+                <label class="qwiz__auto-bill"><input type="checkbox" class="auto-bill-toggle" /><span>Auto-billing</span></label>
               </div>
             </div>
           </div>
 
           <div class="qwiz__plan-actions">
             <button type="button" class="btn btn--ghost qwiz__back" data-back="2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
-            <button type="button" class="btn btn--primary qwiz__next" data-next="4" id="selectPlanBtn" style="display:none">Continue with Plan →</button>
-            <button type="button" class="btn btn--primary qwiz__next" data-next="4" id="skipPlanBtn">Continue →</button>
+            <button type="button" class="btn btn--primary qwiz__next" data-next="4" id="selectPlanBtn" style="display:none">Continue with Plan</button>
+            <button type="button" class="btn btn--primary qwiz__next" data-next="4" id="skipPlanBtn">Continue</button>
           </div>
           <button type="button" class="qwiz__skip-link qwiz__next" data-next="4" id="skipPlanLink">No thanks, one-time service only</button>
         </div>
@@ -560,6 +630,11 @@
         <!-- Step 4: Contact Info & Timeline -->
         <div class="qwiz__panel" data-panel="4">
           <h3 class="qwiz__panel-title">Contact Information</h3>
+          <!-- Business name (commercial only) -->
+          <div class="qwiz__field" id="q-business-name-field" style="display:none">
+            <label for="q-business-name">Business Name <span class="req">*</span></label>
+            <input type="text" id="q-business-name" placeholder="Acme Corp" />
+          </div>
           <div class="qwiz__row">
             <div class="qwiz__field">
               <label for="q-fname">First Name <span class="req">*</span></label>
@@ -636,7 +711,7 @@
               <div class="qwiz__price-lines" id="q-price-lines"></div>
               <div class="qwiz__price-divider"></div>
               <div class="qwiz__price-total">
-                <span>Estimated Range</span>
+                <span>Total</span>
                 <span id="q-price-total">$0</span>
               </div>
             </div>
@@ -647,7 +722,22 @@
             </button>
           </div>
 
-          <!-- Large home display (5000+ sqft) -->
+          <!-- Custom layout display (non-standard home) -->
+          <div id="q-price-custom" style="display:none">
+            <div class="qwiz__large-home">
+              <div class="qwiz__large-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <h4>Thanks for submitting!</h4>
+              <p>We'll review your custom property details and reach out with a quote shortly.</p>
+              <button type="button" class="btn btn--primary btn--full btn--lg" id="q-submit-custom">
+                Submit My Info
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Large home display (3700+ sqft) -->
           <div id="q-price-large" style="display:none">
             <div class="qwiz__large-home">
               <div class="qwiz__large-icon">

@@ -2473,55 +2473,101 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
 .urgency-bar strong { color: #f59e0b; }
 
-/* ---------- Quote Mode Toggle ---------- */
-.quote-mode-toggle {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 28px;
+/* Simple Request removed */
+.btn--full { width: 100%; justify-content: center; }
+
+/* ---------- Sqft Threshold Messages ---------- */
+.qwiz__advisory {
+  background: rgba(234,179,8,.1);
+  border: 1px solid rgba(234,179,8,.3);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #fbbf24;
 }
-.qmt-btn {
-  padding: 12px 28px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.05);
-  color: rgba(255,255,255,.6);
-  font-size: 15px;
+.qwiz__advisory p, .qwiz__blocked p { margin-bottom: 0; }
+.qwiz__blocked {
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #f87171;
+}
+.qwiz__next:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ---------- Expanded Plan Card Layout ---------- */
+.qwiz__plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.qwiz__plan-header h4 {
+  margin-bottom: 0;
+}
+.qwiz__plan-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+.qwiz__plan-perks li {
+  font-size: 13px;
+  color: rgba(255,255,255,.55);
+  padding: 3px 0;
+  padding-left: 18px;
+  position: relative;
+}
+.qwiz__plan-perks li::before {
+  content: '\\2713';
+  position: absolute;
+  left: 0;
+  color: var(--green, #22c55e);
+  font-size: 12px;
+}
+
+/* Auto-billing toggle inside plan cards */
+.qwiz__auto-bill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+}
+.qwiz__auto-bill input { accent-color: var(--sky); width: 16px; height: 16px; }
+
+/* Commercial frequency toggle (weekly/biweekly) */
+.qwiz__plan-freq-toggle {
+  display: flex;
+  background: rgba(255,255,255,.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.qwiz__freq-btn {
+  padding: 5px 12px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.45);
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all .2s;
 }
-.qmt-btn:hover { background: rgba(255,255,255,.1); color: var(--white); }
-.qmt-btn--active { background: var(--sky); border-color: var(--sky); color: #fff; box-shadow: var(--shadow-sky); }
-
-/* ---------- Simple Quote Form ---------- */
-.simple-quote { max-width: 600px; margin: 0 auto; }
-.sq-field { margin-bottom: 20px; }
-.sq-field label { display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
-.sq-field input, .sq-field select {
-  width: 100%;
-  padding: 14px 16px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 10px;
-  color: var(--white);
-  font-size: 16px;
+.qwiz__freq-btn.active {
+  background: var(--sky);
+  color: #fff;
 }
-.sq-field select option { background: var(--navy); }
-.sq-estimate {
-  background: rgba(14,165,233,.1);
-  border: 1px solid rgba(14,165,233,.25);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.sq-estimate__label { display: block; font-size: 12px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
-.sq-estimate__price { display: block; font-size: 32px; font-weight: 800; color: var(--sky); font-family: var(--head); }
-.sq-estimate__note { display: block; font-size: 12px; color: rgba(255,255,255,.4); margin-top: 4px; }
-.sq-sms-cta { margin: 24px 0; }
-.sq-text-btn { width: 100%; justify-content: center; font-size: 14px; }
-.btn--full { width: 100%; justify-content: center; }
 
 /* ---------- GPS Button ---------- */
 .gps-btn {
@@ -3238,25 +3284,6 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   /* Plans: single column */
   .qwiz__plans { grid-template-columns: 1fr; }
   /* Quote Mode Toggle: full-width stacked */
-  .quote-mode-toggle {
-    flex-direction: row;
-    gap: 8px;
-  }
-  .qmt-btn {
-    flex: 1;
-    min-height: 48px;
-    font-size: 14px;
-    padding: 10px 12px;
-    text-align: center;
-  }
-
-  /* Simple Quote selects/inputs */
-  .sq-field input,
-  .sq-field select {
-    min-height: 48px;
-    font-size: 16px;
-  }
-
   /* ── Reviews ─────────────────────────────────────── */
   .reviews__track {
     grid-template-columns: 1fr;

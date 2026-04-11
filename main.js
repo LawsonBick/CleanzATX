@@ -210,13 +210,18 @@ if (qwiz) {
     step: 1,
     address: '', sqft: 0, stories: 0,
     propertyType: 'Residential',
+    commercialPropertyType: '', commercialPropertyDesc: '', businessName: '',
     windowCount: 0, screenCount: 0, trackCount: 0,
     screenType: 'normal',
-    svcExterior: true, svcInterior: false, svcScreens: false, svcTracks: false,
-    plan: null, autoBilling: false,
-    firstName: '', phone: '', email: '',
+    svcExterior: false, svcInterior: false, svcScreens: false, svcTracks: false,
+    plan: null, autoBilling: false, commercialFrequency: 'weekly',
+    firstName: '', lastName: '', phone: '', email: '',
     referral: '', referrer: '', timeline: '', deadlineDate: '',
     promoCode: '', promoDiscount: 0,
+    lastCleaned: '',
+    customLayout: false, autoSuggestedWindowCount: 0,
+    frenchPanes: false, frenchPaneCount: 0,
+    _frenchPaneAsked: false,
   };
 
   const stepLabels = {
@@ -233,6 +238,18 @@ if (qwiz) {
     if (sqft <= 2500)      return { windows: [15,20,25,30], screens: [15,20,25,30], tracks: [15,20,25,30] };
     if (sqft <= 3500)      return { windows: [25,30,35,40], screens: [20,25,30,35], tracks: [20,25,30,35] };
     return                        { windows: [35,40,45,50], screens: [25,30,35,40], tracks: [25,30,35,40] };
+  }
+
+  // Auto-suggest window count from sqft (confirmed: 3000 sqft = ~30 windows)
+  function autoSuggestWindows(sqft) {
+    return Math.round(sqft * 0.01);
+  }
+
+  // Screen/track chip options based on window count
+  function getScreenTrackOptions(windowCount) {
+    const base = Math.max(5, Math.round(windowCount * 0.6));
+    const step = Math.max(2, Math.round(windowCount * 0.15));
+    return [Math.max(1, base - step), base, base + step, base + step * 2];
   }
 
   // Build chip selectors
@@ -279,30 +296,83 @@ if (qwiz) {
 
     // Pre-populate chips when entering step 2
     if (step === 2) {
-      const opts = getOptions(state.sqft);
-      buildChips(document.getElementById('q-window-chips'), [...opts.windows, 'Other'], 'windowCount');
-      buildChips(document.getElementById('q-screen-chips'), opts.screens, 'screenCount');
-      buildChips(document.getElementById('q-track-chips'), opts.tracks, 'trackCount');
+      const isCommercial = state.propertyType === 'Commercial';
+      document.getElementById('q-residential-step2').style.display = isCommercial ? 'none' : '';
+      document.getElementById('q-commercial-step2').style.display = isCommercial ? '' : 'none';
 
-      // Wire "Other" chip to show custom input
-      const windowChips = document.getElementById('q-window-chips');
-      const customWrap = document.getElementById('q-window-custom-wrap');
-      const customInput = document.getElementById('q-window-custom');
-      windowChips.querySelectorAll('.qwiz__chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          if (chip.textContent === 'Other') {
-            customWrap.style.display = '';
-            state.windowCount = parseInt(customInput.value) || 0;
-          } else {
-            customWrap.style.display = 'none';
-          }
+      if (isCommercial) {
+        // Commercial: update label with property type
+        const propType = state.commercialPropertyType || 'property';
+        document.getElementById('q-commercial-window-label').textContent = `How many windows does the ${propType.toLowerCase()} have?`;
+        buildChips(document.getElementById('q-commercial-window-chips'), [10, 20, 30, 50, 75, 100, 'Other'], 'windowCount');
+        // Wire commercial Other chip
+        const cChips = document.getElementById('q-commercial-window-chips');
+        const cWrap = document.getElementById('q-commercial-window-custom-wrap');
+        const cInput = document.getElementById('q-commercial-window-custom');
+        cChips.querySelectorAll('.qwiz__chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            if (chip.textContent === 'Other') { cWrap.style.display = ''; state.windowCount = parseInt(cInput.value) || 0; }
+            else { cWrap.style.display = 'none'; }
+          });
         });
-      });
-      customInput.addEventListener('input', () => {
-        state.windowCount = parseInt(customInput.value) || 0;
-      });
+        cInput?.addEventListener('input', () => { state.windowCount = parseInt(cInput.value) || 0; });
+      } else {
+        // Residential: auto-suggest window count
+        const opts = getOptions(state.sqft);
+        const suggested = autoSuggestWindows(state.sqft);
+        state.autoSuggestedWindowCount = suggested;
+        buildChips(document.getElementById('q-window-chips'), [...opts.windows, 'Other'], 'windowCount');
+
+        // Auto-select nearest chip to suggested count
+        const chipValues = opts.windows;
+        const nearest = chipValues.reduce((prev, curr) =>
+          Math.abs(curr - suggested) < Math.abs(prev - suggested) ? curr : prev
+        );
+        state.windowCount = nearest;
+        document.getElementById('q-window-chips').querySelectorAll('.qwiz__chip').forEach(c => {
+          c.classList.toggle('active', c.textContent == nearest);
+        });
+
+        // Wire "Other" chip to show custom input
+        const windowChips = document.getElementById('q-window-chips');
+        const customWrap = document.getElementById('q-window-custom-wrap');
+        const customInput = document.getElementById('q-window-custom');
+        windowChips.querySelectorAll('.qwiz__chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            if (chip.textContent === 'Other') {
+              customWrap.style.display = '';
+              state.windowCount = parseInt(customInput.value) || 0;
+            } else {
+              customWrap.style.display = 'none';
+              // Check if user overrode auto-suggest
+              const chosen = parseInt(chip.textContent);
+              if (chosen !== state.autoSuggestedWindowCount && !state.customLayout) {
+                document.getElementById('q-custom-layout-prompt').style.display = '';
+              }
+            }
+          });
+        });
+        customInput?.addEventListener('input', () => { state.windowCount = parseInt(customInput.value) || 0; });
+
+        // Build screen/track chips based on window count
+        const stOpts = getScreenTrackOptions(state.windowCount || 15);
+        buildChips(document.getElementById('q-screen-chips'), stOpts, 'screenCount');
+        buildChips(document.getElementById('q-track-chips'), stOpts, 'trackCount');
+      }
     }
 
+    // Show/hide residential vs commercial plans on step 3
+    if (step === 3) {
+      const isCommercial = state.propertyType === 'Commercial';
+      document.getElementById('q-residential-plans').style.display = isCommercial ? 'none' : '';
+      document.getElementById('q-commercial-plans').style.display = isCommercial ? '' : 'none';
+    }
+
+    // Show/hide business name on step 4 for commercial
+    if (step === 4) {
+      document.getElementById('q-business-name-field').style.display =
+        state.propertyType === 'Commercial' ? '' : 'none';
+    }
     // Auto-apply promo from localStorage when entering step 4
     if (step === 4) {
       try {
@@ -339,18 +409,25 @@ if (qwiz) {
   // Promo code logic
   function applyPromo(code) {
     const msgEl = document.getElementById('q-promo-msg');
+    const applyBtn = document.getElementById('q-promo-apply');
     if (!msgEl) return;
     if (code === 'SAVE25') {
       state.promoCode = 'SAVE25';
       state.promoDiscount = 25;
       msgEl.style.display = '';
       msgEl.style.color = '#22c55e';
-      msgEl.textContent = '✅ $25 off applied! Code: SAVE25';
+      msgEl.textContent = '$25 discount added to your quote successfully.';
+      if (applyBtn) {
+        applyBtn.style.background = '#22c55e';
+        applyBtn.style.borderColor = '#22c55e';
+        applyBtn.style.color = '#fff';
+        applyBtn.textContent = 'Applied';
+      }
       localStorage.removeItem('cleanzatx_promo');
     } else {
       msgEl.style.display = '';
       msgEl.style.color = '#ef4444';
-      msgEl.textContent = '❌ Invalid promo code.';
+      msgEl.textContent = 'Invalid promo code.';
     }
   }
 
@@ -358,25 +435,43 @@ if (qwiz) {
   function validateStep(step) {
     if (step === 1) {
       const addr = document.getElementById('q-address').value.trim();
-      const sqft = parseInt(document.getElementById('q-sqft').value);
-      const stories = document.getElementById('q-stories').value;
-      const lastCleaned = document.getElementById('q-last-cleaned').value;
       state.address = addr;
-      state.sqft = sqft || 0;
-      state.stories = parseInt(stories) || 0;
-      state.lastCleaned = lastCleaned;
       if (!addr) { flashError('q-address'); return false; }
-      if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
-      if (!stories) { flashError('q-stories'); return false; }
-      if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
+
+      if (state.propertyType === 'Commercial') {
+        // Commercial validation
+        const cType = document.getElementById('q-commercial-type').value;
+        state.commercialPropertyType = cType;
+        state.commercialPropertyDesc = document.getElementById('q-commercial-desc')?.value?.trim() || '';
+        const cStories = document.getElementById('q-commercial-stories').value;
+        state.stories = parseInt(cStories) || 0;
+        if (!cType) { flashError('q-commercial-type'); return false; }
+        if (cType === 'Other' && !state.commercialPropertyDesc) { flashError('q-commercial-desc'); return false; }
+        if (!cStories) { flashError('q-commercial-stories'); return false; }
+      } else {
+        // Residential validation
+        const sqft = parseInt(document.getElementById('q-sqft').value);
+        const stories = document.getElementById('q-stories').value;
+        const lastCleaned = document.getElementById('q-last-cleaned').value;
+        state.sqft = sqft || 0;
+        state.stories = parseInt(stories) || 0;
+        state.lastCleaned = lastCleaned;
+        if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
+        if (sqft >= 3700) return false; // Blocked by threshold
+        if (!stories) { flashError('q-stories'); return false; }
+        if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
+      }
       return true;
     }
     if (step === 2) {
       if (!state.windowCount) {
-        const chips = document.getElementById('q-window-chips');
-        chips.style.outline = '2px solid #ef4444';
-        chips.style.borderRadius = '8px';
-        setTimeout(() => { chips.style.outline = ''; }, 2000);
+        const chipsId = state.propertyType === 'Commercial' ? 'q-commercial-window-chips' : 'q-window-chips';
+        const chips = document.getElementById(chipsId);
+        if (chips) {
+          chips.style.outline = '2px solid #ef4444';
+          chips.style.borderRadius = '8px';
+          setTimeout(() => { chips.style.outline = ''; }, 2000);
+        }
         return false;
       }
       if (state.svcScreens && !state.screenCount) return false;
@@ -395,6 +490,10 @@ if (qwiz) {
       state.referrer = document.getElementById('q-referrer')?.value?.trim() || '';
       state.timeline = timeline;
       state.deadlineDate = document.getElementById('q-date')?.value || '';
+      if (state.propertyType === 'Commercial') {
+        state.businessName = document.getElementById('q-business-name')?.value?.trim() || '';
+        if (!state.businessName) { flashError('q-business-name'); return false; }
+      }
       if (!fname) { flashError('q-fname'); return false; }
       if (!phone || phone.replace(/\D/g,'').length < 10) { flashError('q-phone'); return false; }
       if (!timeline) { flashError('q-timeline'); return false; }
@@ -411,23 +510,34 @@ if (qwiz) {
     setTimeout(() => field.classList.remove('qwiz__field--error'), 2500);
   }
 
-  // Pricing engine
+  // Pricing engine (flat price, no range)
   function calcPrice() {
+    const wc = state.windowCount;
     const sqft = state.sqft;
-    let exterior = sqft * 0.10;
-    let interior = state.svcInterior ? sqft * 0.05 : 0;
+
+    // Exterior: $10/window (fall back to sqft x $0.10)
+    let exterior = state.svcExterior ? (wc > 0 ? wc * 10 : sqft * 0.10) : 0;
+    // Interior: $5/window (fall back to sqft x $0.05)
+    let interior = state.svcInterior ? (wc > 0 ? wc * 5 : sqft * 0.05) : 0;
+    // Screens: $5/screen (normal) or $10/screen (solar)
     const screenPrice = state.screenType === 'solar' ? 10 : 5;
     let screens = state.svcScreens ? state.screenCount * screenPrice : 0;
+    // Tracks: $5/track (FREE on quarterly plan)
     let tracks = state.svcTracks ? state.trackCount * 5 : 0;
+    const tracksFree = state.plan === 'quarterly';
+    if (tracksFree) tracks = 0;
+    // French panes: $10/window
+    let frenchPanes = state.frenchPanes ? state.frenchPaneCount * 10 : 0;
+
     let discount = 0;
     if (state.plan === '6month') discount = 50;
     else if (state.plan === 'quarterly') discount = 100;
     else if (state.plan === 'monthly') discount = 150;
-    const subtotal = exterior + interior + screens + tracks;
+
+    const subtotal = exterior + interior + screens + tracks + frenchPanes;
     const total = Math.max(0, subtotal - discount - state.promoDiscount);
-    const low = Math.max(0, total - 50);
-    const high = total + 50;
-    return { exterior, interior, screens, tracks, discount, subtotal, total, low, high, planName: state.plan };
+
+    return { exterior, interior, screens, tracks, frenchPanes, discount, subtotal, total, tracksFree, planName: state.plan };
   }
 
   // Job duration estimate
@@ -450,10 +560,13 @@ if (qwiz) {
   }
 
   function buildPriceDisplay() {
-    const isLarge = state.sqft >= 5000;
-    document.getElementById('q-price-normal').style.display = isLarge ? 'none' : 'block';
+    const isLarge = state.propertyType === 'Residential' && state.sqft >= 3700;
+    const isCustom = state.customLayout;
+    const customEl = document.getElementById('q-price-custom');
+    document.getElementById('q-price-normal').style.display = (isLarge || isCustom) ? 'none' : 'block';
     document.getElementById('q-price-large').style.display = isLarge ? 'block' : 'none';
-    if (isLarge) return;
+    if (customEl) customEl.style.display = isCustom && !isLarge ? 'block' : 'none';
+    if (isLarge || isCustom) return;
 
     const p = calcPrice();
     const lines = document.getElementById('q-price-lines');
@@ -464,18 +577,24 @@ if (qwiz) {
       div.innerHTML = `<span>${label}</span><span>${typeof amount === 'string' ? amount : '$' + amount.toFixed(2)}</span>`;
       lines.appendChild(div);
     };
-    addLine('Exterior Windows', p.exterior);
-    if (state.svcInterior) addLine('Interior Windows', p.interior);
+    if (state.svcExterior) addLine(`Exterior Windows (${state.windowCount} @ $10)`, p.exterior);
+    if (state.svcInterior) addLine(`Interior Windows (${state.windowCount} @ $5)`, p.interior);
+    if (state.frenchPanes && p.frenchPanes > 0) addLine(`French Pane Windows (${state.frenchPaneCount} @ $10)`, p.frenchPanes);
     if (state.svcScreens) addLine(`Screen Cleaning (${state.screenCount} ${state.screenType === 'solar' ? 'solar' : 'standard'})`, p.screens);
-    if (state.svcTracks) addLine(`Track Cleaning (${state.trackCount})`, p.tracks);
+    if (state.svcTracks && p.tracksFree) {
+      addLine(`Track Cleaning (${state.trackCount}) - FREE w/ Quarterly`, '$0.00', 'qwiz__price-line--discount');
+    } else if (state.svcTracks) {
+      addLine(`Track Cleaning (${state.trackCount})`, p.tracks);
+    }
     if (p.discount > 0) {
-      const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : 'Monthly';
+      const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan;
       addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
     }
     if (state.promoDiscount > 0) {
-      addLine(`🎟 Promo (${state.promoCode})`, '-$' + state.promoDiscount.toFixed(2), 'qwiz__price-line--discount');
+      addLine(`$25 Discount (${state.promoCode})`, '-$' + state.promoDiscount.toFixed(2), 'qwiz__price-line--discount');
     }
-    document.getElementById('q-price-total').textContent = '$' + Math.round(p.low) + ' – $' + Math.round(p.high);
+    // Flat price — no range
+    document.getElementById('q-price-total').textContent = '$' + Math.round(p.total);
   }
 
   // Wire up Next/Back buttons
@@ -489,13 +608,51 @@ if (qwiz) {
     btn.addEventListener('click', () => goToStep(parseInt(btn.dataset.back)));
   });
 
-  // Property type
+  // Property type toggle (Step 1) — show/hide residential vs commercial fields
   document.querySelectorAll('input[name="propertyType"]').forEach(r => {
-    r.addEventListener('change', e => { state.propertyType = e.target.value; });
+    r.addEventListener('change', e => {
+      state.propertyType = e.target.value;
+      const isCommercial = e.target.value === 'Commercial';
+      document.getElementById('q-residential-fields').style.display = isCommercial ? 'none' : '';
+      document.getElementById('q-commercial-fields').style.display = isCommercial ? '' : 'none';
+    });
   });
 
-  // Service checkboxes
-  document.getElementById('q-svc-interior')?.addEventListener('change', e => { state.svcInterior = e.target.checked; });
+  // Commercial property type select
+  document.getElementById('q-commercial-type')?.addEventListener('change', e => {
+    state.commercialPropertyType = e.target.value;
+    document.getElementById('q-commercial-desc-field').style.display = e.target.value === 'Other' ? '' : 'none';
+  });
+  document.getElementById('q-commercial-desc')?.addEventListener('input', e => {
+    state.commercialPropertyDesc = e.target.value.trim();
+  });
+
+  // Sqft threshold listener
+  document.getElementById('q-sqft')?.addEventListener('input', function() {
+    const val = parseInt(this.value) || 0;
+    const advisory = document.getElementById('q-sqft-advisory');
+    const blocked = document.getElementById('q-sqft-blocked');
+    const nextBtn = document.getElementById('step1Next');
+    if (advisory) advisory.style.display = (val >= 3500 && val < 3700) ? '' : 'none';
+    if (blocked) blocked.style.display = (val >= 3700) ? '' : 'none';
+    if (nextBtn) nextBtn.disabled = (val >= 3700);
+  });
+
+  // Service checkboxes (residential)
+  function showFrenchPanePrompt() {
+    if (state._frenchPaneAsked) return;
+    const prompt = document.getElementById('q-french-pane-prompt');
+    if (prompt) prompt.style.display = '';
+  }
+
+  document.getElementById('q-svc-exterior')?.addEventListener('change', e => {
+    state.svcExterior = e.target.checked;
+    if (e.target.checked) showFrenchPanePrompt();
+  });
+  document.getElementById('q-svc-interior')?.addEventListener('change', e => {
+    state.svcInterior = e.target.checked;
+    if (e.target.checked) showFrenchPanePrompt();
+  });
   document.getElementById('q-svc-screens')?.addEventListener('change', e => {
     state.svcScreens = e.target.checked;
     document.getElementById('q-screen-options').style.display = e.target.checked ? 'block' : 'none';
@@ -503,6 +660,58 @@ if (qwiz) {
   document.getElementById('q-svc-tracks')?.addEventListener('change', e => {
     state.svcTracks = e.target.checked;
     document.getElementById('q-track-options').style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  // French pane prompt handlers
+  document.getElementById('q-french-yes')?.addEventListener('click', () => {
+    state.frenchPanes = true;
+    state._frenchPaneAsked = true;
+    document.getElementById('q-french-count-wrap').style.display = '';
+  });
+  document.getElementById('q-french-no')?.addEventListener('click', () => {
+    state.frenchPanes = false;
+    state._frenchPaneAsked = true;
+    document.getElementById('q-french-pane-prompt').style.display = 'none';
+  });
+  document.getElementById('q-french-count')?.addEventListener('input', e => {
+    state.frenchPaneCount = parseInt(e.target.value) || 0;
+  });
+
+  // Custom layout prompt handlers
+  document.getElementById('q-custom-yes')?.addEventListener('click', () => {
+    state.customLayout = true;
+    document.getElementById('q-custom-layout-prompt').style.display = 'none';
+  });
+  document.getElementById('q-custom-no')?.addEventListener('click', () => {
+    state.customLayout = false;
+    // Revert to auto-suggested count
+    state.windowCount = state.autoSuggestedWindowCount;
+    document.getElementById('q-window-chips').querySelectorAll('.qwiz__chip').forEach(c => {
+      c.classList.toggle('active', parseInt(c.textContent) === state.autoSuggestedWindowCount);
+    });
+    document.getElementById('q-custom-layout-prompt').style.display = 'none';
+  });
+
+  // Commercial service checkboxes
+  document.getElementById('q-csvc-exterior')?.addEventListener('change', e => { state.svcExterior = e.target.checked; });
+  document.getElementById('q-csvc-interior')?.addEventListener('change', e => { state.svcInterior = e.target.checked; });
+  document.getElementById('q-csvc-screens-tracks')?.addEventListener('change', e => {
+    state.svcScreens = e.target.checked;
+    state.svcTracks = e.target.checked;
+  });
+
+  // Business name
+  document.getElementById('q-business-name')?.addEventListener('input', e => {
+    state.businessName = e.target.value.trim();
+  });
+
+  // Commercial frequency toggle
+  document.querySelectorAll('.qwiz__freq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.closest('.qwiz__plan-freq-toggle').querySelectorAll('.qwiz__freq-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.commercialFrequency = btn.dataset.freq;
+    });
   });
 
   // Screen type radios
@@ -513,7 +722,7 @@ if (qwiz) {
   // Plan selection
   qwiz.querySelectorAll('.qwiz__plan').forEach(card => {
     card.addEventListener('click', e => {
-      if (e.target.closest('.qwiz__toggle')) return;
+      if (e.target.closest('.qwiz__toggle') || e.target.closest('.qwiz__auto-bill') || e.target.closest('.qwiz__plan-freq-toggle')) return;
       const wasSelected = card.classList.contains('selected');
       qwiz.querySelectorAll('.qwiz__plan').forEach(c => c.classList.remove('selected'));
       if (!wasSelected) {
@@ -575,8 +784,8 @@ if (qwiz) {
     if (submitted) return;
     submitted = true;
     const p = calcPrice();
-    const isLarge = state.sqft >= 5000;
-    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'None (One-Time)';
+    const isLarge = state.propertyType === 'Residential' && state.sqft >= 3700;
+    const planLabel = state.plan === '6month' ? '6-Month' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : 'None (One-Time)';
     const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
 
     // Silent EmailJS send
@@ -587,15 +796,20 @@ if (qwiz) {
       email:            state.email || '',
       address:          state.address || '',
       property_type:    state.propertyType || 'Residential',
+      business_name:    state.businessName || '',
+      commercial_property_type: state.commercialPropertyType || '',
+      commercial_property_desc: state.commercialPropertyDesc || '',
       sqft:             state.sqft,
       stories:          state.stories,
       last_cleaned:     state.lastCleaned || '',
-      exterior_windows: 'Yes',
+      exterior_windows: state.svcExterior ? 'Yes' : 'No',
       interior_windows: state.svcInterior ? 'Yes' : 'No',
       screens:          state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
       tracks:           state.svcTracks ? state.trackCount + ' tracks' : 'No',
+      french_panes:     state.frenchPanes ? state.frenchPaneCount + ' French pane windows' : 'No',
+      custom_layout:    state.customLayout,
       service_plan:     planLabel,
-      auto_billing:     state.autoBilling ? '✅ Enrolled' : '❌ Not Enrolled',
+      auto_billing:     state.autoBilling ? 'Enrolled' : 'Not Enrolled',
       referral_source:  state.referral || '',
       timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
       promo_code:       state.promoCode || '',
@@ -613,7 +827,8 @@ if (qwiz) {
     }
 
     // Send to n8n — handles all OpenPhone/Xecute steps server-side
-    const servicesList = ['Exterior Windows'];
+    const servicesList = [];
+    if (state.svcExterior) servicesList.push('Exterior Windows');
     if (state.svcInterior) servicesList.push('Interior Windows');
     if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
     if (state.svcTracks) servicesList.push('Track Cleaning');
@@ -631,12 +846,18 @@ if (qwiz) {
         stories:                    state.stories,
         last_cleaned:               state.lastCleaned || '',
         property_type:              state.propertyType || 'Residential',
+        business_name:              state.businessName || '',
+        commercial_property_type:   state.commercialPropertyType || '',
+        commercial_property_desc:   state.commercialPropertyDesc || '',
+        custom_layout:              state.customLayout,
+        french_panes:               state.frenchPanes ? state.frenchPaneCount + ' panes' : 'No',
         service_plan:               planLabel,
         auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
         exterior_price:             p.exterior.toFixed(2),
         interior_price:             p.interior.toFixed(2),
         screen_price:               p.screens.toFixed(2),
         track_price:                p.tracks.toFixed(2),
+        french_pane_price:          (p.frenchPanes || 0).toFixed(2),
         discount:                   p.discount.toFixed(2),
         total_price:                p.total.toFixed(2),
         services:                   servicesList.join(', '),
@@ -664,12 +885,18 @@ if (qwiz) {
         stories:                    state.stories,
         last_cleaned:               state.lastCleaned || '',
         property_type:              state.propertyType || 'Residential',
+        business_name:              state.businessName || '',
+        commercial_property_type:   state.commercialPropertyType || '',
+        commercial_property_desc:   state.commercialPropertyDesc || '',
+        custom_layout:              state.customLayout,
+        french_panes:               state.frenchPanes ? state.frenchPaneCount + ' panes' : 'No',
         service_plan:               planLabel,
         auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
         exterior_price:             p.exterior.toFixed(2),
         interior_price:             p.interior.toFixed(2),
         screen_price:               p.screens.toFixed(2),
         track_price:                p.tracks.toFixed(2),
+        french_pane_price:          (p.frenchPanes || 0).toFixed(2),
         discount:                   p.discount.toFixed(2),
         total_price:                p.total.toFixed(2),
         services:                   servicesList.join(', '),
@@ -706,6 +933,7 @@ if (qwiz) {
 
   document.getElementById('q-submit')?.addEventListener('click', handleSubmit);
   document.getElementById('q-submit-large')?.addEventListener('click', handleSubmit);
+  document.getElementById('q-submit-custom')?.addEventListener('click', handleSubmit);
 
   // Initialize step 1
   goToStep(1);
@@ -969,63 +1197,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   });
 });
 
-/* ---------- Quote mode toggle (#5) ---------- */
-(function() {
-  const instantBtn = document.getElementById('qmtInstant');
-  const simpleBtn = document.getElementById('qmtSimple');
-  const wizard = document.getElementById('quoteWizard');
-  const simpleForm = document.getElementById('simpleQuote');
-  if (!instantBtn || !simpleBtn) return;
-
-  instantBtn.addEventListener('click', () => {
-    instantBtn.classList.add('qmt-btn--active');
-    simpleBtn.classList.remove('qmt-btn--active');
-    if (wizard) wizard.style.display = '';
-    if (simpleForm) simpleForm.style.display = 'none';
-  });
-  simpleBtn.addEventListener('click', () => {
-    simpleBtn.classList.add('qmt-btn--active');
-    instantBtn.classList.remove('qmt-btn--active');
-    if (wizard) wizard.style.display = 'none';
-    if (simpleForm) simpleForm.style.display = '';
-  });
-
-  // Simple form size → price estimate
-  document.getElementById('sq-size')?.addEventListener('change', function() {
-    const prices = { small: '$150 – $250', medium: '$250 – $400', large: '$400 – $600', xlarge: 'Custom quote' };
-    const est = document.getElementById('sqEstimate');
-    const priceEl = document.getElementById('sqPrice');
-    if (this.value && est) {
-      priceEl.textContent = prices[this.value];
-      est.style.display = '';
-    }
-  });
-
-  // Simple form submit
-  document.getElementById('sq-submit')?.addEventListener('click', () => {
-    const name = document.getElementById('sq-name')?.value.trim();
-    const phone = document.getElementById('sq-phone')?.value.trim();
-    if (!name || !phone) return;
-    
-    // Send via EmailJS
-    if (typeof emailjs !== 'undefined') {
-      emailjs.send('service_xsex2ss', 'template_536xvvp', {
-        first_name: name,
-        phone: phone,
-        address: document.getElementById('sq-address')?.value || '',
-        sqft: document.getElementById('sq-size')?.value || '',
-        exterior_windows: 'Yes',
-        service_plan: 'Simple Request',
-      }).catch(() => {});
-    }
-
-    // GA4
-    if (typeof gtag !== 'undefined') gtag('event', 'generate_lead', { lead_source: 'simple_form' });
-    
-    document.getElementById('sq-submit').style.display = 'none';
-    document.getElementById('sqConfirm').style.display = '';
-  });
-})();
+/* ---------- Simple Request removed ---------- */
 
 /* ---------- #49 Quote abandonment email ---------- */
 (function() {
@@ -1199,7 +1371,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   }
 
   initAddressAutofill('q-address');
-  initAddressAutofill('sq-address');
+  // sq-address removed (Simple Request deleted)
 })();
 
 /* ---------- Plan card → auto-select in quote wizard ---------- */
