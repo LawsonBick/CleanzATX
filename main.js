@@ -1286,6 +1286,12 @@ if (origSubmitBtn) {
   // Shuffle once per session; walk through the deck — never repeat
   let deck = shuffle(bookings);
   let pos = 0;
+  let dismissTimer = null;
+
+  function dismiss() {
+    clearTimeout(dismissTimer);
+    notif.classList.remove('show');
+  }
 
   function showNotif() {
     if (pos >= deck.length) return; // full deck shown — stop for this session
@@ -1293,8 +1299,20 @@ if (origSubmitBtn) {
     document.getElementById('bookingNotifName').textContent = b.name;
     document.getElementById('bookingNotifMsg').textContent = b.msg;
     notif.classList.add('show');
-    setTimeout(() => notif.classList.remove('show'), 2500);
+    // Auto-dismiss after 4 seconds
+    clearTimeout(dismissTimer);
+    dismissTimer = setTimeout(dismiss, 4000);
   }
+
+  // Tap anywhere on the notif to dismiss
+  notif.addEventListener('click', dismiss);
+
+  // Swipe left to dismiss
+  let nTsX = 0;
+  notif.addEventListener('touchstart', e => { nTsX = e.touches[0].clientX; }, { passive: true });
+  notif.addEventListener('touchend', e => {
+    if (e.changedTouches[0].clientX - nTsX < -40) dismiss();
+  });
 
   // First show after 60 s, then every 60 s
   setTimeout(() => {

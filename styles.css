@@ -2527,10 +2527,23 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   transition: transform .35s cubic-bezier(.34,1.2,.64,1), opacity .35s ease;
 }
 .booking-notif.show { transform: translateX(0) translateY(0); opacity: 1; }
-.booking-notif__avatar { font-size: 20px; }
-.booking-notif__text { display: flex; flex-direction: column; gap: 1px; }
+.booking-notif__avatar { font-size: 20px; flex-shrink: 0; }
+.booking-notif__text { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
 .booking-notif__text strong { color: rgba(255,255,255,.9); font-size: 12.5px; }
 .booking-notif__text span { color: rgba(255,255,255,.5); font-size: 11.5px; line-height: 1.4; }
+.booking-notif__close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.35);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  transition: color .15s;
+}
+.booking-notif__close:hover { color: rgba(255,255,255,.7); }
 @media(max-width:768px) { .booking-notif { bottom: 76px; max-width: 260px; } }
 
 /* ---------- Urgency Bar ---------- */
