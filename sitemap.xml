@@ -1,62 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Homepage -->
   <url>
-    <loc>https://cleanzatx.com/</loc>
-    <priority>1.0</priority>
+    <loc>https://www.cleanzatx.com/</loc>
+    <lastmod>2026-04-11</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
-
-  <!-- Gallery -->
   <url>
-    <loc>https://cleanzatx.com/gallery</loc>
-    <priority>0.8</priority>
+    <loc>https://www.cleanzatx.com/gallery</loc>
+    <lastmod>2026-04-11</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
-  <!-- Pollen landing page -->
   <url>
-    <loc>https://cleanzatx.com/pollen</loc>
+    <loc>https://www.cleanzatx.com/pollen</loc>
+    <lastmod>2026-04-11</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Neighborhood pages -->
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-lakeway</loc>
+    <loc>https://www.cleanzatx.com/window-cleaning-lakeway</loc>
+    <lastmod>2026-04-11</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
   </url>
-
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-bee-cave</loc>
+    <loc>https://www.cleanzatx.com/window-cleaning-bee-cave</loc>
+    <lastmod>2026-04-11</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
   </url>
-
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-lake-travis</loc>
+    <loc>https://www.cleanzatx.com/window-cleaning-lake-travis</loc>
+    <lastmod>2026-04-11</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
   </url>
-
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-westlake-hills</loc>
-    <priority>0.8</priority>
+    <loc>https://www.cleanzatx.com/window-cleaning-westlake-hills</loc>
+    <lastmod>2026-04-11</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-steiner-ranch</loc>
-    <priority>0.8</priority>
+    <loc>https://www.cleanzatx.com/window-cleaning-steiner-ranch</loc>
+    <lastmod>2026-04-11</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://cleanzatx.com/window-cleaning-four-points</loc>
-    <priority>0.8</priority>
+    <loc>https://www.cleanzatx.com/window-cleaning-four-points</loc>
+    <lastmod>2026-04-11</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
 </urlset>
