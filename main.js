@@ -1429,7 +1429,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   // sq-address removed (Simple Request deleted)
 })();
 
-/* ---------- Plans carousel ---------- */
+/* ---------- Plans carousel (infinite loop, no scrollIntoView) ---------- */
 (function() {
   const carousel = document.getElementById('plansCarousel');
   const dotsWrap = document.getElementById('plansDots');
@@ -1437,69 +1437,131 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   const nextBtn  = document.getElementById('plansNext');
   if (!carousel) return;
 
-  const cards = Array.from(carousel.querySelectorAll('.plan-card'));
-  const dots  = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.plans-dot')) : [];
-  let currentIdx = 0; // start on the first card
-
   function isCarouselActive() {
-    return getComputedStyle(carousel).display === 'flex';
+    return window.innerWidth < 960;
   }
 
-  function scrollToCard(idx) {
-    if (idx < 0 || idx >= cards.length) return;
+  // Original cards (Quarterly=0, Bi-Annual=1, Monthly=2)
+  const origCards = Array.from(carousel.querySelectorAll('.plan-card'));
+  const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.plans-dot')) : [];
+  const N = origCards.length; // 3
+
+  let cloned = false;
+  let currentIdx = 0; // real card index (0-based among origCards)
+  let jumping = false; // prevent recursive scroll handling
+
+  // Build clone-based infinite loop:
+  // DOM order: [clone-of-last][orig0][orig1][orig2][clone-of-first]
+  // Real cards live at positions 1..N inside the carousel
+  function buildClones() {
+    if (cloned) return;
+    cloned = true;
+    const first = origCards[0].cloneNode(true);
+    const last  = origCards[N - 1].cloneNode(true);
+    first.setAttribute('aria-hidden', 'true');
+    last.setAttribute('aria-hidden', 'true');
+    carousel.appendChild(first);
+    carousel.insertBefore(last, origCards[0]);
+  }
+
+  function cardWidth() {
+    // Width of one card + gap (gap is 16px from CSS)
+    const card = carousel.querySelectorAll('.plan-card')[1]; // first real card
+    if (!card) return 0;
+    return card.offsetWidth + 16;
+  }
+
+  // Scroll to a real card index (0-based) instantly (no animation)
+  function jumpToReal(idx) {
+    jumping = true;
+    // real cards are at slot idx+1 (because clone-of-last is slot 0)
+    const cw = cardWidth();
+    // Center the card: offset from carousel left padding
+    // The carousel has padding-left of ~40px already baked into scrollLeft calc
+    carousel.scrollLeft = (idx + 1) * cw;
     currentIdx = idx;
-    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    setTimeout(() => { jumping = false; }, 50);
+  }
+
+  // Smooth scroll to a real card index
+  function slideTo(idx) {
+    const cw = cardWidth();
+    const target = (idx + 1) * cw;
+    carousel.scrollTo({ left: target, behavior: 'smooth' });
+    currentIdx = idx;
     updateDots();
-    updateArrows();
   }
 
   function updateDots() {
     dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
   }
 
+  // Always show arrows on mobile (infinite loop — no hard stops)
   function updateArrows() {
-    prevBtn?.classList.toggle('hidden', currentIdx === 0);
-    nextBtn?.classList.toggle('hidden', currentIdx === cards.length - 1);
+    prevBtn?.classList.remove('hidden');
+    nextBtn?.classList.remove('hidden');
   }
 
-  // Sync active dot while user swipes
+  // Debounced scroll listener: detect landing on a clone and silently jump
   let scrollTimer;
   carousel.addEventListener('scroll', () => {
+    if (jumping) return;
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(() => {
-      if (!isCarouselActive()) return;
-      let closest = 0;
-      let minDist = Infinity;
-      cards.forEach((card, i) => {
-        const rect = card.getBoundingClientRect();
-        const carRect = carousel.getBoundingClientRect();
-        const dist = Math.abs(rect.left + rect.width / 2 - (carRect.left + carRect.width / 2));
-        if (dist < minDist) { minDist = dist; closest = i; }
-      });
-      currentIdx = closest;
+      if (!isCarouselActive() || !cloned) return;
+      const cw = cardWidth();
+      const sl = carousel.scrollLeft;
+      const totalW = (N + 2) * cw; // N real cards + 2 clones
+
+      // Landed on clone-of-last (slot 0) → jump to real last card (slot N)
+      if (sl < cw * 0.5) {
+        jumpToReal(N - 1);
+        updateDots();
+        return;
+      }
+      // Landed on clone-of-first (slot N+1) → jump to real first card (slot 1)
+      if (sl > (N + 0.5) * cw) {
+        jumpToReal(0);
+        updateDots();
+        return;
+      }
+
+      // Figure out which real card is centered
+      const realSlot = Math.round(sl / cw); // 1..N
+      currentIdx = Math.min(Math.max(realSlot - 1, 0), N - 1);
       updateDots();
-      updateArrows();
     }, 80);
   });
 
+  // Arrow buttons
+  prevBtn?.addEventListener('click', () => {
+    const next = (currentIdx - 1 + N) % N;
+    slideTo(next);
+  });
+  nextBtn?.addEventListener('click', () => {
+    const next = (currentIdx + 1) % N;
+    slideTo(next);
+  });
+
   // Dot clicks
-  dots.forEach((dot, i) => dot.addEventListener('click', () => scrollToCard(i)));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => slideTo(i)));
 
-  // Arrow clicks
-  prevBtn?.addEventListener('click', () => scrollToCard(currentIdx - 1));
-  nextBtn?.addEventListener('click', () => scrollToCard(currentIdx + 1));
-
-  // On load and resize: snap to featured card (idx 1) if carousel is active
+  // Init: build clones, jump to card 0 WITHOUT touching page scroll
   function initCarousel() {
-    if (!isCarouselActive()) { updateDots(); updateArrows(); return; }
+    if (!isCarouselActive()) {
+      // Desktop: remove clones if previously added, reset scroll
+      updateDots();
+      updateArrows();
+      return;
+    }
+    buildClones();
+    jumpToReal(0);
     updateDots();
     updateArrows();
-    // Scroll to first card without animation on init
-    cards[0]?.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
-  // Small delay to let layout settle
-  setTimeout(initCarousel, 100);
+  // Use requestAnimationFrame to wait for layout, then init — avoids page jump
+  requestAnimationFrame(() => requestAnimationFrame(initCarousel));
   window.addEventListener('resize', () => setTimeout(initCarousel, 150));
 })();
 

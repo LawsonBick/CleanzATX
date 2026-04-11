@@ -1246,23 +1246,6 @@
 
         <div class="plans-grid" id="plansCarousel">
 
-          <div class="plan-card">
-            <div class="plan-card__accent plan-card__accent--blue"></div>
-            <div class="plan-card__header">
-              <h3>Bi-Annual Plan</h3>
-              <div class="plan-card__price"><span class="plan-card__price-num">$50</span><span class="plan-card__price-label">off each visit</span></div>
-            </div>
-            <ul class="plan-card__features">
-              <li>2 visits per year</li>
-              <li>Auto-scheduling</li>
-              <li>Triple reminders</li>
-              <li>7-day rain guarantee</li>
-              <li>Customer portal access</li>
-              <li>Optional auto-billing</li>
-            </ul>
-            <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="6month">Get Started</a>
-          </div>
-
           <div class="plan-card plan-card--featured">
             <div class="plan-card__accent plan-card__accent--sky"></div>
             <div class="plan-card__badge">Most Popular</div>
@@ -1285,7 +1268,24 @@
           </div>
 
           <div class="plan-card">
-            <div class="plan-card__accent plan-card__accent--purple"></div>
+            <div class="plan-card__accent plan-card__accent--blue"></div>
+            <div class="plan-card__header">
+              <h3>Bi-Annual Plan</h3>
+              <div class="plan-card__price"><span class="plan-card__price-num">$50</span><span class="plan-card__price-label">off each visit</span></div>
+            </div>
+            <ul class="plan-card__features">
+              <li>2 visits per year</li>
+              <li>Auto-scheduling</li>
+              <li>Triple reminders</li>
+              <li>7-day rain guarantee</li>
+              <li>Customer portal access</li>
+              <li>Optional auto-billing</li>
+            </ul>
+            <a href="#quoteWizard" class="btn btn--outline-sky btn--full plan-card__cta" data-plan="6month">Get Started</a>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card__accent plan-card__accent--sky"></div>
             <div class="plan-card__header">
               <h3>Monthly Plan</h3>
               <div class="plan-card__price"><span class="plan-card__price-num">$150</span><span class="plan-card__price-label">off each visit</span></div>
@@ -1306,8 +1306,8 @@
 
         <!-- Dot indicators -->
         <div class="plans-carousel-dots" id="plansDots">
-          <button class="plans-dot" data-idx="0" aria-label="Bi-Annual Plan"></button>
-          <button class="plans-dot" data-idx="1" aria-label="Quarterly Plan"></button>
+          <button class="plans-dot active" data-idx="0" aria-label="Quarterly Plan"></button>
+          <button class="plans-dot" data-idx="1" aria-label="Bi-Annual Plan"></button>
           <button class="plans-dot" data-idx="2" aria-label="Monthly Plan"></button>
         </div>
       </div>
