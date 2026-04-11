@@ -1335,7 +1335,7 @@ if (origSubmitBtn) {
     document.getElementById('bookingNotifMsg').textContent = b.msg;
     notif.classList.add('show');
     clearTimeout(dismissTimer);
-    dismissTimer = setTimeout(dismiss, 4000);
+    dismissTimer = setTimeout(dismiss, 5000);
   }
 
   // Close button
@@ -1352,11 +1352,11 @@ if (origSubmitBtn) {
     if (e.changedTouches[0].clientX - nTsX < -40) dismiss();
   });
 
-  // First show after 60 s, then every 60 s
+  // First show after 2 min, then every 2 min
   setTimeout(() => {
     showNotif();
-    setInterval(showNotif, 60000);
-  }, 60000);
+    setInterval(showNotif, 120000);
+  }, 120000);
 })();
 
 /* ---------- #7 Urgency widget rotation ---------- */
