@@ -162,18 +162,26 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
   prevBtn?.addEventListener('click', () => scrollToCard(current - 1));
   nextBtn?.addEventListener('click', () => scrollToCard(current + 1));
 
-  // Directional-lock touch events — intercept horizontal swipes only
-  let rTsX = 0, rTsY = 0, rLock = null;
+  // Directional-lock touch events — horizontal moves carousel, vertical scrolls page
+  let rTsX = 0, rTsY = 0, rLastY = 0, rLock = null;
   track.addEventListener('touchstart', e => {
     rTsX = e.touches[0].clientX;
     rTsY = e.touches[0].clientY;
+    rLastY = e.touches[0].clientY;
     rLock = null;
   }, { passive: true });
   track.addEventListener('touchmove', e => {
-    const dx = Math.abs(e.touches[0].clientX - rTsX);
-    const dy = Math.abs(e.touches[0].clientY - rTsY);
+    const t = e.touches[0];
+    const dx = Math.abs(t.clientX - rTsX);
+    const dy = Math.abs(t.clientY - rTsY);
     if (!rLock && (dx > 8 || dy > 8)) rLock = dx > dy ? 'x' : 'y';
-    if (rLock === 'x') e.preventDefault();
+    if (rLock === 'y') {
+      // Forward vertical movement to the page
+      window.scrollBy(0, rLastY - t.clientY);
+    } else {
+      e.preventDefault(); // block page scroll while sliding carousel
+    }
+    rLastY = t.clientY;
   }, { passive: false });
   track.addEventListener('touchend', e => {
     if (rLock !== 'x') return;
@@ -254,10 +262,11 @@ if (qwiz) {
   }
 
   // Screen/track chip options based on window count
+  // Returns 3 numeric options (no low end) + 'Custom'
   function getScreenTrackOptions(windowCount) {
     const base = Math.max(5, Math.round(windowCount * 0.6));
     const step = Math.max(2, Math.round(windowCount * 0.15));
-    return [Math.max(1, base - step), base, base + step, base + step * 2];
+    return [base, base + step, base + step * 2, 'Custom'];
   }
 
   // Build chip selectors
@@ -366,6 +375,38 @@ if (qwiz) {
         const stOpts = getScreenTrackOptions(state.windowCount || 15);
         buildChips(document.getElementById('q-screen-chips'), stOpts, 'screenCount');
         buildChips(document.getElementById('q-track-chips'), stOpts, 'trackCount');
+
+        // Wire Custom chip for screens
+        const screenChipsEl = document.getElementById('q-screen-chips');
+        const screenCustomWrap = document.getElementById('q-screen-custom-wrap');
+        const screenCustomInput = document.getElementById('q-screen-custom');
+        screenChipsEl?.querySelectorAll('.qwiz__chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            if (chip.textContent === 'Custom') {
+              screenCustomWrap.style.display = '';
+              state.screenCount = parseInt(screenCustomInput?.value) || 0;
+            } else {
+              screenCustomWrap.style.display = 'none';
+            }
+          });
+        });
+        screenCustomInput?.addEventListener('input', () => { state.screenCount = parseInt(screenCustomInput.value) || 0; });
+
+        // Wire Custom chip for tracks
+        const trackChipsEl = document.getElementById('q-track-chips');
+        const trackCustomWrap = document.getElementById('q-track-custom-wrap');
+        const trackCustomInput = document.getElementById('q-track-custom');
+        trackChipsEl?.querySelectorAll('.qwiz__chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            if (chip.textContent === 'Custom') {
+              trackCustomWrap.style.display = '';
+              state.trackCount = parseInt(trackCustomInput?.value) || 0;
+            } else {
+              trackCustomWrap.style.display = 'none';
+            }
+          });
+        });
+        trackCustomInput?.addEventListener('input', () => { state.trackCount = parseInt(trackCustomInput.value) || 0; });
       }
     }
 
@@ -1262,9 +1303,9 @@ if (origSubmitBtn) {
   const monthName = new Date().toLocaleString('en-US', { month: 'long' });
   const spotsLeft = Math.floor(Math.random() * 3) + 3; // 3-5 spots
   const msgs = [
-    'Only <strong>' + spotsLeft + ' spots</strong> left in ' + monthName + ' for Lakeway',
+    'Only <strong>' + spotsLeft + ' spots</strong> left in ' + monthName,
     '<strong>3 homeowners</strong> got quotes in the last hour',
-    monthName + ' is filling up, <strong>spots are limited</strong> in Lakeway',
+    monthName + ' is filling up — <strong>spots are limited</strong>',
     'Book today, get cleaned <strong>this month</strong>',
   ];
   let i = 0;
@@ -1420,7 +1461,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     input.addEventListener('input', () => {
       clearTimeout(debounceTimer);
       const q = input.value.trim();
-      if (q.length < 3) { closeDropdown(); return; }
+      if (q.length < 5) { closeDropdown(); return; }
       debounceTimer = setTimeout(async () => {
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&countrycodes=us&q=${encodeURIComponent(q + ' Texas')}`);
@@ -1428,7 +1469,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
           currentResults = data;
           renderResults(data);
         } catch(e) { closeDropdown(); }
-      }, 300);
+      }, 600);
     });
 
     input.addEventListener('keydown', e => {
@@ -1568,29 +1609,49 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     }, 80);
   });
 
-  // Directional-lock touch events — intercept horizontal swipes only
-  let pTsX = 0, pTsY = 0, pLock = null;
+  // Directional-lock touch events — horizontal moves carousel, vertical scrolls page
+  let pTsX = 0, pTsY = 0, pLastY = 0, pLock = null;
   carousel.addEventListener('touchstart', e => {
     pTsX = e.touches[0].clientX;
     pTsY = e.touches[0].clientY;
+    pLastY = e.touches[0].clientY;
     pLock = null;
     touching = true;
   }, { passive: true });
   carousel.addEventListener('touchmove', e => {
-    const dx = Math.abs(e.touches[0].clientX - pTsX);
-    const dy = Math.abs(e.touches[0].clientY - pTsY);
+    const t = e.touches[0];
+    const dx = Math.abs(t.clientX - pTsX);
+    const dy = Math.abs(t.clientY - pTsY);
     if (!pLock && (dx > 8 || dy > 8)) pLock = dx > dy ? 'x' : 'y';
-    if (pLock === 'x') e.preventDefault();
+    if (pLock === 'y') {
+      window.scrollBy(0, pLastY - t.clientY);
+    } else {
+      e.preventDefault();
+    }
+    pLastY = t.clientY;
   }, { passive: false });
   carousel.addEventListener('touchend', e => {
     touching = false;
     if (pLock !== 'x') return;
-    const dx = e.changedTouches[0].clientX - pTsX;
-    if (Math.abs(dx) > 45) {
-      const next = dx < 0 ? (currentIdx + 1) % N : (currentIdx - 1 + N) % N;
-      slideTo(next);
+    const swipeDx = e.changedTouches[0].clientX - pTsX;
+    if (Math.abs(swipeDx) < 45) { slideTo(currentIdx); return; }
+    const cw = cardWidth();
+    if (swipeDx < 0) {
+      // Swipe left → next; if at last card, animate through clone-of-first then jump
+      if (currentIdx === N - 1) {
+        jumping = true;
+        carousel.scrollTo({ left: (N + 1) * cw, behavior: 'smooth' });
+        currentIdx = 0; updateDots();
+        setTimeout(() => { jumpToReal(0); jumping = false; }, 420);
+      } else { slideTo(currentIdx + 1); }
     } else {
-      slideTo(currentIdx);
+      // Swipe right → prev; if at first card, animate through clone-of-last then jump
+      if (currentIdx === 0) {
+        jumping = true;
+        carousel.scrollTo({ left: 0, behavior: 'smooth' });
+        currentIdx = N - 1; updateDots();
+        setTimeout(() => { jumpToReal(N - 1); jumping = false; }, 420);
+      } else { slideTo(currentIdx - 1); }
     }
   });
 
@@ -1649,18 +1710,25 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     carousel.scrollTo({ left: idx * itemWidth(), behavior: 'smooth' });
   }
 
-  // Directional-lock touch events
-  let gTsX = 0, gTsY = 0, gLock = null;
+  // Directional-lock touch events — horizontal moves carousel, vertical scrolls page
+  let gTsX = 0, gTsY = 0, gLastY = 0, gLock = null;
   carousel.addEventListener('touchstart', e => {
     gTsX = e.touches[0].clientX;
     gTsY = e.touches[0].clientY;
+    gLastY = e.touches[0].clientY;
     gLock = null;
   }, { passive: true });
   carousel.addEventListener('touchmove', e => {
-    const dx = Math.abs(e.touches[0].clientX - gTsX);
-    const dy = Math.abs(e.touches[0].clientY - gTsY);
+    const t = e.touches[0];
+    const dx = Math.abs(t.clientX - gTsX);
+    const dy = Math.abs(t.clientY - gTsY);
     if (!gLock && (dx > 8 || dy > 8)) gLock = dx > dy ? 'x' : 'y';
-    if (gLock === 'x') e.preventDefault();
+    if (gLock === 'y') {
+      window.scrollBy(0, gLastY - t.clientY);
+    } else {
+      e.preventDefault();
+    }
+    gLastY = t.clientY;
   }, { passive: false });
   carousel.addEventListener('touchend', e => {
     if (gLock !== 'x') return;

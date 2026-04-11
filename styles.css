@@ -1106,9 +1106,10 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   .reviews__track {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-behavior: smooth;
     scrollbar-width: none;
-    touch-action: pan-y;        /* browser handles vertical; JS handles horizontal */
+    touch-action: none;        /* JS handles all touch; we forward vertical to page */
     gap: 16px;
     padding: 8px 24px 20px;
     margin: 0 -20px 8px;
@@ -2900,8 +2901,9 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .plans-grid {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-behavior: smooth;
-    touch-action: pan-y;
+    touch-action: none;
     -webkit-overflow-scrolling: auto;
     scrollbar-width: none;
     gap: 16px;
@@ -4098,7 +4100,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
-    touch-action: pan-y;
+    overflow-y: hidden;
+    touch-action: none;
     -webkit-overflow-scrolling: auto;
     gap: 14px;
     padding-bottom: 12px;

@@ -315,7 +315,7 @@
         <!-- Urgency strip -->
         <div class="qwiz__urgency">
           <span class="urgency-bar__dot"></span>
-          <span id="urgencyText">Only <strong>4 spots</strong> left this week in Lakeway</span>
+          <span id="urgencyText">Only <strong>4 spots</strong> left this month</span>
         </div>
         <!-- Progress bar -->
         <div class="qwiz__progress">
@@ -485,6 +485,9 @@
                       <div class="qwiz__field">
                         <label>How many screens?</label>
                         <div class="qwiz__chips" id="q-screen-chips"></div>
+                        <div id="q-screen-custom-wrap" style="display:none;margin-top:8px">
+                          <input type="number" id="q-screen-custom" class="qwiz__input" placeholder="Enter count" min="1" style="max-width:140px" />
+                        </div>
                       </div>
                       <div class="qwiz__field">
                         <label>Screen Type</label>
@@ -507,6 +510,9 @@
                     <div class="qwiz__field">
                       <label>How many tracks?</label>
                       <div class="qwiz__chips" id="q-track-chips"></div>
+                      <div id="q-track-custom-wrap" style="display:none;margin-top:8px">
+                        <input type="number" id="q-track-custom" class="qwiz__input" placeholder="Enter count" min="1" style="max-width:140px" />
+                      </div>
                     </div>
                   </div>
                 </div>
