@@ -1173,11 +1173,13 @@ if (origSubmitBtn) {
 (function() {
   const el = document.getElementById('urgencyText');
   if (!el) return;
+  const monthName = new Date().toLocaleString('en-US', { month: 'long' });
+  const spotsLeft = Math.floor(Math.random() * 3) + 3; // 3-5 spots
   const msgs = [
-    'Only <strong>4 spots</strong> left this week in Lakeway',
+    'Only <strong>' + spotsLeft + ' spots</strong> left in ' + monthName + ' for Lakeway',
     '<strong>3 homeowners</strong> got quotes in the last hour',
-    'Next opening: this week, <strong>spots filling fast</strong>',
-    'Book today, get cleaned <strong>this week</strong>',
+    monthName + ' is filling up, <strong>spots are limited</strong> in Lakeway',
+    'Book today, get cleaned <strong>this month</strong>',
   ];
   let i = 0;
   setInterval(() => {
