@@ -1115,6 +1115,7 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
     margin: 0 -20px 8px;
     grid-template-columns: unset;
     -webkit-overflow-scrolling: auto;
+    scroll-padding-left: 24px; /* keeps first card flush with left padding */
   }
   .reviews__track::-webkit-scrollbar { display: none; }
   .reviews__track .review-card {

@@ -136,10 +136,17 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
   function scrollToCard(idx) {
     idx = Math.max(0, Math.min(idx, total - 1));
     const card = cards[idx];
-    // Center card inside the scroll container
-    const trackCenter = track.offsetWidth / 2;
-    const cardCenter  = card.offsetLeft + card.offsetWidth / 2;
-    track.scrollTo({ left: cardCenter - trackCenter, behavior: 'smooth' });
+    // First card: snap to left edge (padding handles visual alignment)
+    // Other cards: center in the track
+    let left;
+    if (idx === 0) {
+      left = 0;
+    } else {
+      const trackCenter = track.offsetWidth / 2;
+      const cardCenter  = card.offsetLeft + card.offsetWidth / 2;
+      left = cardCenter - trackCenter;
+    }
+    track.scrollTo({ left, behavior: 'smooth' });
     updateUI(idx);
   }
 
@@ -939,7 +946,7 @@ if (qwiz) {
     if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
     if (state.svcTracks) servicesList.push('Track Cleaning');
 
-    fetch('/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+    fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1347,16 +1354,8 @@ if (origSubmitBtn) {
     }, { once: true });
   }
 
-  let lastTap = 0;
-  notif.addEventListener('click', e => {
-    const now = Date.now();
-    if (now - lastTap < 350) {
-      bubblePop();
-    } else {
-      dismiss();
-    }
-    lastTap = now;
-  });
+  // Single tap = bubble pop; double-tap also pops (either way it's fun)
+  notif.addEventListener('click', bubblePop);
 
   // Swipe left to dismiss
   let nTsX = 0;
