@@ -517,16 +517,23 @@ if (qwiz) {
     // French panes: $10/window
     let frenchPanes = state.frenchPanes ? state.frenchPaneCount * 10 : 0;
 
-    let discount = 0;
-    if (state.plan === '6month') discount = 50;
-    else if (state.plan === 'quarterly') discount = 100;
-    else if (state.plan === 'monthly') discount = 150;
-
     const subtotal = exterior + interior + screens + tracks + frenchPanes;
-    const rawTotal = Math.max(0, subtotal - discount - state.promoDiscount);
-    const MINIMUM = 100;
+    const MINIMUM = 150;
+
+    // Discounts only apply when the job meets the minimum on its own
+    let discount = 0;
+    if (subtotal >= MINIMUM) {
+      if (state.plan === '6month') discount = 50;
+      else if (state.plan === 'quarterly') discount = 100;
+      else if (state.plan === 'monthly') discount = 150;
+    }
+
+    // Promo discount also only applies when subtotal meets minimum
+    const promoDiscount = subtotal >= MINIMUM ? state.promoDiscount : 0;
+
+    const rawTotal = Math.max(0, subtotal - discount - promoDiscount);
     const total = rawTotal > 0 ? Math.max(MINIMUM, rawTotal) : 0;
-    const hitMinimum = rawTotal > 0 && rawTotal < MINIMUM;
+    const hitMinimum = subtotal > 0 && subtotal < MINIMUM;
 
     return { exterior, interior, screens, tracks, frenchPanes, discount, subtotal, total, rawTotal, hitMinimum, tracksFree, planName: state.plan };
   }
