@@ -1866,3 +1866,19 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     }
   }
 })();
+
+/* ---------- Gallery load more (desktop) ---------- */
+(function() {
+  const btn = document.getElementById('galleryLoadBtn');
+  const wrap = document.getElementById('galleryLoadWrap');
+  if (!btn) return;
+
+  btn.addEventListener('click', function() {
+    const items = document.querySelectorAll('.gallery__stack .gallery__item');
+    items.forEach(item => {
+      item.classList.add('gallery--revealed');
+      item.style.display = '';
+    });
+    if (wrap) wrap.style.display = 'none';
+  });
+})();

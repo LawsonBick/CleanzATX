@@ -4209,3 +4209,185 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
 @media (max-width: 768px) {
   .hero__content { grid-template-columns: 1fr !important; }
 }
+
+/* ============================================================
+   DESKTOP OPTIMIZATIONS (min-width: 961px) — mobile untouched
+   ============================================================ */
+
+/* ── Quote section: 2-col layout ── */
+@media (min-width: 961px) {
+  .quote-section__layout {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .quote-trust__header {
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .quote-trust__header .section__title { font-size: clamp(28px, 2.8vw, 40px); }
+  .quote-trust__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .quote-trust__list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,.8);
+    font-weight: 500;
+  }
+  .quote-trust__list li svg { color: #10b981; flex-shrink: 0; }
+  .quote-trust__testimonial {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-left: 3px solid var(--sky);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+  .quote-trust__testimonial p {
+    font-style: italic;
+    color: rgba(255,255,255,.75);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .quote-trust__testimonial cite {
+    font-size: 12px;
+    color: rgba(255,255,255,.4);
+    font-style: normal;
+    font-weight: 600;
+  }
+  .quote-trust__badges {
+    display: flex;
+    gap: 16px;
+  }
+  .qt-badge {
+    flex: 1;
+    background: rgba(14,165,233,.08);
+    border: 1px solid rgba(14,165,233,.18);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .qt-badge__num {
+    display: block;
+    font-family: var(--head);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .qt-badge__label {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    font-weight: 500;
+  }
+  /* Wizard full-width within its col, no centering margin */
+  .quote-section__layout .qwiz {
+    max-width: 100%;
+    margin: 0;
+  }
+}
+
+/* Mobile header shown, desktop header (in quote-trust) shown */
+@media (min-width: 961px) {
+  .quote-header--mobile { display: none; }
+}
+@media (max-width: 960px) {
+  .quote-trust { display: none; }
+}
+
+/* ── Gallery: 3-col grid + load more on desktop ── */
+@media (min-width: 769px) {
+  .gallery__stack {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+  .gallery__item:nth-child(n+10):not(.gallery--revealed) {
+    display: none;
+  }
+  .gallery__load-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+  }
+  .gallery__load-btn {
+    min-width: 200px;
+  }
+  /* hide on mobile — it uses the horizontal swipe */
+  .gallery__load-wrap { display: none; }
+}
+@media (min-width: 769px) {
+  .gallery__load-wrap { display: flex; }
+  .gallery__swipe-hint { display: none; }
+}
+
+/* ── Reviews: limit to 9 on desktop ── */
+@media (min-width: 961px) {
+  .reviews__track .review-card:nth-child(n+10):not(.review--revealed) {
+    display: none;
+  }
+  .reviews__more-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+}
+@media (max-width: 960px) {
+  .reviews__more-wrap { display: none; }
+}
+
+/* ── Hero desktop enhancements ── */
+@media (min-width: 961px) {
+  .hero__content {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .hero__photo {
+    margin-top: 0;
+  }
+  .hero__stats {
+    gap: 20px;
+  }
+  .hero__sub {
+    max-width: 560px;
+  }
+}
+
+/* ── General desktop polish ── */
+@media (min-width: 1280px) {
+  :root { --max-w: 1280px; }
+}
+
+/* ── Pricing grid full-width on large screens ── */
+@media (min-width: 961px) {
+  .pricing-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .pricing-block {
+    padding: 32px 24px;
+  }
+}
+
+/* ── Plans: show all features on desktop ── */
+@media (min-width: 961px) {
+  .plan-card__features li { display: flex !important; }
+}
+
+/* ── About: wider layout on desktop ── */
+@media (min-width: 1100px) {
+  .about__inner {
+    gap: 80px;
+  }
+}
