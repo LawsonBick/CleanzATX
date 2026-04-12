@@ -1871,31 +1871,42 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 /* ---------- Abandoned form recovery ---------- */
 (function() {
   let firedAbandon = false;
-  const phoneInput = document.getElementById('q-phone');
-  if (!phoneInput) return;
+  const WEBHOOK = 'https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d';
 
-  // Fire after phone is entered and they leave the field (blur) without submitting
-  phoneInput.addEventListener('blur', function() {
-    const phone = this.value.trim();
-    if (!phone || firedAbandon) return;
-    // Wait 3 minutes — if they haven't submitted, fire the recovery webhook
-    setTimeout(() => {
-      if (firedAbandon) return;
-      const nameVal = document.getElementById('q-name')?.value?.trim() || '';
-      // Check if they've already completed the form
-      const confirmPanel = document.querySelector('[data-panel="confirm"]');
-      if (confirmPanel && confirmPanel.style.display !== 'none') return;
-      firedAbandon = true;
-      fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: nameVal || 'Unknown',
-          phone,
-          source: 'abandoned_form_recovery',
-          message: 'This person started a quote but did not finish. Follow up!'
-        }),
-      }).catch(() => {});
-    }, 180000); // 3 minutes
+  function hasCompleted() {
+    const confirmPanel = document.querySelector('[data-panel="confirm"]');
+    return confirmPanel && confirmPanel.style.display !== 'none';
+  }
+
+  function fireAbandon(trigger) {
+    if (firedAbandon || hasCompleted()) return;
+    const phone = document.getElementById('q-phone')?.value?.trim() || '';
+    if (!phone) return;
+    firedAbandon = true;
+    const name = document.getElementById('q-name')?.value?.trim() || 'Unknown';
+    const payload = JSON.stringify({
+      name, phone,
+      source: 'abandoned_form_recovery',
+      trigger,
+      message: 'This person started a quote but did not finish. Follow up!'
+    });
+    // sendBeacon works even as the page is closing
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(WEBHOOK, new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {});
+    }
+  }
+
+  // Catch tab close / app switch / Safari swipe-away
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') fireAbandon('page_hidden');
+  });
+  window.addEventListener('pagehide', () => fireAbandon('pagehide'));
+
+  // Also keep the 3-min fallback for people who leave the tab open
+  document.getElementById('q-phone')?.addEventListener('blur', function() {
+    if (!this.value.trim() || firedAbandon) return;
+    setTimeout(() => fireAbandon('timeout_3min'), 180000);
   });
 })();
