@@ -1430,32 +1430,6 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   });
 })();
 
-/* ---------- #11 Before/After Drag Slider ---------- */
-(function() {
-  document.querySelectorAll('.ba-slider').forEach(slider => {
-    const handle = slider.querySelector('.ba-handle');
-    const afterLayer = slider.querySelector('.ba-after');
-    let dragging = false;
-
-    function setPos(x) {
-      const rect = slider.getBoundingClientRect();
-      let pct = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
-      afterLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-      handle.style.left = pct + '%';
-    }
-
-    handle.addEventListener('mousedown', () => dragging = true);
-    handle.addEventListener('touchstart', () => dragging = true, { passive: true });
-    window.addEventListener('mouseup', () => dragging = false);
-    window.addEventListener('touchend', () => dragging = false);
-    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
-    window.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX); }, { passive: true });
-    
-    // Initialize at 50%
-    slider.addEventListener('click', e => setPos(e.clientX));
-    setPos(slider.getBoundingClientRect().left + slider.getBoundingClientRect().width * 0.5);
-  });
-})();
 
 /* ---------- Mobile CTA bar hide when quote form visible ---------- */
 (function() {
@@ -1893,46 +1867,6 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   });
 })();
 
-/* ---------- Chat / SMS widget ---------- */
-(function() {
-  const btn = document.getElementById('chatWidgetBtn');
-  const popup = document.getElementById('chatWidgetPopup');
-  const close = document.getElementById('chatWidgetClose');
-  if (!btn) return;
-
-  btn.addEventListener('click', () => popup.classList.toggle('open'));
-  close?.addEventListener('click', (e) => { e.stopPropagation(); popup.classList.remove('open'); });
-  document.addEventListener('click', (e) => {
-    if (!btn.contains(e.target) && !popup.contains(e.target)) popup.classList.remove('open');
-  });
-})();
-
-/* ---------- Before / After Sliders ---------- */
-(function() {
-  document.querySelectorAll('.ba-slider').forEach(slider => {
-    const after = slider.querySelector('.ba-slider__after');
-    const handle = slider.querySelector('.ba-handle');
-    if (!after || !handle) return;
-
-    let dragging = false;
-
-    function setPos(x) {
-      const rect = slider.getBoundingClientRect();
-      let pct = (x - rect.left) / rect.width;
-      pct = Math.max(0.05, Math.min(0.95, pct));
-      after.style.width = (pct * 100) + '%';
-      handle.style.left = (pct * 100) + '%';
-    }
-
-    slider.addEventListener('mousedown', e => { dragging = true; setPos(e.clientX); e.preventDefault(); });
-    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
-    window.addEventListener('mouseup', () => dragging = false);
-
-    slider.addEventListener('touchstart', e => { dragging = true; setPos(e.touches[0].clientX); }, { passive: true });
-    slider.addEventListener('touchmove', e => { if (dragging) { setPos(e.touches[0].clientX); e.stopPropagation(); } }, { passive: false });
-    slider.addEventListener('touchend', () => dragging = false);
-  });
-})();
 
 /* ---------- Abandoned form recovery ---------- */
 (function() {
