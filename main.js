@@ -1231,29 +1231,21 @@ if (origSubmitBtn) {
   const popup = document.getElementById('exitPopup');
   if (!popup) return;
   let shown = false;
-  let timer;
 
-  document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 10 && !shown && !sessionStorage.getItem('exitShown')) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        popup.classList.add('active');
-        shown = true;
-        sessionStorage.setItem('exitShown', '1');
-      }, 200);
-    }
-  });
-
-  // Mobile: show after 40s of inactivity
-  if (window.innerWidth < 768) {
-    setTimeout(() => {
-      if (!shown && !sessionStorage.getItem('exitShown')) {
-        popup.classList.add('active');
-        shown = true;
-        sessionStorage.setItem('exitShown', '1');
-      }
-    }, 40000);
+  function showPopup() {
+    if (shown || sessionStorage.getItem('exitShown')) return;
+    popup.classList.add('active');
+    shown = true;
+    sessionStorage.setItem('exitShown', '1');
   }
+
+  // Show after 2 minutes on all devices
+  setTimeout(showPopup, 120000);
+
+  // Desktop fallback: also show on exit intent (mouse leaves top of viewport)
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 10) showPopup();
+  });
 
   document.getElementById('exitPopupClose')?.addEventListener('click', () => popup.classList.remove('active'));
   document.getElementById('exitPopupSkip')?.addEventListener('click', () => popup.classList.remove('active'));

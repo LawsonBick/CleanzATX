@@ -3104,6 +3104,8 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   margin: 0 28px 28px;
   display: block;
   text-align: center;
+  width: auto; /* override btn--full's width:100% — card has overflow:hidden so 100%+margin clips */
+  box-sizing: border-box;
 }
 
 /* Outline sky button variant for non-featured cards */
@@ -4307,6 +4309,12 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
 }
 
 /* ── Gallery: 3-col grid + load more on desktop ── */
+/* Mobile: hide load-more button, show swipe hint */
+@media (max-width: 768px) {
+  .gallery__load-wrap { display: none; }
+}
+
+/* Desktop: 3-col grid, load-more button, hide swipe hint */
 @media (min-width: 769px) {
   .gallery__stack {
     grid-template-columns: repeat(3, 1fr);
@@ -4315,20 +4323,20 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   .gallery__item:nth-child(n+10):not(.gallery--revealed) {
     display: none;
   }
+  .gallery__swipe-hint { display: none; }
   .gallery__load-wrap {
     display: flex;
     justify-content: center;
     margin-top: 36px;
+    margin-bottom: 8px;
   }
   .gallery__load-btn {
-    min-width: 200px;
+    min-width: 220px;
+    justify-content: center;
   }
-  /* hide on mobile — it uses the horizontal swipe */
-  .gallery__load-wrap { display: none; }
-}
-@media (min-width: 769px) {
-  .gallery__load-wrap { display: flex; }
-  .gallery__swipe-hint { display: none; }
+  .gallery__note {
+    margin-top: 16px;
+  }
 }
 
 /* ── Reviews: limit to 9 on desktop ── */
