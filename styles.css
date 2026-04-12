@@ -3104,7 +3104,8 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   margin: 0 28px 28px;
   display: block;
   text-align: center;
-  width: auto; /* override btn--full's width:100% — card has overflow:hidden so 100%+margin clips */
+  justify-content: center;
+  width: calc(100% - 56px); /* 28px each side — explicit avoids overflow:hidden clipping */
   box-sizing: border-box;
 }
 
@@ -3738,7 +3739,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
 
   /* ── Plans Section: handled by carousel media query above ── */
   .plan-card .btn {
-    width: 100%;
+    width: calc(100% - 44px); /* 22px each side — matches the margin set in carousel @media */
     justify-content: center;
     min-height: 52px;
   }
