@@ -1247,9 +1247,7 @@ if (origSubmitBtn) {
     if (e.clientY < 10) showPopup();
   });
 
-  document.getElementById('exitPopupClose')?.addEventListener('click', () => popup.classList.remove('active'));
   document.getElementById('exitPopupSkip')?.addEventListener('click', () => popup.classList.remove('active'));
-  popup.addEventListener('click', (e) => { if (e.target === popup) popup.classList.remove('active'); });
 
   document.getElementById('exitPopupCTA')?.addEventListener('click', () => {
     localStorage.setItem('cleanzatx_promo', JSON.stringify({ code: 'CLEAN25', discount: 25, source: 'exit_popup' }));
@@ -1872,5 +1870,98 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
       item.style.display = '';
     });
     if (wrap) wrap.style.display = 'none';
+  });
+})();
+
+/* ---------- Quarterly plan upsell ---------- */
+(function() {
+  const upsellBtn = document.getElementById('qwizUpsellYes');
+  const upsell = document.getElementById('qwizUpsell');
+  const accepted = document.getElementById('qwizUpsellAccepted');
+  if (!upsellBtn) return;
+
+  upsellBtn.addEventListener('click', function() {
+    upsell.style.display = 'none';
+    accepted.style.display = 'flex';
+    // Fire n8n with upsell flag
+    fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ upsell: 'quarterly_plan_accepted', source: 'quote_wizard_upsell' }),
+    }).catch(() => {});
+    if (typeof gtag !== 'undefined') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
+  });
+})();
+
+/* ---------- Chat / SMS widget ---------- */
+(function() {
+  const btn = document.getElementById('chatWidgetBtn');
+  const popup = document.getElementById('chatWidgetPopup');
+  const close = document.getElementById('chatWidgetClose');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => popup.classList.toggle('open'));
+  close?.addEventListener('click', (e) => { e.stopPropagation(); popup.classList.remove('open'); });
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target) && !popup.contains(e.target)) popup.classList.remove('open');
+  });
+})();
+
+/* ---------- Before / After Sliders ---------- */
+(function() {
+  document.querySelectorAll('.ba-slider').forEach(slider => {
+    const after = slider.querySelector('.ba-slider__after');
+    const handle = slider.querySelector('.ba-handle');
+    if (!after || !handle) return;
+
+    let dragging = false;
+
+    function setPos(x) {
+      const rect = slider.getBoundingClientRect();
+      let pct = (x - rect.left) / rect.width;
+      pct = Math.max(0.05, Math.min(0.95, pct));
+      after.style.width = (pct * 100) + '%';
+      handle.style.left = (pct * 100) + '%';
+    }
+
+    slider.addEventListener('mousedown', e => { dragging = true; setPos(e.clientX); e.preventDefault(); });
+    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+    window.addEventListener('mouseup', () => dragging = false);
+
+    slider.addEventListener('touchstart', e => { dragging = true; setPos(e.touches[0].clientX); }, { passive: true });
+    slider.addEventListener('touchmove', e => { if (dragging) { setPos(e.touches[0].clientX); e.stopPropagation(); } }, { passive: false });
+    slider.addEventListener('touchend', () => dragging = false);
+  });
+})();
+
+/* ---------- Abandoned form recovery ---------- */
+(function() {
+  let firedAbandon = false;
+  const phoneInput = document.getElementById('q-phone');
+  if (!phoneInput) return;
+
+  // Fire after phone is entered and they leave the field (blur) without submitting
+  phoneInput.addEventListener('blur', function() {
+    const phone = this.value.trim();
+    if (!phone || firedAbandon) return;
+    // Wait 3 minutes — if they haven't submitted, fire the recovery webhook
+    setTimeout(() => {
+      if (firedAbandon) return;
+      const nameVal = document.getElementById('q-name')?.value?.trim() || '';
+      // Check if they've already completed the form
+      const confirmPanel = document.querySelector('[data-panel="confirm"]');
+      if (confirmPanel && confirmPanel.style.display !== 'none') return;
+      firedAbandon = true;
+      fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: nameVal || 'Unknown',
+          phone,
+          source: 'abandoned_form_recovery',
+          message: 'This person started a quote but did not finish. Follow up!'
+        }),
+      }).catch(() => {});
+    }, 180000); // 3 minutes
   });
 })();

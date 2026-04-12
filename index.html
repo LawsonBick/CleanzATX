@@ -828,13 +828,31 @@
             <div class="qwiz__confirm-check">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green, #34d399)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
             </div>
-            <h3 id="q-confirm-msg">Thanks! We'll be in touch with your quote shortly.</h3>
-            <p id="q-confirm-text">Keep an eye on your phone and email. We'll have a formal quote sent over to you within the hour. We look forward to working with you!</p>
+            <h3 id="q-confirm-msg">You're booked in! 🎉</h3>
+            <p id="q-confirm-text">Tyler will text you within the hour with your price and available dates. <strong style="color:#34d399">Only 1 spot left this week</strong> — we'll lock it in for you.</p>
             <a href="sms:5125180512" id="q-confirm-text-now" class="btn btn--primary" style="display:none;margin-top:16px;gap:8px;align-items:center">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
               Text Us Now: (512) 518-0512
             </a>
-          </div>
+          </div><!-- /.qwiz__confirm -->
+            <!-- Quarterly Plan Upsell -->
+            <div class="qwiz__upsell" id="qwizUpsell">
+              <div class="qwiz__upsell-badge">⚡ Wait — Save More</div>
+              <div class="qwiz__upsell-inner">
+                <div class="qwiz__upsell-left">
+                  <div class="qwiz__upsell-title">Add the Quarterly Plan?</div>
+                  <div class="qwiz__upsell-sub">Save <strong>$100 on this visit</strong> + automatic scheduling every 3 months. Cancel any time.</div>
+                </div>
+                <button class="qwiz__upsell-btn" id="qwizUpsellYes">
+                  Yes, Save $100 →
+                </button>
+              </div>
+            </div>
+            <!-- After upsell accepted -->
+            <div class="qwiz__upsell-accepted" id="qwizUpsellAccepted" style="display:none">
+              <span class="qwiz__upsell-accepted-icon">✅</span>
+              Quarterly plan added! Tyler will confirm the discount when he reaches out.
+            </div>
         </div>
 
       </div><!-- /.qwiz -->
@@ -1157,6 +1175,52 @@
     </div>
   </section>
 
+  <!-- ===== NEXTDOOR ===== -->
+  <section class="nextdoor-section section">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag" style="background:rgba(0,166,81,.1);border-color:rgba(0,166,81,.2);color:#00a651">Nextdoor Neighborhood Favorite</span>
+        <h2 class="section__title">3× Neighborhood Favorite — Lakeway &amp; Bee Cave</h2>
+        <p class="section__sub">Voted #1 by our neighbors three years in a row on Nextdoor.</p>
+      </div>
+      <div class="nd-reviews-grid">
+        <div class="nd-card">
+          <div class="nd-card__header">
+            <div class="nd-card__avatar" style="background:#16a34a">L</div>
+            <div>
+              <strong class="nd-card__name">Lauren H.</strong>
+              <span class="nd-card__hood">Rough Hollow · Lakeway</span>
+            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Nextdoor_logo.svg/200px-Nextdoor_logo.svg.png" alt="Nextdoor" class="nd-card__logo" width="70" height="20" loading="lazy" />
+          </div>
+          <blockquote class="nd-card__quote">"Just had Tyler clean all our windows — incredible job. If you're in Rough Hollow and haven't tried CleanzATX, you're missing out. He's our neighborhood's go-to."</blockquote>
+        </div>
+        <div class="nd-card">
+          <div class="nd-card__header">
+            <div class="nd-card__avatar" style="background:#0ea5e9">B</div>
+            <div>
+              <strong class="nd-card__name">Brian T.</strong>
+              <span class="nd-card__hood">Spillman Ranch · Lakeway</span>
+            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Nextdoor_logo.svg/200px-Nextdoor_logo.svg.png" alt="Nextdoor" class="nd-card__logo" width="70" height="20" loading="lazy" />
+          </div>
+          <blockquote class="nd-card__quote">"Third year in a row hiring Tyler. Voted him Neighborhood Favorite again this year. Consistent, reliable, and the best windows on the block."</blockquote>
+        </div>
+        <div class="nd-card">
+          <div class="nd-card__header">
+            <div class="nd-card__avatar" style="background:#f59e0b">S</div>
+            <div>
+              <strong class="nd-card__name">Stephanie N.</strong>
+              <span class="nd-card__hood">Hudson Bend · Lake Travis</span>
+            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Nextdoor_logo.svg/200px-Nextdoor_logo.svg.png" alt="Nextdoor" class="nd-card__logo" width="70" height="20" loading="lazy" />
+          </div>
+          <blockquote class="nd-card__quote">"Recommended on Nextdoor and for good reason. CleanzATX is the ONLY window cleaner I'd ever recommend to neighbors. Absolute pros."</blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== SERVICE PLANS ===== -->
   <section class="plans-section section" id="plans">
     <div class="plans-section__glow" aria-hidden="true"></div>
@@ -1299,13 +1363,15 @@
         <p class="section__sub">Real results from real Lakeway, Bee Cave & Lake Travis homes. See the difference professional exterior cleaning makes.</p>
       </div>
       <div class="gallery__stack gallery__carousel">
-<div class="gallery__item" data-aos>
-          <img src="gallery/window-2.jpg" alt="Interior window cleaning before and after — hazy to crystal clear" loading="lazy" width="800" height="600" />
-          <span class="gallery__badge gallery__badge--before">Before</span>
-          <span class="gallery__badge gallery__badge--after">After</span>
-          <div class="gallery__caption">
-            <strong>Interior Windows</strong>
-            <span>Lakeway, TX · Hazy glass restored</span>
+        <div class="gallery__item ba-slider" data-aos id="baSlider1">
+          <img src="gallery/window-2.jpg" alt="Window before cleaning — dirty, streaked" />
+          <div class="ba-slider__after" id="baAfter1" style="width:50%">
+            <img src="gallery/window-3.jpg" alt="Window after cleaning — crystal clear" style="width:100%;height:280px;object-fit:cover;" />
+          </div>
+          <div class="ba-handle" id="baHandle1"><div class="ba-handle__icon">◀▶</div></div>
+          <div class="ba-labels">
+            <span class="ba-label ba-label--before">Before</span>
+            <span class="ba-label ba-label--after">After</span>
           </div>
         </div>
 <div class="gallery__item gallery__item--stacked" data-aos>
@@ -1714,6 +1780,33 @@
     </div>
   </footer>
 
+  <!-- Floating SMS Chat Widget -->
+  <div class="chat-widget" id="chatWidget">
+    <button class="chat-widget__btn" id="chatWidgetBtn" aria-label="Text us">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+    <div class="chat-widget__popup" id="chatWidgetPopup">
+      <div class="chat-widget__header">
+        <div class="chat-widget__avatar">T</div>
+        <div>
+          <div class="chat-widget__name">Tyler @ CleanzATX</div>
+          <div class="chat-widget__status"><span class="chat-widget__dot"></span> Usually responds in minutes</div>
+        </div>
+        <button class="chat-widget__close" id="chatWidgetClose">×</button>
+      </div>
+      <div class="chat-widget__body">
+        <div class="chat-widget__bubble">👋 Hey! Got a question or want a quick quote? Text me directly — I'm Tyler, the owner.</div>
+        <a href="sms:5125180512?body=Hi Tyler! I found CleanzATX and have a quick question." class="chat-widget__cta">
+          📱 Text Tyler Now →
+        </a>
+        <a href="tel:5125180512" class="chat-widget__call">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Or call (512) 518-0512
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Phone action modal -->
   <div class="phone-modal-overlay" id="phoneModal" role="dialog" aria-modal="true" aria-label="Contact options">
     <div class="phone-modal">
@@ -1740,12 +1833,11 @@
   <!-- Exit Intent Popup -->
   <div class="exit-popup" id="exitPopup">
     <div class="exit-popup__box">
-      <button class="exit-popup__close" id="exitPopupClose">✕</button>
       <div class="exit-popup__icon">💧</div>
       <h3>Wait! Don't Leave Dirty Windows Behind!</h3>
       <p>Get <strong>$25 off your first clean</strong> when you book today. Offer expires at midnight.</p>
       <button type="button" class="btn btn--primary btn--lg" id="exitPopupCTA">Claim My $25 Off →</button>
-      <button class="exit-popup__skip" id="exitPopupSkip">No thanks, I'll keep my dirty windows</button>
+      <button class="exit-popup__skip" id="exitPopupSkip">No thanks, I'll keep my windows dirty</button>
     </div>
   </div>
 
@@ -1766,5 +1858,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init('pEcuEf_nmG3f4FLX1');</script>
 <script src="main.js?v=6"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
