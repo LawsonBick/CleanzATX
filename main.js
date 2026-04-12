@@ -1884,11 +1884,31 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     if (!phone) return;
     firedAbandon = true;
     const name = document.getElementById('q-name')?.value?.trim() || 'Unknown';
+
+    // Grab quote state + calculate price if wizard is available
+    const s = window.__qwizState || {};
+    const services = [
+      s.svcExterior && 'Exterior',
+      s.svcInterior && 'Interior',
+      s.svcScreens && 'Screens',
+      s.svcTracks  && 'Tracks',
+    ].filter(Boolean).join(', ') || 'Not selected';
+
+    // Try to get price from the displayed total first, fallback to state calc
+    const priceEl = document.getElementById('q-price-total');
+    const priceText = priceEl ? priceEl.textContent.trim() : '';
+    const estimate = priceText || (s.sqft ? `~$${Math.round(s.sqft * 0.10)}` : 'TBD');
+
     const payload = JSON.stringify({
-      name, phone,
+      name,
+      phone,
       source: 'abandoned_form_recovery',
       trigger,
-      message: 'This person started a quote but did not finish. Follow up!'
+      sqft: s.sqft || '',
+      window_count: s.windowCount || '',
+      services,
+      plan: s.plan || 'not selected',
+      estimate,
     });
     // sendBeacon works even as the page is closing
     if (navigator.sendBeacon) {
