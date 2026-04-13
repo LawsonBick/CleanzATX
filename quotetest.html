@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Your Window Cleaning | CleanzATX</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; -webkit-font-smoothing: antialiased; }
+
+    /* Nav */
+    .nav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-mark { width: 36px; height: 36px; background: #2563eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 18px; }
+    .nav-brand { font-weight: 800; font-size: 16px; color: #0f172a; }
+    .nav-phone { font-size: 14px; font-weight: 600; color: #2563eb; text-decoration: none; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: #fff; padding: 64px 24px 80px; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 600; margin-bottom: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 900; line-height: 1.15; margin-bottom: 16px; }
+    .hero h1 span { color: #93c5fd; }
+    .hero p { font-size: 17px; color: rgba(255,255,255,0.8); max-width: 540px; margin: 0 auto 32px; line-height: 1.6; }
+    .hero-steps { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .hero-step { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px 18px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap-8px; gap: 8px; }
+    .step-num { width: 22px; height: 22px; background: #2563eb; border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .hero-cta { display: inline-block; background: #fff; color: #1e3a5f; font-weight: 800; font-size: 15px; padding: 14px 32px; border-radius: 14px; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+
+    /* Stats bar */
+    .stats { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 20px 24px; display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 26px; font-weight: 900; color: #2563eb; }
+    .stat-label { font-size: 12px; color: #64748b; font-weight: 500; margin-top: 2px; }
+
+    /* How it works */
+    .section { padding: 64px 24px; max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 12px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+    .section-title { font-size: clamp(22px, 4vw, 34px); font-weight: 900; margin-bottom: 12px; color: #0f172a; }
+    .section-sub { font-size: 16px; color: #64748b; max-width: 560px; line-height: 1.6; margin-bottom: 48px; }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .step-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; transition: box-shadow 0.2s; }
+    .step-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+    .step-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 14px; }
+    .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .step-card p { font-size: 13px; color: #64748b; line-height: 1.5; }
+
+    /* Booking embed */
+    .embed-section { background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%); padding: 64px 24px; }
+    .embed-inner { max-width: 900px; margin: 0 auto; }
+    .embed-header { text-align: center; margin-bottom: 40px; }
+    .embed-container { background: #fff; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); overflow: hidden; max-width: 480px; margin: 0 auto; border: 1px solid #e2e8f0; }
+    .embed-label { text-align: center; margin-top: 16px; }
+    .embed-label span { font-size: 12px; color: #94a3b8; }
+
+    /* Features */
+    .features { padding: 64px 24px; background: #0f172a; color: #fff; }
+    .features-inner { max-width: 900px; margin: 0 auto; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 40px; }
+    .feature { padding: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; }
+    .feature-icon { font-size: 24px; margin-bottom: 10px; }
+    .feature h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .feature p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* CTA bottom */
+    .cta-bottom { padding: 64px 24px; text-align: center; }
+    .cta-bottom h2 { font-size: clamp(22px, 4vw, 36px); font-weight: 900; margin-bottom: 12px; }
+    .cta-bottom p { color: #64748b; margin-bottom: 28px; font-size: 16px; }
+    .btn-primary { display: inline-block; background: #2563eb; color: #fff; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 14px; text-decoration: none; margin: 6px; }
+    .btn-secondary { display: inline-block; background: #f1f5f9; color: #0f172a; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 14px; text-decoration: none; margin: 6px; }
+
+    /* Footer */
+    footer { background: #0f172a; color: rgba(255,255,255,0.4); text-align: center; padding: 24px; font-size: 13px; }
+
+    iframe { display: block; width: 100%; border: none; }
+
+    @media (max-width: 600px) {
+      .stats { gap: 24px; }
+      .hero-steps { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-mark">C</div>
+      <span class="nav-brand">CleanzATX</span>
+    </a>
+    <a href="tel:5128005698" class="nav-phone">📞 (512) 800-5698</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">✨ New — Self-Scheduling</div>
+    <h1>Window Cleaning That Fits<br><span>Your Schedule</span></h1>
+    <p>Pick your date, pick your time — get a confirmed booking in under 60 seconds. No calls, no waiting.</p>
+
+    <div class="hero-steps">
+      <div class="hero-step"><span class="step-num">1</span> Get a Quote</div>
+      <div class="hero-step"><span class="step-num">2</span> Pick a Date &amp; Time</div>
+      <div class="hero-step"><span class="step-num">3</span> We Confirm via Text</div>
+    </div>
+
+    <a href="#book" class="hero-cta">Book Your Cleaning Now →</a>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Austin-Area Homes Served</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Average Google Rating</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">60s</div>
+      <div class="stat-label">Average Booking Time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">Deposit Required</div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <section class="section">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Booking in three simple steps</h2>
+    <p class="section-sub">No phone tag. No waiting on callbacks. Pick your slot and Tyler will confirm with a text within minutes.</p>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-icon" style="background:#eff6ff;">📅</div>
+        <h3>1. Choose a Date</h3>
+        <p>Browse available dates on our live calendar. Only open slots are shown — no double-booking, ever.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon" style="background:#f0fdf4;">⏰</div>
+        <h3>2. Pick a Time</h3>
+        <p>Morning or afternoon — pick the 2-hour arrival window that works best for you.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon" style="background:#fdf4ff;">📋</div>
+        <h3>3. Enter Your Info</h3>
+        <p>Name, phone, address, and what services you need. Takes about 30 seconds.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon" style="background:#fff7ed;">💬</div>
+        <h3>4. Get Confirmed</h3>
+        <p>Tyler will text you a confirmation right away. Day-before reminder automatically sent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Embed -->
+  <section class="embed-section" id="book">
+    <div class="embed-inner">
+      <div class="embed-header">
+        <div class="section-label" style="text-align:center;">Live Booking</div>
+        <h2 class="section-title" style="text-align:center;">Pick Your Date &amp; Time</h2>
+        <p class="section-sub" style="text-align:center;margin:0 auto;">This is your real booking calendar — slots fill up in real time.</p>
+      </div>
+
+      <div class="embed-container">
+        <iframe
+          src="https://cleanzatx-tracker.vercel.app/book?embed=1"
+          height="620"
+          title="Book CleanzATX Window Cleaning"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <div class="embed-label">
+        <span>🔒 Secure · No payment required to book · Instant text confirmation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features / Why CleanzATX -->
+  <section class="features">
+    <div class="features-inner">
+      <div class="section-label" style="color:#93c5fd;">Why CleanzATX</div>
+      <h2 class="section-title" style="color:#fff;">Built different, for Austin homeowners</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">🪟</div>
+          <h4>Spot-Free Results</h4>
+          <p>Pure water system eliminates mineral deposits. Windows stay cleaner, longer.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📍</div>
+          <h4>Lake Travis Specialists</h4>
+          <p>Bee Cave, Lakeway, Westlake, Steiner Ranch — our backyard. No travel fees.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">♻️</div>
+          <h4>Service Plans</h4>
+          <p>Monthly, quarterly, or bi-annual plans. Set it and forget it — we handle the rest.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💬</div>
+          <h4>Text-First Communication</h4>
+          <p>All confirmations, reminders, and updates via text. No apps to download.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h4>Same-Week Availability</h4>
+          <p>Usually have openings within 3–5 business days. Book now, enjoy clean windows soon.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🛡️</div>
+          <h4>Insured &amp; Trusted</h4>
+          <p>Fully insured. 200+ Austin-area homes. Background-checked technicians.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-bottom">
+    <h2>Ready for cleaner windows?</h2>
+    <p>Book in 60 seconds — no deposit, no commitment. Cancel anytime.</p>
+    <a href="#book" class="btn-primary">Book Now →</a>
+    <a href="tel:5128005698" class="btn-secondary">📞 Call Tyler</a>
+  </section>
+
+  <footer>
+    &copy; 2026 CleanzATX · Austin Window Cleaning · Lake Travis, Bee Cave, Lakeway, Westlake Hills
+    <br><span style="font-size:11px;opacity:0.5;">cleanzatx.com/quotetest — internal preview, not indexed</span>
+  </footer>
+
+  <script>
+    // Smooth scroll to booking section
+    document.querySelectorAll('a[href="#book"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
