@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact Chef Kate | Sunday Harvest Co.</title>
+  <meta name="description" content="Reach Sunday Harvest Co. in West Austin. Email, phone, and service-area details for private chef bookings across Lakeway, Westlake Hills, and the Hill Country.">
+  <meta name="keywords" content="contact private chef Austin, Sunday Harvest Co contact, private chef Lakeway TX">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contact — Sunday Harvest Co.">
+  <meta property="og:description" content="Email, phone, and service area for Chef Kate Durham.">
+  <meta property="og:site_name" content="Sunday Harvest Co.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-nav"></header>
+
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Let's Talk</p>
+      <h1>Contact</h1>
+      <p>Questions, custom menus, or just saying hi — Kate answers every message personally.</p>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="contact-layout">
+          <aside class="contact-info">
+            <h3>Reach Chef Kate</h3>
+
+            <div class="info-row">
+              <div class="info-icon" aria-hidden="true">&#9993;</div>
+              <div>
+                <strong>Email</strong>
+                <a href="mailto:katedurham46@gmail.com">katedurham46@gmail.com</a>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-icon" aria-hidden="true">&#9742;</div>
+              <div>
+                <strong>Phone &amp; Text</strong>
+                <a href="tel:8304468326">(830) 446-8326</a>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-icon" aria-hidden="true">&#127968;</div>
+              <div>
+                <strong>Based In</strong>
+                <span>Lakeway, Texas</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-icon" aria-hidden="true">&#9200;</div>
+              <div>
+                <strong>Response Time</strong>
+                <span>Within 24 hours</span>
+              </div>
+            </div>
+
+            <div class="service-area-note">
+              <strong>Service area:</strong> Serving within 30 miles of Lakeway, TX — Westlake Hills, Rollingwood, Tarrytown, Barton Creek, Bee Cave, Steiner Ranch, Circle C, and surrounding West Austin neighborhoods. Travel fee applies for events beyond our service area.
+            </div>
+          </aside>
+
+          <form class="form-card" id="contact-form" novalidate>
+            <div class="form-group">
+              <label for="c-name">Your name <span class="required-tag">*</span></label>
+              <input id="c-name" name="name" type="text" required autocomplete="name">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c-email">Email</label>
+                <input id="c-email" name="email" type="email" autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label for="c-phone">Phone</label>
+                <input id="c-phone" name="phone" type="tel" autocomplete="tel">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="c-message">Message <span class="required-tag">*</span></label>
+              <textarea id="c-message" name="message" required placeholder="What would you like to ask Kate?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary submit-full">Send Message</button>
+            <p id="contact-status" style="text-align:center; margin-top: 16px; color: var(--accent); font-weight: 600; display:none;">
+              Thanks! Your message is on its way to Kate.
+            </p>
+          </form>
+        </div>
+
+        <div class="quote-redirect">
+          <p>For event quotes and pricing, use the Get a Quote page for an instant estimate.</p>
+          <a href="quote.html" class="btn btn-ghost">Get an Instant Estimate</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="components.js" defer></script>
+  <script>
+    // Simple contact form handler — routes to mailto fallback.
+    // Wire to Formspree/EmailJS when ready: replace with fetch() to your endpoint.
+    (function () {
+      const form = document.getElementById("contact-form");
+      const status = document.getElementById("contact-status");
+      if (!form) return;
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const data = new FormData(form);
+        const subject = encodeURIComponent("Sunday Harvest — message from " + (data.get("name") || ""));
+        const body = encodeURIComponent(
+          "Name: " + (data.get("name") || "") + "\n" +
+          "Email: " + (data.get("email") || "") + "\n" +
+          "Phone: " + (data.get("phone") || "") + "\n\n" +
+          (data.get("message") || "")
+        );
+        window.location.href = "mailto:katedurham46@gmail.com?subject=" + subject + "&body=" + body;
+        status.style.display = "block";
+        form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>

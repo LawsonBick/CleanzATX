@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get a Quote | Sunday Harvest Co. — Private Chef West Austin</title>
+  <meta name="description" content="Request an instant estimate for private chef services in West Austin. Starting at $60 per person. Kate texts back within 24 hours.">
+  <meta name="keywords" content="private chef quote Austin, event catering estimate West Austin, hire chef Lakeway TX">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Get a Quote — Sunday Harvest Co.">
+  <meta property="og:description" content="Instant estimate for your event. Kate texts back within 24 hours.">
+  <meta property="og:site_name" content="Sunday Harvest Co.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-nav"></header>
+
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Reserve Your Date</p>
+      <h1>Get a Quote</h1>
+      <p>Tell Kate about your event — you'll see a live estimate as you go, and she'll text back within 24 hours with your confirmed quote.</p>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="quote-layout">
+          <!-- Form ------------------------------------------------------------- -->
+          <form id="quote-form" class="form-card" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Your name <span class="required-tag">*</span></label>
+                <input id="name" name="name" type="text" required autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone number <span class="required-tag">*</span></label>
+                <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="(830) 555-0000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" autocomplete="email">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="event-type">Event type <span class="required-tag">*</span></label>
+                <select id="event-type" name="event-type" required>
+                  <option value="">Select an event type</option>
+                  <option>Private Dinner Party</option>
+                  <option>Date Night</option>
+                  <option>Corporate Lunch</option>
+                  <option>Holiday Gathering</option>
+                  <option>Birthday</option>
+                  <option>Rehearsal Dinner</option>
+                  <option>Family Gathering</option>
+                  <option>Charcuterie Board</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="event-date">Event date</label>
+                <input id="event-date" name="event-date" type="date">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="location">Location / zip code</label>
+                <input id="location" name="location" type="text" placeholder="Westlake Hills, 78746">
+              </div>
+              <div class="form-group">
+                <label for="guests">Guest count <span class="required-tag">*</span></label>
+                <input id="guests" name="guests" type="number" min="2" max="20" required placeholder="2–20 guests">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="budget">Budget range</label>
+              <select id="budget" name="budget">
+                <option value="">Select a range</option>
+                <option>Under $300</option>
+                <option>$300–$600</option>
+                <option>$600–$1,200</option>
+                <option>$1,200–$2,000</option>
+                <option>$2,000+</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Dietary restrictions</label>
+              <div class="checkbox-grid">
+                <label><input type="checkbox" name="dietary" value="Gluten-free"> Gluten-free</label>
+                <label><input type="checkbox" name="dietary" value="Dairy-free"> Dairy-free</label>
+                <label><input type="checkbox" name="dietary" value="Vegan"> Vegan</label>
+                <label><input type="checkbox" name="dietary" value="Vegetarian"> Vegetarian</label>
+                <label><input type="checkbox" name="dietary" value="Nut allergy"> Nut allergy</label>
+                <label><input type="checkbox" name="dietary" value="Shellfish allergy"> Shellfish allergy</label>
+                <label><input type="checkbox" name="dietary" value="None"> None</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="hear">How did you hear about us?</label>
+              <select id="hear" name="hear">
+                <option value="">Select one</option>
+                <option>Google</option>
+                <option>Instagram</option>
+                <option>Word of mouth</option>
+                <option>Referral</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="notes">Special requests or notes</label>
+              <textarea id="notes" name="notes" placeholder="Tell Kate about the vibe, the guests, or anything she should know..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-full">Send My Quote Request</button>
+          </form>
+
+          <!-- Estimate sidebar ------------------------------------------------ -->
+          <aside class="estimate-sidebar">
+            <div class="estimate-card">
+              <p class="eyebrow">Live Estimate</p>
+              <h3>Estimated range</h3>
+              <div class="estimate-range" id="estimate-range">Add guests to see a range</div>
+              <p class="estimate-note" id="estimate-note">Estimates update as you fill in your guest count.</p>
+              <div class="estimate-rundown" id="estimate-rundown"></div>
+              <div class="sms-fallback">
+                <a id="sms-fallback-link" href="sms:+18304468326">Prefer to text? Message Kate directly &rarr;</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Thank-you overlay -->
+  <div class="thanks-overlay" id="thanks-overlay" role="dialog" aria-modal="true" aria-labelledby="thanks-title">
+    <div class="thanks-card">
+      <p class="eyebrow">Request Received</p>
+      <h2 id="thanks-title">Your table is brewing.</h2>
+      <p id="thanks-message"></p>
+      <div class="thanks-actions">
+        <a id="add-to-calendar" class="btn btn-primary" target="_blank" rel="noopener">Add to Calendar</a>
+        <button type="button" id="thanks-close" class="btn btn-outline">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+  <script src="components.js" defer></script>
+  <script src="quote.js" defer></script>
+</body>
+</html>

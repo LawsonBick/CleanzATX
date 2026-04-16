@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery | Sunday Harvest Co. — Private Chef West Austin</title>
+  <meta name="description" content="A look at Sunday Harvest Co. — dinner parties, charcuterie boards, plated dishes, and holiday events across West Austin.">
+  <meta name="keywords" content="private chef photos Austin, catering gallery West Austin, dinner party photography">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gallery — Sunday Harvest Co.">
+  <meta property="og:description" content="A look at the food, the tables, and the evenings we've cooked for.">
+  <meta property="og:site_name" content="Sunday Harvest Co.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-nav"></header>
+
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Gathered Moments</p>
+      <h1>The Table, Plated.</h1>
+      <p>A look at the food, the tables, and the evenings we've cooked for. Click any image to see it larger.</p>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="gallery-filter" role="tablist" aria-label="Filter gallery">
+          <button type="button" class="is-active" data-filter="all">All</button>
+          <button type="button" data-filter="dinner">Dinner Parties</button>
+          <button type="button" data-filter="charcuterie">Charcuterie &amp; Boards</button>
+          <button type="button" data-filter="holiday">Holiday Events</button>
+          <button type="button" data-filter="plated">Plated Dishes</button>
+        </div>
+
+        <!--
+          Replace placeholder divs with <img> tags when Kate's photos are ready.
+          Keep the .gallery-item wrapper and data-category attribute for filtering.
+          Example:
+          <div class="gallery-item" data-category="dinner">
+            <img src="photos/dinner-01.jpg" alt="Candlelit private dinner for six in Westlake Hills">
+            <span class="label">Candlelit dinner for six</span>
+          </div>
+        -->
+        <div class="gallery-grid" id="gallery">
+          <div class="gallery-item" data-category="dinner" tabindex="0">
+            <span class="category">Dinner Party</span>
+            <span class="label">Candlelit table for six</span>
+          </div>
+          <div class="gallery-item" data-category="plated" tabindex="0">
+            <span class="category">Plated</span>
+            <span class="label">Salmon puff, first course</span>
+          </div>
+          <div class="gallery-item" data-category="charcuterie" tabindex="0">
+            <span class="category">Charcuterie</span>
+            <span class="label">Hill Country grazing table</span>
+          </div>
+          <div class="gallery-item" data-category="holiday" tabindex="0">
+            <span class="category">Holiday</span>
+            <span class="label">Thanksgiving spread</span>
+          </div>
+          <div class="gallery-item" data-category="dinner" tabindex="0">
+            <span class="category">Dinner Party</span>
+            <span class="label">Birthday dinner, Barton Creek</span>
+          </div>
+          <div class="gallery-item" data-category="plated" tabindex="0">
+            <span class="category">Plated</span>
+            <span class="label">Coq au vin with focaccia</span>
+          </div>
+          <div class="gallery-item" data-category="charcuterie" tabindex="0">
+            <span class="category">Charcuterie</span>
+            <span class="label">Handbuilt board for eight</span>
+          </div>
+          <div class="gallery-item" data-category="holiday" tabindex="0">
+            <span class="category">Holiday</span>
+            <span class="label">Easter brunch, Lakeway</span>
+          </div>
+          <div class="gallery-item" data-category="plated" tabindex="0">
+            <span class="category">Plated</span>
+            <span class="label">Orange tart with meringue</span>
+          </div>
+          <div class="gallery-item" data-category="dinner" tabindex="0">
+            <span class="category">Dinner Party</span>
+            <span class="label">Rehearsal dinner, Steiner Ranch</span>
+          </div>
+          <div class="gallery-item" data-category="holiday" tabindex="0">
+            <span class="category">Holiday</span>
+            <span class="label">Christmas Eve, Westlake</span>
+          </div>
+          <div class="gallery-item" data-category="charcuterie" tabindex="0">
+            <span class="category">Charcuterie</span>
+            <span class="label">Seasonal fruit &amp; honeycomb</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <h2>Your table could be next.</h2>
+      <a href="quote.html" class="btn btn-cream">Reserve Your Date</a>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Gallery image viewer">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close viewer">&times;</button>
+    <div class="lightbox-content" id="lightbox-content"></div>
+  </div>
+
+  <div id="site-footer"></div>
+  <script src="components.js" defer></script>
+  <script>
+    // Simple vanilla JS gallery filter + lightbox (no external libraries)
+    (function () {
+      const grid = document.getElementById("gallery");
+      const filterButtons = document.querySelectorAll(".gallery-filter button");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxContent = document.getElementById("lightbox-content");
+      const lightboxClose = document.getElementById("lightbox-close");
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+          filterButtons.forEach(b => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          const filter = btn.dataset.filter;
+          grid.querySelectorAll(".gallery-item").forEach(item => {
+            const match = filter === "all" || item.dataset.category === filter;
+            item.style.display = match ? "" : "none";
+          });
+        });
+      });
+
+      function openLightbox(item) {
+        const label = item.querySelector(".label")?.textContent || "";
+        lightboxContent.textContent = label;
+        lightbox.classList.add("is-open");
+      }
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+      }
+
+      grid.addEventListener("click", function (e) {
+        const item = e.target.closest(".gallery-item");
+        if (item) openLightbox(item);
+      });
+      grid.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          const item = e.target.closest(".gallery-item");
+          if (item) { e.preventDefault(); openLightbox(item); }
+        }
+      });
+      lightboxClose.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", function (e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeLightbox();
+      });
+    })();
+  </script>
+</body>
+</html>
