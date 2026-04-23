@@ -222,15 +222,30 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    ============================================================ */
 const qwiz = document.getElementById('quoteWizard');
 if (qwiz) {
+  const SURCHARGE_CONFIG = {
+    homeMaterial: {
+      "Limestone":    { services: ["house_wash"], percent: 10, label: "Limestone care surcharge", tooltip: "Limestone is more porous than stucco or vinyl — we use a lower-concentration mix and rinse longer." },
+      "Wood Siding":  { services: ["house_wash"], percent: 15, label: "Wood siding surcharge", tooltip: "Wood needs the lowest-pressure setup we have, and extra care to avoid driving water behind the grain." }
+    },
+    debris: {
+      roofWashHeavy:     { services: ["roof_wash"],  triggers: ["Moss & Lichen", "Oxidized paint (house painting prep)", "Post-construction debris"], percent: 15, label: "Heavy debris" },
+      houseWashPaintPrep: { services: ["house_wash"], triggers: ["Oxidized paint (house painting prep)", "Post-construction debris"], percent: 20, label: "Paint prep / post-construction surcharge" }
+    }
+  };
+
   const state = window.__qwizState = {
-    step: 1,
+    step: 0,
+    selectedServices: [],
     address: '', sqft: 0, stories: 0,
     propertyType: 'Residential',
     commercialPropertyType: '', commercialPropertyDesc: '', businessName: '',
     windowCount: 0, screenCount: 0, trackCount: 0,
     screenType: 'normal',
     svcExterior: false, svcInterior: false, svcScreens: false, svcTracks: false,
-    plan: null, autoBilling: false, commercialFrequency: 'weekly',
+    homeMaterial: '', homeMaterialNotes: '',
+    debrisTypes: [],
+    surchargesApplied: [],
+    plan: '', autoBilling: false, commercialFrequency: 'weekly',
     firstName: '', lastName: '', phone: '', email: '',
     referral: '', referrer: '', timeline: '', deadlineDate: '',
     promoCode: '', promoDiscount: 0,
@@ -240,7 +255,9 @@ if (qwiz) {
     _frenchPaneAsked: false,
   };
 
+  const TOTAL_STEPS = 6;
   const stepLabels = {
+    0: 'Services',
     1: 'Property Info',
     2: 'Service Selection',
     3: 'Service Plan',
@@ -361,7 +378,7 @@ if (qwiz) {
 
     // Progress bar
     const fill = document.getElementById('qwizBarFill');
-    fill.style.width = (step / 5 * 100) + '%';
+    fill.style.width = ((step + 1) / TOTAL_STEPS * 100) + '%';
 
     // Step indicators
     qwiz.querySelectorAll('.qwiz__step').forEach(s => {
@@ -373,7 +390,7 @@ if (qwiz) {
 
     // Label
     const label = document.getElementById('qwizStepLabel');
-    label.textContent = `Step ${step} of 5: ${stepLabels[step] || ''}`;
+    label.textContent = `Step ${step + 1} of ${TOTAL_STEPS}: ${stepLabels[step] || ''}`;
 
     // Pre-populate chips when entering step 2
     if (step === 2) {
@@ -441,6 +458,15 @@ if (qwiz) {
         buildChipsWithCustom(document.getElementById('q-screen-chips'), stOpts, 'screenCount');
         buildChipsWithCustom(document.getElementById('q-track-chips'), stOpts, 'trackCount');
       }
+
+      // Conditional field groups based on Step 0 selections
+      const ss = state.selectedServices;
+      const needsMaterial = ss.includes('windows') || ss.includes('house_wash') || ss.includes('pressure');
+      const needsDebris = ss.includes('roof_wash') || ss.includes('house_wash');
+      const onlyWindows = ss.length === 1 && ss.includes('windows');
+
+      document.getElementById('q-home-material-group').style.display = (needsMaterial && !onlyWindows) ? '' : 'none';
+      document.getElementById('q-debris-group').style.display = needsDebris ? '' : 'none';
     }
 
     // Show/hide residential vs commercial plans on step 3
@@ -515,6 +541,10 @@ if (qwiz) {
 
   // Validation
   function validateStep(step) {
+    if (step === 0) {
+      if (!state.selectedServices.length) return false;
+      return true;
+    }
     if (step === 1) {
       const addr = document.getElementById('q-address').value.trim();
       state.address = addr;
@@ -594,8 +624,9 @@ if (qwiz) {
 
   // Pricing engine (flat price, no range)
   function calcPrice() {
-    const wc = state.windowCount;
-    const sqft = state.sqft;
+    const wc = Number(state.windowCount) || 0;
+    const sqft = Number(state.sqft) || 0;
+    const ss = state.selectedServices;
 
     // Exterior: $10/window (fall back to sqft x $0.10)
     let exterior = state.svcExterior ? (wc > 0 ? wc * 10 : sqft * 0.10) : 0;
@@ -603,33 +634,54 @@ if (qwiz) {
     let interior = state.svcInterior ? (wc > 0 ? wc * 5 : sqft * 0.05) : 0;
     // Screens: $5/screen (normal) or $10/screen (solar)
     const screenPrice = state.screenType === 'solar' ? 10 : 5;
-    let screens = state.svcScreens ? state.screenCount * screenPrice : 0;
+    let screens = state.svcScreens ? (Number(state.screenCount) || 0) * screenPrice : 0;
     // Tracks: $5/track (FREE on quarterly plan)
-    let tracks = state.svcTracks ? state.trackCount * 5 : 0;
+    let tracks = state.svcTracks ? (Number(state.trackCount) || 0) * 5 : 0;
     const tracksFree = state.plan === 'quarterly';
     if (tracksFree) tracks = 0;
     // French panes: $10/window
-    let frenchPanes = state.frenchPanes ? state.frenchPaneCount * 10 : 0;
+    let frenchPanes = state.frenchPanes ? (Number(state.frenchPaneCount) || 0) * 10 : 0;
 
     const subtotal = exterior + interior + screens + tracks + frenchPanes;
+
+    // Surcharges (applied to subtotal of affected services)
+    const surcharges = [];
+    state.surchargesApplied = [];
+    const mat = state.homeMaterial;
+    const matRule = SURCHARGE_CONFIG.homeMaterial[mat];
+    if (matRule && matRule.services.some(s => ss.includes(s))) {
+      const amt = Math.round(subtotal * matRule.percent / 100);
+      surcharges.push({ label: matRule.label, amount: amt, tooltip: matRule.tooltip });
+      state.surchargesApplied.push(matRule.label);
+    }
+    for (const [, rule] of Object.entries(SURCHARGE_CONFIG.debris)) {
+      if (rule.services.some(s => ss.includes(s)) && rule.triggers.some(t => state.debrisTypes.includes(t))) {
+        const amt = Math.round(subtotal * rule.percent / 100);
+        surcharges.push({ label: rule.label, amount: amt });
+        state.surchargesApplied.push(rule.label);
+      }
+    }
+    const surchargeTotal = surcharges.reduce((sum, s) => sum + s.amount, 0);
+
+    const subtotalWithSurcharges = subtotal + surchargeTotal;
     const MINIMUM = 150;
 
     // Discounts only apply when the job meets the minimum on its own
     let discount = 0;
-    if (subtotal >= MINIMUM) {
+    if (subtotalWithSurcharges >= MINIMUM) {
       if (state.plan === '6month') discount = 50;
       else if (state.plan === 'quarterly') discount = 100;
       else if (state.plan === 'monthly') discount = 150;
     }
 
     // Promo discount also only applies when subtotal meets minimum
-    const promoDiscount = subtotal >= MINIMUM ? state.promoDiscount : 0;
+    const promoDiscount = subtotalWithSurcharges >= MINIMUM ? (Number(state.promoDiscount) || 0) : 0;
 
-    const rawTotal = Math.max(0, subtotal - discount - promoDiscount);
+    const rawTotal = Math.max(0, subtotalWithSurcharges - discount - promoDiscount);
     const total = rawTotal > 0 ? Math.max(MINIMUM, rawTotal) : 0;
-    const hitMinimum = subtotal > 0 && subtotal < MINIMUM;
+    const hitMinimum = subtotalWithSurcharges > 0 && subtotalWithSurcharges < MINIMUM;
 
-    return { exterior, interior, screens, tracks, frenchPanes, discount, subtotal, total, rawTotal, hitMinimum, tracksFree, planName: state.plan };
+    return { exterior, interior, screens, tracks, frenchPanes, surcharges, surchargeTotal, discount, subtotal: subtotalWithSurcharges, total, rawTotal, hitMinimum, tracksFree, planName: state.plan };
   }
 
   // Job duration estimate
@@ -666,27 +718,38 @@ if (qwiz) {
     const addLine = (label, amount, cls) => {
       const div = document.createElement('div');
       div.className = 'qwiz__price-line' + (cls ? ' ' + cls : '');
-      div.innerHTML = `<span>${label}</span><span>${typeof amount === 'string' ? amount : '$' + amount.toFixed(2)}</span>`;
+      const display = typeof amount === 'string' ? amount : '$' + (Number(amount) || 0).toFixed(2);
+      div.innerHTML = `<span>${label}</span><span>${display}</span>`;
       lines.appendChild(div);
     };
-    if (state.svcExterior) addLine(`Exterior Windows (${state.windowCount} @ $10)`, p.exterior);
-    if (state.svcInterior) addLine(`Interior Windows (${state.windowCount} @ $5)`, p.interior);
-    if (state.frenchPanes && p.frenchPanes > 0) addLine(`French Pane Windows (${state.frenchPaneCount} @ $10)`, p.frenchPanes);
-    if (state.svcScreens) addLine(`Screen Cleaning (${state.screenCount} ${state.screenType === 'solar' ? 'solar' : 'standard'})`, p.screens);
+    const wc = Number(state.windowCount) || 0;
+    const sc = Number(state.screenCount) || 0;
+    const tc = Number(state.trackCount) || 0;
+    const fpc = Number(state.frenchPaneCount) || 0;
+    if (state.svcExterior) addLine(`Exterior Windows (${wc} @ $10)`, p.exterior);
+    if (state.svcInterior) addLine(`Interior Windows (${wc} @ $5)`, p.interior);
+    if (state.frenchPanes && p.frenchPanes > 0) addLine(`French Pane Windows (${fpc} @ $10)`, p.frenchPanes);
+    if (state.svcScreens) addLine(`Screen Cleaning (${sc} ${state.screenType === 'solar' ? 'solar' : 'standard'})`, p.screens);
     if (state.svcTracks && p.tracksFree) {
-      addLine(`Track Cleaning (${state.trackCount}) - FREE w/ Quarterly`, '$0.00', 'qwiz__price-line--discount');
+      addLine(`Track Cleaning (${tc}) - FREE w/ Quarterly`, '$0.00', 'qwiz__price-line--discount');
     } else if (state.svcTracks) {
-      addLine(`Track Cleaning (${state.trackCount})`, p.tracks);
+      addLine(`Track Cleaning (${tc})`, p.tracks);
+    }
+    if (p.surcharges && p.surcharges.length > 0) {
+      p.surcharges.forEach(s => {
+        const tip = s.tooltip ? ` <span class="qwiz__tooltip" title="${s.tooltip}">ⓘ</span>` : '';
+        addLine(`${s.label}${tip}`, s.amount, 'qwiz__price-line--surcharge');
+      });
     }
     if (p.discount > 0) {
-      const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan;
-      addLine(`${planLabel} Plan Discount`, '-$' + p.discount.toFixed(2), 'qwiz__price-line--discount');
+      const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : 'Plan';
+      addLine(`${planLabel} Plan Discount`, '-$' + (Number(p.discount) || 0).toFixed(2), 'qwiz__price-line--discount');
     }
     if (state.promoDiscount > 0) {
-      addLine(`$25 Discount (${state.promoCode})`, '-$' + state.promoDiscount.toFixed(2), 'qwiz__price-line--discount');
+      addLine(`$25 Discount (${state.promoCode || 'PROMO'})`, '-$' + (Number(state.promoDiscount) || 0).toFixed(2), 'qwiz__price-line--discount');
     }
     // Flat price — no range
-    document.getElementById('q-price-total').textContent = '$' + Math.round(p.total);
+    document.getElementById('q-price-total').textContent = '$' + Math.round(Number(p.total) || 0);
 
     // Minimum job notice
     const minNotice = document.getElementById('q-minimum-notice');
@@ -697,11 +760,56 @@ if (qwiz) {
   qwiz.querySelectorAll('.qwiz__next').forEach(btn => {
     btn.addEventListener('click', () => {
       const next = parseInt(btn.dataset.next);
-      if (validateStep(state.step)) goToStep(next);
+      if (!validateStep(state.step)) return;
+      // GA4 events for new steps
+      if (typeof gtag !== 'undefined') {
+        if (state.step === 0) {
+          gtag('event', 'quote_step_services', { selected_services: state.selectedServices });
+        }
+        if (state.step === 2) {
+          gtag('event', 'quote_step_details', {
+            home_material: state.homeMaterial,
+            debris_types: state.debrisTypes,
+            surcharges_applied: state.surchargesApplied
+          });
+        }
+      }
+      goToStep(next);
     });
   });
   qwiz.querySelectorAll('.qwiz__back').forEach(btn => {
     btn.addEventListener('click', () => goToStep(parseInt(btn.dataset.back)));
+  });
+
+  // Step 0 — service tile checkboxes
+  const step0Next = document.getElementById('step0Next');
+  document.querySelectorAll('#q-service-tiles input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      state.selectedServices = [...document.querySelectorAll('#q-service-tiles input:checked')].map(c => c.value);
+      step0Next.disabled = state.selectedServices.length === 0;
+      // Auto-check window service checkboxes if windows selected
+      if (cb.value === 'windows' && cb.checked) {
+        const ext = document.getElementById('q-svc-exterior');
+        if (ext && !ext.checked) { ext.checked = true; ext.dispatchEvent(new Event('change')); }
+      }
+    });
+  });
+
+  // Step 2 conditional — home material dropdown
+  document.getElementById('q-home-material')?.addEventListener('change', e => {
+    state.homeMaterial = e.target.value;
+    const showNotes = e.target.value === 'Mixed (multiple materials)' || e.target.value === 'Other';
+    document.getElementById('q-home-material-notes-field').style.display = showNotes ? '' : 'none';
+  });
+  document.getElementById('q-home-material-notes')?.addEventListener('input', e => {
+    state.homeMaterialNotes = e.target.value.trim();
+  });
+
+  // Step 2 conditional — debris checkboxes
+  document.querySelectorAll('#q-debris-checks input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      state.debrisTypes = [...document.querySelectorAll('#q-debris-checks input:checked')].map(c => c.value);
+    });
   });
 
   // Property type toggle (Step 1) — show/hide residential vs commercial fields
@@ -843,7 +951,7 @@ if (qwiz) {
         card.classList.add('selected');
         state.plan = card.dataset.plan;
       } else {
-        state.plan = null;
+        state.plan = '';
       }
       const skipBtn = document.getElementById('skipPlanBtn');
       const selectBtn = document.getElementById('selectPlanBtn');
@@ -889,7 +997,7 @@ if (qwiz) {
   function trackStep(step) {
     if (typeof gtag === 'undefined') return;
     gtag('event', 'quote_step', { step_number: step });
-    if (step === 1) gtag('event', 'begin_checkout'); // started quote
+    if (step === 0) gtag('event', 'begin_checkout');
   }
 
   // Submit handlers
@@ -899,7 +1007,7 @@ if (qwiz) {
     submitted = true;
     const p = calcPrice();
     const isLarge = state.propertyType === 'Residential' && state.sqft >= 3700;
-    const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : 'None (One-Time)';
+    const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : state.plan || 'None (One-Time)';
     const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
 
     // Silent EmailJS send
@@ -928,6 +1036,10 @@ if (qwiz) {
       timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
       promo_code:       state.promoCode || '',
       promo_discount:   state.promoDiscount || 0,
+      selected_services: (state.selectedServices || []).join(', '),
+      home_material:    state.homeMaterial || '',
+      home_material_notes: state.homeMaterialNotes || '',
+      debris_types:     (state.debrisTypes || []).join(', '),
     };
     emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
 
@@ -982,6 +1094,11 @@ if (qwiz) {
         large_home:                 isLarge,
         promo_code:                 state.promoCode || '',
         promo_discount:             state.promoDiscount || 0,
+        selected_services:          state.selectedServices || [],
+        home_material:              state.homeMaterial || '',
+        home_material_notes:        state.homeMaterialNotes || '',
+        debris_types:               state.debrisTypes || [],
+        surcharges_applied:         state.surchargesApplied || [],
       }),
     }).catch(() => {});
 
@@ -1022,6 +1139,11 @@ if (qwiz) {
         how_found:                  state.referral || '',
         promo_code:                 state.promoCode || '',
         promo_discount:             state.promoDiscount || 0,
+        selected_services:          state.selectedServices || [],
+        home_material:              state.homeMaterial || '',
+        home_material_notes:        state.homeMaterialNotes || '',
+        debris_types:               state.debrisTypes || [],
+        surcharges_applied:         state.surchargesApplied || [],
       }),
     }).catch(() => {});
 
@@ -1031,6 +1153,7 @@ if (qwiz) {
         value: parseFloat(calcPrice().total.toFixed(2)),
         currency: 'USD',
         lead_source: state.referral || 'unknown',
+        selected_services: state.selectedServices,
       });
     }
 
@@ -1067,8 +1190,8 @@ if (qwiz) {
   document.getElementById('q-submit-large')?.addEventListener('click', handleSubmit);
   document.getElementById('q-submit-custom')?.addEventListener('click', handleSubmit);
 
-  // Initialize step 1
-  goToStep(1);
+  // Initialize step 0
+  goToStep(0);
 }
 
 /* ---------- Phone action modal ---------- */
@@ -1857,21 +1980,15 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   upsellBtn.addEventListener('click', function() {
     upsell.style.display = 'none';
     accepted.style.display = 'flex';
-    // Fire n8n with upsell flag
-    fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ upsell: 'quarterly_plan_accepted', source: 'quote_wizard_upsell' }),
-    }).catch(() => {});
+    // Upsell accepted — no separate webhook needed, main form already submitted
     if (typeof gtag !== 'undefined') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
   });
 })();
 
 
-/* ---------- Abandoned form recovery ---------- */
+/* ---------- Abandoned form recovery (email only — no SMS) ---------- */
 (function() {
   let firedAbandon = false;
-  const WEBHOOK = 'https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d';
 
   function hasCompleted() {
     const confirmPanel = document.querySelector('[data-panel="confirm"]');
@@ -1883,48 +2000,13 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     const phone = document.getElementById('q-phone')?.value?.trim() || '';
     if (!phone) return;
     firedAbandon = true;
-    const name = document.getElementById('q-name')?.value?.trim() || 'Unknown';
-
-    // Grab quote state + calculate price if wizard is available
-    const s = window.__qwizState || {};
-    const services = [
-      s.svcExterior && 'Exterior',
-      s.svcInterior && 'Interior',
-      s.svcScreens && 'Screens',
-      s.svcTracks  && 'Tracks',
-    ].filter(Boolean).join(', ') || 'Not selected';
-
-    // Try to get price from the displayed total first, fallback to state calc
-    const priceEl = document.getElementById('q-price-total');
-    const priceText = priceEl ? priceEl.textContent.trim() : '';
-    const estimate = priceText || (s.sqft ? `~$${Math.round(s.sqft * 0.10)}` : 'TBD');
-
-    const payload = JSON.stringify({
-      name,
-      phone,
-      source: 'abandoned_form_recovery',
-      trigger,
-      sqft: s.sqft || '',
-      window_count: s.windowCount || '',
-      services,
-      plan: s.plan || 'not selected',
-      estimate,
-    });
-    // sendBeacon works even as the page is closing
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(WEBHOOK, new Blob([payload], { type: 'application/json' }));
-    } else {
-      fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {});
-    }
   }
 
-  // Catch tab close / app switch / Safari swipe-away
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') fireAbandon('page_hidden');
   });
   window.addEventListener('pagehide', () => fireAbandon('pagehide'));
 
-  // Also keep the 3-min fallback for people who leave the tab open
   document.getElementById('q-phone')?.addEventListener('blur', function() {
     if (!this.value.trim() || firedAbandon) return;
     setTimeout(() => fireAbandon('timeout_3min'), 180000);

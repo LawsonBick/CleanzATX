@@ -59,7 +59,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"New Quote Request\\nName: \" + $json.first_name + \" \" + ($json.last_name || \"\") + \"\\nEmail: \" + ($json.email || \"N/A\") + \"\\nPhone: \" + $json.phone + \"\\nAddress: \" + ($json.address || \"N/A\") + \"\\nStories: \" + $json.stories + \"\\nSqft: \" + $json.sqft + \"\\nLast Cleaned: \" + ($json.last_cleaned || \"N/A\") + \"\\nPlan: \" + $json.service_plan + \"\\nAuto-Bill: \" + $json.auto_billing }) }}",
+        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"New Quote Request\\nName: \" + ($json.first_name || \"Unknown\") + \" \" + ($json.last_name || \"\") + \"\\nEmail: \" + ($json.email || \"N/A\") + \"\\nPhone: \" + ($json.phone || \"N/A\") + \"\\nAddress: \" + ($json.address || \"N/A\") + \"\\nStories: \" + ($json.stories || \"N/A\") + \"\\nSqft: \" + ($json.sqft || \"N/A\") + \"\\nLast Cleaned: \" + ($json.last_cleaned || \"N/A\") + \"\\nPlan: \" + ($json.service_plan || \"N/A\") + \"\\nAuto-Bill: \" + ($json.auto_billing || \"N/A\") }) }}",
         "options": {}
       },
       "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
@@ -121,7 +121,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"Estimate for \" + $('Set Fields').first().json.first_name + \" \" + ($('Set Fields').first().json.last_name || \"\") + \":\\nExterior Windows: $\" + $('Set Fields').first().json.exterior_price + (parseFloat($('Set Fields').first().json.interior_price) > 0 ? \"\\nInterior Windows: $\" + $('Set Fields').first().json.interior_price : \"\") + (parseFloat($('Set Fields').first().json.screen_price) > 0 ? \"\\nScreen Cleaning: $\" + $('Set Fields').first().json.screen_price : \"\") + (parseFloat($('Set Fields').first().json.track_price) > 0 ? \"\\nTrack Cleaning: $\" + $('Set Fields').first().json.track_price : \"\") + (parseFloat($('Set Fields').first().json.discount) > 0 ? \"\\nPlan Discount: -$\" + $('Set Fields').first().json.discount : \"\") + \"\\nTotal: $\" + $('Set Fields').first().json.total_price + \"\\nAssign: Tyler & Kyson\" }) }}",
+        "body": "={{ JSON.stringify({ from: \"+17372774533\", to: [\"+19498286231\"], content: \"Estimate for \" + ($('Set Fields').first().json.first_name || \"Unknown\") + \" \" + ($('Set Fields').first().json.last_name || \"\") + \":\\nExterior Windows: $\" + $('Set Fields').first().json.exterior_price + (parseFloat($('Set Fields').first().json.interior_price) > 0 ? \"\\nInterior Windows: $\" + $('Set Fields').first().json.interior_price : \"\") + (parseFloat($('Set Fields').first().json.screen_price) > 0 ? \"\\nScreen Cleaning: $\" + $('Set Fields').first().json.screen_price : \"\") + (parseFloat($('Set Fields').first().json.track_price) > 0 ? \"\\nTrack Cleaning: $\" + $('Set Fields').first().json.track_price : \"\") + (parseFloat($('Set Fields').first().json.discount) > 0 ? \"\\nPlan Discount: -$\" + $('Set Fields').first().json.discount : \"\") + \"\\nTotal: $\" + $('Set Fields').first().json.total_price + \"\\nAssign: Tyler & Kyson\" }) }}",
         "options": {}
       },
       "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",

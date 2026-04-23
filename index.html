@@ -33,12 +33,23 @@
   <!-- Open Graph -->
   <meta property="og:title" content="Window Cleaning Lakeway, Bee Cave & Lake Travis | CleanzATX">
   <meta property="og:description" content="#1 rated window cleaning serving Lakeway, Bee Cave, Lake Travis, Hudson Bend & Four Points. 167 five-star reviews. Call (512) 518-0512.">
-  <meta property="og:url" content="https://cleanzatx.com">
+  <meta property="og:url" content="https://www.cleanzatx.com/">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://cleanzatx.com/logo.png">
+  <meta property="og:image" content="https://www.cleanzatx.com/logo.png">
+  <meta property="og:site_name" content="CleanzATX">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Window Cleaning Lakeway, Bee Cave & Lake Travis | CleanzATX">
+  <meta name="twitter:description" content="#1 rated window cleaning in West Austin. 167 five-star reviews, $1M insured, 7-day rain guarantee. Get your price in 60 seconds.">
+  <meta name="twitter:image" content="https://www.cleanzatx.com/logo.png">
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://cleanzatx.com/">
+  <link rel="canonical" href="https://www.cleanzatx.com/">
+
+  <!-- Mobile & PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+  <meta name="theme-color" content="#0c1a2e">
 
   <!-- LLM Discovery -->
   <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
@@ -49,8 +60,8 @@
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     "name": "CleanzATX",
-    "image": "https://cleanzatx.com/logo.png",
-    "url": "https://cleanzatx.com",
+    "image": "https://www.cleanzatx.com/logo.png",
+    "url": "https://www.cleanzatx.com",
     "telephone": "+15125180512",
     "email": "cleanzatx@gmail.com",
     "priceRange": "$$",
@@ -188,6 +199,41 @@
         "@type": "Question",
         "name": "Who is the best window cleaner in Westlake Hills TX?",
         "acceptedAnswer": {"@type": "Answer", "text": "CleanzATX serves Westlake Hills with the highest standard of residential window cleaning in the area. 167 five-star Google reviews and Nextdoor Neighborhood Favorite 2023–2025. Call (512) 518-0512 or visit cleanzatx.com/window-cleaning-westlake-hills."}
+      }
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite (enables Google sitelinks search) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "CleanzATX",
+    "url": "https://www.cleanzatx.com",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CleanzATX",
+      "url": "https://www.cleanzatx.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.cleanzatx.com/logo.png"
+      }
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.cleanzatx.com/"
       }
     ]
   }
@@ -370,17 +416,78 @@
         <div class="qwiz__progress">
           <div class="qwiz__bar"><div class="qwiz__bar-fill" id="qwizBarFill"></div></div>
           <div class="qwiz__steps">
-            <span class="qwiz__step active" data-step="1">1</span>
-            <span class="qwiz__step" data-step="2">2</span>
-            <span class="qwiz__step" data-step="3">3</span>
-            <span class="qwiz__step" data-step="4">4</span>
-            <span class="qwiz__step" data-step="5">5</span>
+            <span class="qwiz__step active" data-step="0">1</span>
+            <span class="qwiz__step" data-step="1">2</span>
+            <span class="qwiz__step" data-step="2">3</span>
+            <span class="qwiz__step" data-step="3">4</span>
+            <span class="qwiz__step" data-step="4">5</span>
+            <span class="qwiz__step" data-step="5">6</span>
           </div>
-          <div class="qwiz__step-label" id="qwizStepLabel">Step 1 of 5: Property Info</div>
+          <div class="qwiz__step-label" id="qwizStepLabel">Step 1 of 6: Services</div>
+        </div>
+
+        <!-- Step 0: Service Multi-Select -->
+        <div class="qwiz__panel active" data-panel="0">
+          <h3 class="qwiz__panel-title">What service do you need?</h3>
+          <p class="qwiz__panel-sub">Pick everything you want a price on. You can bundle.</p>
+          <div class="qwiz__service-tiles" id="q-service-tiles">
+            <label class="qwiz__tile">
+              <input type="checkbox" value="windows" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <span class="qwiz__tile-label">Window Cleaning</span>
+                <span class="qwiz__tile-desc">Interior + exterior, streak-free.</span>
+              </div>
+            </label>
+            <label class="qwiz__tile">
+              <input type="checkbox" value="pressure" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                <span class="qwiz__tile-label">Pressure Washing</span>
+                <span class="qwiz__tile-desc">Driveways, patios, flat surfaces, 8 GPM.</span>
+              </div>
+            </label>
+            <label class="qwiz__tile">
+              <input type="checkbox" value="house_wash" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="qwiz__tile-label">House Washing (Soft)</span>
+                <span class="qwiz__tile-desc">Low-pressure safe wash for siding &amp; stucco.</span>
+              </div>
+            </label>
+            <label class="qwiz__tile">
+              <input type="checkbox" value="roof_wash" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-5 7 5v12"/><path d="M2 12l10-7 10 7"/></svg>
+                <span class="qwiz__tile-label">Roof Soft Wash</span>
+                <span class="qwiz__tile-desc">Chemical-first, zero pressure damage.</span>
+              </div>
+            </label>
+            <label class="qwiz__tile">
+              <input type="checkbox" value="gutters" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l4 4-4 4"/><path d="M3 18v-6a4 4 0 0 1 4-4h14"/></svg>
+                <span class="qwiz__tile-label">Gutter Cleaning</span>
+                <span class="qwiz__tile-desc">Hand clean, flush, debris removal.</span>
+              </div>
+            </label>
+            <label class="qwiz__tile">
+              <input type="checkbox" value="solar_panels" />
+              <div class="qwiz__tile-inner">
+                <svg class="qwiz__tile-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <span class="qwiz__tile-label">Solar Panel Cleaning</span>
+                <span class="qwiz__tile-desc">De-ionized water, no residue.</span>
+              </div>
+            </label>
+          </div>
+          <div class="qwiz__actions">
+            <span></span>
+            <button type="button" class="btn btn--primary qwiz__next" data-next="1" id="step0Next" disabled>Add Property Details <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
         </div>
 
         <!-- Step 1: Property Info -->
-        <div class="qwiz__panel active" data-panel="1">
+        <div class="qwiz__panel" data-panel="1">
           <h3 class="qwiz__panel-title">Property Information</h3>
 
           <!-- Residential / Commercial toggle -->
@@ -465,6 +572,7 @@
 
           <div class="qwiz__actions">
             <span></span>
+            <button type="button" class="btn btn--ghost qwiz__back" data-back="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
             <button type="button" class="btn btn--primary qwiz__next" data-next="2" id="step1Next">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
@@ -562,6 +670,49 @@
                 </div>
 
               </div>
+            </div>
+          </div>
+
+          <!-- ─── Conditional: Home Material ─── -->
+          <div id="q-home-material-group" class="qwiz__conditional-group" style="display:none">
+            <div class="qwiz__field">
+              <label for="q-home-material">What material is the exterior of your home? <span class="req">*</span></label>
+              <small class="qwiz__help">This helps us choose the right method and chemicals. It does not change the price for window cleaning.</small>
+              <select id="q-home-material">
+                <option value="">Select...</option>
+                <option value="Stucco">Stucco</option>
+                <option value="Limestone">Limestone</option>
+                <option value="Brick">Brick</option>
+                <option value="Vinyl Siding">Vinyl Siding</option>
+                <option value="Wood Siding">Wood Siding</option>
+                <option value="Mixed (multiple materials)">Mixed (multiple materials)</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="qwiz__field" id="q-home-material-notes-field" style="display:none">
+              <label for="q-home-material-notes">Any details we should know? <em>(optional)</em></label>
+              <textarea id="q-home-material-notes" rows="2" placeholder="e.g., stucco front + limestone back, or limestone w/ cedar accents"></textarea>
+            </div>
+          </div>
+
+          <!-- ─── Conditional: Debris Types ─── -->
+          <div id="q-debris-group" class="qwiz__conditional-group" style="display:none">
+            <div class="qwiz__field">
+              <label>What debris are we dealing with?</label>
+              <small class="qwiz__help">Check everything you see. We'll bring the right mix.</small>
+              <div class="qwiz__debris-grid" id="q-debris-checks">
+                <label class="qwiz__check"><input type="checkbox" value="Algae (black streaks on roof)" /><span>Algae (black streaks on roof)</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Mold & Mildew" /><span>Mold &amp; Mildew</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Moss & Lichen" /><span>Moss &amp; Lichen</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Pollen (cedar, oak, ragweed)" /><span>Pollen (cedar, oak, ragweed)</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Spider webs & cobwebs" /><span>Spider webs &amp; cobwebs</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Bird droppings" /><span>Bird droppings</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Dirt & dust" /><span>Dirt &amp; dust</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Film / haze" /><span>Film / haze</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Oxidized paint (house painting prep)" /><span>Oxidized paint (house painting prep)</span></label>
+                <label class="qwiz__check"><input type="checkbox" value="Post-construction debris" /><span>Post-construction debris</span></label>
+              </div>
+              <p class="qwiz__nudge">Not sure? Select what you can see. We'll handle the rest on-site.</p>
             </div>
           </div>
 
@@ -781,6 +932,7 @@
               </div>
             </div>
             <p class="qwiz__disclaimer">Your quote is based on the info provided. Our tech will do a quick walkthrough before starting to confirm all details. Pricing is subject to minor adjustments.</p>
+            <p class="qwiz__talk-first">Prefer to talk first? Call or text <a href="tel:5125180512">(512) 518-0512</a>.</p>
             <button type="button" class="btn btn--primary btn--full btn--lg" id="q-submit">
               Get My Quote
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -1732,6 +1884,15 @@
       </div>
     </div>
   </footer>
+
+  <!-- Sticky Mobile CTA Bar -->
+  <div class="mobile-cta-bar" id="mobileCta">
+    <a href="tel:+15125180512" class="mobile-cta-bar__call">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 010 .18 2 2 0 012.18 0H5a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Call Now
+    </a>
+    <a href="#quote" class="mobile-cta-bar__quote">Get Free Quote</a>
+  </div>
 
   <!-- Phone action modal -->
   <div class="phone-modal-overlay" id="phoneModal" role="dialog" aria-modal="true" aria-label="Contact options">

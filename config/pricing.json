@@ -1,0 +1,32 @@
+{
+  "surcharges": {
+    "homeMaterial": {
+      "Limestone": {
+        "services": ["house_wash"],
+        "percent": 10,
+        "label": "Limestone care surcharge",
+        "tooltip": "Limestone is more porous than stucco or vinyl — we use a lower-concentration mix and rinse longer."
+      },
+      "Wood Siding": {
+        "services": ["house_wash"],
+        "percent": 15,
+        "label": "Wood siding surcharge",
+        "tooltip": "Wood needs the lowest-pressure setup we have, and extra care to avoid driving water behind the grain."
+      }
+    },
+    "debris": {
+      "roofWashHeavy": {
+        "services": ["roof_wash"],
+        "triggers": ["Moss & Lichen", "Oxidized paint (house painting prep)", "Post-construction debris"],
+        "percent": 15,
+        "label": "Heavy debris"
+      },
+      "houseWashPaintPrep": {
+        "services": ["house_wash"],
+        "triggers": ["Oxidized paint (house painting prep)", "Post-construction debris"],
+        "percent": 20,
+        "label": "Paint prep / post-construction surcharge"
+      }
+    }
+  }
+}

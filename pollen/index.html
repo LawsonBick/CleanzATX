@@ -14,6 +14,25 @@
   <title>Pollen Season Window Cleaning | CleanzATX — Lakeway & Bee Cave TX</title>
   <meta name="description" content="Cedar pollen is coating every window in Lakeway & Bee Cave. CleanzATX removes it fast — same week, streak-free, guaranteed. 167 five-star reviews. Get your price in 60 seconds.">
   <link rel="canonical" href="https://www.cleanzatx.com/pollen">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pollen Season Window Cleaning | CleanzATX — Lakeway & Bee Cave TX">
+  <meta property="og:description" content="Cedar pollen is coating every window in Lakeway & Bee Cave. CleanzATX removes it fast — same week, streak-free, guaranteed.">
+  <meta property="og:url" content="https://www.cleanzatx.com/pollen">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.cleanzatx.com/logo.png">
+  <meta property="og:site_name" content="CleanzATX">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pollen Season Window Cleaning | CleanzATX — Lakeway & Bee Cave TX">
+  <meta name="twitter:description" content="Cedar pollen is coating every window in Lakeway & Bee Cave. CleanzATX removes it fast — same week, streak-free, guaranteed.">
+  <meta name="twitter:image" content="https://www.cleanzatx.com/logo.png">
+
+  <!-- Mobile & PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+  <meta name="theme-color" content="#0c1a2e">
+
   <link rel="icon" href="/logo.png" type="image/png">
   <link rel="stylesheet" href="/styles.css?v=4" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1035,7 +1054,7 @@
       fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, address: document.getElementById('pwiz-address')?.value || '', size: state.size, services: state.services.join(', '), source: 'Pollen Landing Page' }),
+        body: JSON.stringify({ first_name: name, last_name: '', phone, address: document.getElementById('pwiz-address')?.value || '', sqft: state.size, services: state.services.join(', '), service_plan: 'Pollen Landing Page Lead', source: 'Pollen Landing Page' }),
       }).catch(() => {});
 
       // GA4
