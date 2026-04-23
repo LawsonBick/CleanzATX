@@ -1980,7 +1980,13 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
   upsellBtn.addEventListener('click', function() {
     upsell.style.display = 'none';
     accepted.style.display = 'flex';
-    // Upsell accepted — no separate webhook needed, main form already submitted
+    // Upsell accepted — quiet email notification only (no n8n SMS blast)
+    emailjs.send('service_xsex2ss', 'template_536xvvp', {
+      first_name: (window.__qwizState || {}).firstName || 'Customer',
+      phone: (window.__qwizState || {}).phone || '',
+      service_plan: 'UPSELL ACCEPTED — Quarterly Plan',
+      timeline: 'Upsell accepted after initial quote submission',
+    }).catch(() => {});
     if (typeof gtag !== 'undefined') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
   });
 })();
@@ -2000,6 +2006,29 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
     const phone = document.getElementById('q-phone')?.value?.trim() || '';
     if (!phone) return;
     firedAbandon = true;
+    const fname = document.getElementById('q-fname')?.value?.trim() || 'Unknown';
+    const s = window.__qwizState || {};
+
+    const services = [
+      s.svcExterior && 'Exterior',
+      s.svcInterior && 'Interior',
+      s.svcScreens && 'Screens',
+      s.svcTracks  && 'Tracks',
+    ].filter(Boolean).join(', ') || 'Not selected';
+
+    const priceEl = document.getElementById('q-price-total');
+    const estimate = priceEl ? priceEl.textContent.trim() : (s.sqft ? '~$' + Math.round(s.sqft * 0.10) : 'TBD');
+
+    emailjs.send('service_xsex2ss', 'template_536xvvp', {
+      first_name: fname,
+      phone: phone,
+      address: document.getElementById('q-address')?.value || '',
+      sqft: s.sqft || '',
+      exterior_windows: services,
+      service_plan: 'ABANDONED (' + trigger + ') — ' + (s.selectedServices || []).join(', '),
+      timeline: 'Abandoned — estimate: ' + estimate,
+      selected_services: (s.selectedServices || []).join(', '),
+    }).catch(() => {});
   }
 
   document.addEventListener('visibilitychange', () => {
