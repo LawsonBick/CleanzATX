@@ -1515,43 +1515,10 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 
 /* ---------- Simple Request removed ---------- */
 
-/* ---------- #49 Quote abandonment email ---------- */
-(function() {
-  let maxStep = 0;
-  let abandonTimer;
-  
-  // Track max step reached (main.js trackStep calls gtag — we also track here)
-  const origGoToStep = window._origGoToStep;
-  
-  document.addEventListener('quote_step_reached', (e) => {
-    if (e.detail > maxStep) maxStep = e.detail;
-  });
-
-  // Listen for page unload if past step 2
-  window.addEventListener('beforeunload', () => {
-    if (maxStep >= 2 && !sessionStorage.getItem('quoteSubmitted')) {
-      // Send abandonment notification via EmailJS
-      const fname = document.getElementById('q-fname')?.value?.trim();
-      const phone = document.getElementById('q-phone')?.value?.trim();
-      if (phone) {
-        emailjs.send('service_xsex2ss', 'template_536xvvp', {
-          first_name: fname || 'Visitor',
-          phone: phone,
-          address: document.getElementById('q-address')?.value || '',
-          sqft: document.getElementById('q-sqft')?.value || '',
-          service_plan: 'ABANDONED — reached step ' + maxStep,
-          exterior_windows: 'Abandoned',
-          timeline: 'Abandoned at step ' + maxStep,
-        }).catch(() => {});
-      }
-    }
-  });
-
-  // Mark as submitted
-  document.getElementById('q-submit')?.addEventListener('click', () => {
-    sessionStorage.setItem('quoteSubmitted', '1');
-  });
-})();
+/* ---------- #49 Quote abandonment email — DISABLED ---------- */
+/* Removed: was firing emails on page unload using localStorage-restored
+   fields, causing false notifications. Emails now only send on actual
+   quote submission via handleSubmit(). */
 
 
 /* ---------- Mobile CTA bar hide when quote form visible ---------- */
@@ -1992,52 +1959,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 })();
 
 
-/* ---------- Abandoned form recovery (email only — no SMS) ---------- */
-(function() {
-  let firedAbandon = false;
-
-  function hasCompleted() {
-    const confirmPanel = document.querySelector('[data-panel="confirm"]');
-    return confirmPanel && confirmPanel.style.display !== 'none';
-  }
-
-  function fireAbandon(trigger) {
-    if (firedAbandon || hasCompleted()) return;
-    const phone = document.getElementById('q-phone')?.value?.trim() || '';
-    if (!phone) return;
-    firedAbandon = true;
-    const fname = document.getElementById('q-fname')?.value?.trim() || 'Unknown';
-    const s = window.__qwizState || {};
-
-    const services = [
-      s.svcExterior && 'Exterior',
-      s.svcInterior && 'Interior',
-      s.svcScreens && 'Screens',
-      s.svcTracks  && 'Tracks',
-    ].filter(Boolean).join(', ') || 'Not selected';
-
-    const priceEl = document.getElementById('q-price-total');
-    const estimate = priceEl ? priceEl.textContent.trim() : (s.sqft ? '~$' + Math.round(s.sqft * 0.10) : 'TBD');
-
-    emailjs.send('service_xsex2ss', 'template_536xvvp', {
-      first_name: fname,
-      phone: phone,
-      address: document.getElementById('q-address')?.value || '',
-      sqft: s.sqft || '',
-      exterior_windows: services,
-      service_plan: 'ABANDONED (' + trigger + ') — ' + (s.selectedServices || []).join(', '),
-      timeline: 'Abandoned — estimate: ' + estimate,
-      selected_services: (s.selectedServices || []).join(', '),
-    }).catch(() => {});
-  }
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') fireAbandon('page_hidden');
-  });
-  window.addEventListener('pagehide', () => fireAbandon('pagehide'));
-
-  document.getElementById('q-phone')?.addEventListener('blur', function() {
-    if (!this.value.trim() || firedAbandon) return;
-    setTimeout(() => fireAbandon('timeout_3min'), 180000);
-  });
-})();
+/* ---------- Abandoned form recovery — DISABLED ---------- */
+/* Removed: was firing emails on tab switch / page hide using
+   localStorage-restored fields. Emails now only send on actual
+   quote submission via handleSubmit(). */
