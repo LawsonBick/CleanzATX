@@ -3178,38 +3178,50 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   padding: 20px 12px 0;
   text-align: center;
 }
+.plans-compare__cta-col .plan-card__cta {
+  margin: 0;
+  width: 100%;
+}
 
-/* Mobile: stack into cards */
+/* Mobile */
 @media (max-width: 768px) {
+  .plans-compare {
+    margin-top: 32px;
+    overflow: hidden;
+  }
   .plans-compare__headers {
     grid-template-columns: repeat(3, 1fr);
   }
-  .plans-compare__label-col { display: none; }
+  .plans-compare__headers .plans-compare__label-col { display: none; }
   .plans-compare__plan-col {
-    padding: 20px 8px 14px;
+    padding: 18px 6px 12px;
   }
-  .plans-compare__plan-col h3 { font-size: 13px; }
-  .plans-compare__price-num { font-size: 26px; }
-  .plans-compare__price-label { font-size: 10px; }
-  .plans-compare__freq { font-size: 11px; }
+  .plans-compare__plan-col h3 { font-size: 12px; letter-spacing: .05em; }
+  .plans-compare__price { gap: 2px; flex-wrap: wrap; justify-content: center; }
+  .plans-compare__price-num { font-size: 24px; }
+  .plans-compare__price-label { font-size: 9px; }
+  .plans-compare__freq { font-size: 10px; margin-top: 4px; }
+  .plans-compare__badge { font-size: 8px; padding: 3px 8px; margin-bottom: 6px; }
 
   .plans-compare__row {
-    grid-template-columns: 1.2fr repeat(3, 1fr);
+    grid-template-columns: 1fr repeat(3, 0.7fr);
   }
   .plans-compare__feature {
-    padding: 12px 12px;
-    font-size: 12px;
+    padding: 10px 10px;
+    font-size: 11px;
+    line-height: 1.3;
   }
   .plans-compare__val {
-    padding: 12px 4px;
-    font-size: 16px;
+    padding: 10px 2px;
+    font-size: 15px;
   }
 
   .plans-compare__ctas {
     grid-template-columns: repeat(3, 1fr);
   }
-  .plans-compare__cta-col { padding: 16px 6px 0; }
-  .plans-compare__cta-col .plan-card__cta { font-size: 12px; padding: 10px 8px; }
+  .plans-compare__ctas .plans-compare__label-col { display: none; }
+  .plans-compare__cta-col { padding: 14px 4px 0; }
+  .plans-compare__cta-col .plan-card__cta { font-size: 11px; padding: 10px 6px; margin: 0; width: 100%; }
 }
 
 /* ── Plan cards carousel (legacy) ── */
