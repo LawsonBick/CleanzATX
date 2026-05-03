@@ -1838,10 +1838,10 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 .trust-marquee__set {
   display: flex;
-  gap: 28px;
+  gap: 36px;
   align-items: center;
   flex-shrink: 0;
-  padding-right: 28px;
+  padding-right: 36px;
 }
 .trust-marquee__logo {
   flex-shrink: 0;
@@ -1873,7 +1873,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 @media (max-width: 768px) {
   .trust-marquee { padding: 20px 0; flex-direction: column; gap: 10px; }
   .trust-marquee__label { padding: 0 16px; font-size: .58rem; text-align: center; }
-  .trust-marquee__set { gap: 22px; padding-right: 22px; }
+  .trust-marquee__set { gap: 28px; padding-right: 28px; }
   .trust-marquee__logo { height: 34px; max-width: 140px; }
   .trust-marquee__logo--tall { height: 58px; min-width: 160px; max-width: 240px; filter: brightness(2.4) saturate(.7); }
   .trust-marquee__sep { height: 22px; }
