@@ -1835,7 +1835,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   gap: 60px;
   align-items: center;
   width: max-content;
-  animation: marquee-scroll 48s linear infinite;
+  animation: marquee-scroll 47.3s linear infinite;
 }
 .trust-marquee__logo {
   flex-shrink: 0;
