@@ -1921,3 +1921,22 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
 /* Removed: was firing emails on tab switch / page hide using
    localStorage-restored fields. Emails now only send on actual
    quote submission via handleSubmit(). */
+
+/* ---------- Trust marquee seamless loop ---------- */
+(function () {
+  const set1 = document.querySelector('.trust-marquee__set');
+  const scroll = document.querySelector('.trust-marquee__scroll');
+  if (!set1 || !scroll) return;
+
+  function calibrate() {
+    const w = set1.offsetWidth;
+    scroll.style.setProperty('--set-w', '-' + w + 'px');
+  }
+
+  // Calibrate after all images load
+  window.addEventListener('load', calibrate);
+  // Recalibrate on resize
+  window.addEventListener('resize', calibrate);
+  // Initial calibrate
+  calibrate();
+})();
