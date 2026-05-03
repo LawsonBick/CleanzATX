@@ -1807,7 +1807,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   background: linear-gradient(180deg, rgba(12,26,46,.95) 0%, rgba(15,36,64,.9) 100%);
   border-top: 1px solid rgba(14,165,233,.08);
   border-bottom: 1px solid rgba(14,165,233,.08);
-  padding: 18px 0;
+  padding: 22px 0;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1817,11 +1817,11 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .trust-marquee__label {
   flex-shrink: 0;
   padding: 0 28px 0 24px;
-  font-size: .7rem;
+  font-size: .65rem;
   font-weight: 700;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.35);
+  color: rgba(255,255,255,.3);
   white-space: nowrap;
 }
 .trust-marquee__track {
@@ -1832,30 +1832,115 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 .trust-marquee__scroll {
   display: flex;
-  gap: 52px;
+  gap: 56px;
+  align-items: center;
   width: max-content;
-  animation: marquee-scroll 28s linear infinite;
+  animation: marquee-scroll 32s linear infinite;
 }
 .trust-marquee__logo {
   flex-shrink: 0;
-  font-size: .95rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-  color: rgba(255,255,255,.45);
   white-space: nowrap;
-  padding: 6px 16px;
-  border-right: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.4);
+  transition: color .3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+.trust-marquee__logo .tl-sub {
+  font-size: .55em;
+  letter-spacing: .12em;
+  opacity: .7;
+}
+
+/* ── Individual brand styles ── */
+/* Allan's Boots — western slab feel */
+.tl--allans {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+/* Lucchese — luxury italic serif */
+.tl--lucchese {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  font-style: italic;
+  letter-spacing: .06em;
+}
+/* Eddie V's — elegant serif */
+.tl--eddiev {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: .04em;
+}
+/* The Capital Grille — spaced uppercase */
+.tl--capitol {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+/* Gold's Gym — bold condensed */
+.tl--golds {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+/* Baldwin Beauty School — clean modern stacked */
+.tl--baldwin {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  line-height: 1.1;
+}
+/* Root & Scalp Spa — elegant thin */
+.tl--root {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: .06em;
+}
+
+/* Separator dots between logos */
+.trust-marquee__logo + .trust-marquee__logo::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  margin-right: 56px;
+  flex-shrink: 0;
+}
+
 @keyframes marquee-scroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 @media (max-width: 768px) {
-  .trust-marquee { padding: 14px 0; }
-  .trust-marquee__label { padding: 0 16px 0 16px; font-size: .6rem; }
-  .trust-marquee__scroll { gap: 36px; animation-duration: 22s; }
-  .trust-marquee__logo { font-size: .82rem; }
+  .trust-marquee { padding: 16px 0; flex-direction: column; gap: 10px; }
+  .trust-marquee__label { padding: 0 16px; font-size: .58rem; text-align: center; }
+  .trust-marquee__scroll { gap: 40px; animation-duration: 24s; }
+  .tl--allans { font-size: 1rem; }
+  .tl--lucchese { font-size: 1.05rem; }
+  .tl--eddiev { font-size: 1rem; }
+  .tl--capitol { font-size: .68rem; }
+  .tl--golds { font-size: 1.1rem; }
+  .tl--baldwin { font-size: .85rem; }
+  .tl--root { font-size: .88rem; }
+  .trust-marquee__logo + .trust-marquee__logo::before { margin-right: 40px; }
 }
 
 /* ============================================================
