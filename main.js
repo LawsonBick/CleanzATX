@@ -1938,7 +1938,44 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
    localStorage-restored fields. Emails now only send on actual
    quote submission via handleSubmit(). */
 
-/* ---------- Trust marquee seamless loop ---------- */
-/* Uses pure CSS translateX(-50%) — two identical sets inside
-   a max-content flex wrapper means 50% = exactly one set width.
-   No JS calibration needed. */
+/* ---------- Trust marquee — JS requestAnimationFrame loop ---------- */
+(function () {
+  var set1 = document.getElementById('marquee-set1');
+  var scroll = document.querySelector('.trust-marquee__scroll');
+  if (!set1 || !scroll) return;
+
+  // Clone set1 into set2 for seamless loop
+  var set2 = set1.cloneNode(true);
+  set2.removeAttribute('id');
+  set2.setAttribute('aria-hidden', 'true');
+  scroll.appendChild(set2);
+
+  var speed = 0.6; // pixels per frame (~36px/sec at 60fps
+  var pos = 0;
+  var setWidth = 0;
+
+  function measure() {
+    setWidth = set1.offsetWidth;
+  }
+
+  function tick() {
+    pos -= speed;
+    // When we've scrolled past one full set, jump back seamlessly
+    if (setWidth > 0 && pos <= -setWidth) {
+      pos += setWidth;
+    }
+    scroll.style.transform = 'translateX(' + pos + 'px)';
+    requestAnimationFrame(tick);
+  }
+
+  // Wait for all images to load before measuring
+  window.addEventListener('load', function () {
+    measure();
+    requestAnimationFrame(tick);
+  });
+  window.addEventListener('resize', measure);
+
+  // Start immediately with an estimate, re-measure on load
+  measure();
+  if (setWidth > 0) requestAnimationFrame(tick);
+})();
