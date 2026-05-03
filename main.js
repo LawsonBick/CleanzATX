@@ -242,6 +242,7 @@ if (qwiz) {
     windowCount: 0, screenCount: 0, trackCount: 0,
     screenType: 'normal',
     svcExterior: false, svcInterior: false, svcScreens: false, svcTracks: false,
+    interiorType: '', interiorCount: 0,
     homeMaterial: '', homeMaterialNotes: '',
     debrisTypes: [],
     surchargesApplied: [],
@@ -279,11 +280,23 @@ if (qwiz) {
   }
 
   // Screen/track chip options based on window count
-  // Returns 3 numeric options (no low end) + 'Custom'
+  // Returns 3 options in steps of 5 up to windowCount + 'Custom'
   function getScreenTrackOptions(windowCount) {
-    const base = Math.max(5, Math.round(windowCount * 0.6));
-    const step = Math.max(2, Math.round(windowCount * 0.15));
-    return [base, base + step, base + step * 2, 'Custom'];
+    const wc = Math.max(10, windowCount);
+    // Round to nearest 5
+    const top = Math.round(wc / 5) * 5;
+    const opts = [];
+    // Go from top-10 to top in steps of 5 (3 options)
+    for (let i = Math.max(5, top - 10); i <= top; i += 5) {
+      if (!opts.includes(i)) opts.push(i);
+    }
+    // Ensure we have at least 3 numeric options
+    while (opts.length < 3) {
+      const next = opts[opts.length - 1] + 5;
+      opts.push(next);
+    }
+    opts.push('Custom');
+    return opts;
   }
 
   // Build chip selectors
@@ -866,16 +879,22 @@ if (qwiz) {
     }
   });
 
+  // Service card toggle helper — adds/removes .checked class
+  function toggleCard(checkbox) {
+    const card = checkbox.closest('.qwiz__service-card');
+    if (card) card.classList.toggle('checked', checkbox.checked);
+  }
+
   // Service checkboxes (residential)
   document.getElementById('q-svc-exterior')?.addEventListener('change', e => {
     state.svcExterior = e.target.checked;
+    toggleCard(e.target);
     const prompt = document.getElementById('q-french-pane-prompt');
     if (prompt) {
       if (e.target.checked) {
         prompt.style.display = '';
       } else {
         prompt.style.display = 'none';
-        // Reset french pane state when exterior unchecked
         state.frenchPanes = false;
         state.frenchPaneCount = 0;
         state._frenchPaneAsked = false;
@@ -888,14 +907,47 @@ if (qwiz) {
   });
   document.getElementById('q-svc-interior')?.addEventListener('change', e => {
     state.svcInterior = e.target.checked;
+    toggleCard(e.target);
+    const opts = document.getElementById('q-interior-options');
+    if (opts) opts.style.display = e.target.checked ? '' : 'none';
+    if (!e.target.checked) {
+      state.interiorType = '';
+      state.interiorCount = 0;
+      const wrap = document.getElementById('q-interior-count-wrap');
+      if (wrap) wrap.style.display = 'none';
+    }
   });
+  // Interior full/partial handlers
+  document.getElementById('q-interior-full')?.addEventListener('click', () => {
+    state.interiorType = 'full';
+    state.interiorCount = state.windowCount || 0;
+    document.getElementById('q-interior-count-wrap').style.display = 'none';
+    document.getElementById('q-interior-full').classList.add('btn--sky');
+    document.getElementById('q-interior-full').classList.remove('btn--ghost');
+    document.getElementById('q-interior-partial').classList.add('btn--ghost');
+    document.getElementById('q-interior-partial').classList.remove('btn--sky');
+  });
+  document.getElementById('q-interior-partial')?.addEventListener('click', () => {
+    state.interiorType = 'partial';
+    document.getElementById('q-interior-count-wrap').style.display = '';
+    document.getElementById('q-interior-partial').classList.add('btn--sky');
+    document.getElementById('q-interior-partial').classList.remove('btn--ghost');
+    document.getElementById('q-interior-full').classList.add('btn--ghost');
+    document.getElementById('q-interior-full').classList.remove('btn--sky');
+  });
+  document.getElementById('q-interior-count')?.addEventListener('input', e => {
+    state.interiorCount = parseInt(e.target.value) || 0;
+  });
+
   document.getElementById('q-svc-screens')?.addEventListener('change', e => {
     state.svcScreens = e.target.checked;
+    toggleCard(e.target);
     const opts = document.getElementById('q-screen-options');
     if (opts) opts.style.display = e.target.checked ? '' : 'none';
   });
   document.getElementById('q-svc-tracks')?.addEventListener('change', e => {
     state.svcTracks = e.target.checked;
+    toggleCard(e.target);
     const opts = document.getElementById('q-track-options');
     if (opts) opts.style.display = e.target.checked ? '' : 'none';
   });
