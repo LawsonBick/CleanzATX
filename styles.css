@@ -1863,7 +1863,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   align-self: center;
 }
 /* Tall/square logos need extra width to not look tiny */
-.trust-marquee__logo--tall { min-width: 80px; max-width: 120px; }
+.trust-marquee__logo--tall { height: 56px; min-width: 140px; max-width: 220px; }
 /* Lucchese: dark navy text, boost brightness on dark bg */
 .trust-marquee__logo[alt="Lucchese"] { filter: brightness(2.2) saturate(.7); }
 .trust-marquee:hover .trust-marquee__logo {
@@ -1875,6 +1875,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .trust-marquee__label { padding: 0 16px; font-size: .58rem; text-align: center; }
   .trust-marquee__set { gap: 36px; padding-right: 36px; }
   .trust-marquee__logo { height: 34px; max-width: 140px; }
+  .trust-marquee__logo--tall { height: 46px; min-width: 120px; max-width: 180px; }
   .trust-marquee__sep { height: 22px; }
 }
 
