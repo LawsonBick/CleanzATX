@@ -243,6 +243,7 @@ if (qwiz) {
     screenType: 'normal',
     svcExterior: false, svcInterior: false, svcScreens: false, svcTracks: false,
     interiorType: '', interiorCount: 0,
+    pwCustomProperty: '', pwWaterSource: '', pwSurfaces: [], pwSurfaceType: '',
     homeMaterial: '', homeMaterialNotes: '',
     debrisTypes: [],
     surchargesApplied: [],
@@ -414,9 +415,33 @@ if (qwiz) {
 
     // Pre-populate chips when entering step 2
     if (step === 2) {
+      const ss = state.selectedServices;
+      const hasWindows = ss.includes('windows');
+      const hasPressure = ss.includes('pressure');
+
+      // Show/hide service-specific sections
+      const winSec = document.getElementById('q-windows-section');
+      const pwSec = document.getElementById('q-pressure-section');
+      if (winSec) winSec.style.display = hasWindows ? '' : 'none';
+      if (pwSec) pwSec.style.display = hasPressure ? '' : 'none';
+
+      // Dynamic title
+      const titleEl = document.getElementById('q-step2-title');
+      if (titleEl) {
+        const parts = [];
+        if (hasWindows) parts.push('Window');
+        if (hasPressure) parts.push('Pressure Washing');
+        if (ss.includes('house_wash')) parts.push('House Washing');
+        if (ss.includes('roof_wash')) parts.push('Roof Cleaning');
+        if (ss.includes('gutters')) parts.push('Gutter');
+        if (ss.includes('solar')) parts.push('Solar Panel');
+        titleEl.textContent = (parts.length ? parts.join(' & ') : 'Service') + ' Selection';
+      }
+
       const isCommercial = state.propertyType === 'Commercial';
-      document.getElementById('q-residential-step2').style.display = isCommercial ? 'none' : '';
-      document.getElementById('q-commercial-step2').style.display = isCommercial ? '' : 'none';
+      document.getElementById('q-residential-step2')?.style && (document.getElementById('q-residential-step2').style.display = (isCommercial || !hasWindows) ? 'none' : '');
+      var commStep2 = document.getElementById('q-commercial-step2');
+      if (commStep2) commStep2.style.display = (isCommercial && hasWindows) ? '' : 'none';
 
       if (isCommercial) {
         // Commercial: update label with property type
@@ -480,8 +505,7 @@ if (qwiz) {
       }
 
       // Conditional field groups based on Step 0 selections
-      const ss = state.selectedServices;
-      const needsMaterial = ss.includes('windows') || ss.includes('house_wash') || ss.includes('pressure');
+      const needsMaterial = ss.includes('house_wash') || ss.includes('pressure');
       const needsDebris = ss.includes('roof_wash') || ss.includes('house_wash');
       const onlyWindows = ss.length === 1 && ss.includes('windows');
 
@@ -593,18 +617,29 @@ if (qwiz) {
       return true;
     }
     if (step === 2) {
-      if (!state.windowCount) {
-        const chipsId = state.propertyType === 'Commercial' ? 'q-commercial-window-chips' : 'q-window-chips';
-        const chips = document.getElementById(chipsId);
-        if (chips) {
-          chips.style.outline = '2px solid #ef4444';
-          chips.style.borderRadius = '8px';
-          setTimeout(() => { chips.style.outline = ''; }, 2000);
+      const ss = state.selectedServices;
+      // Window validation (only if windows selected)
+      if (ss.includes('windows')) {
+        if (!state.windowCount) {
+          const chipsId = state.propertyType === 'Commercial' ? 'q-commercial-window-chips' : 'q-window-chips';
+          const chips = document.getElementById(chipsId);
+          if (chips) {
+            chips.style.outline = '2px solid #ef4444';
+            chips.style.borderRadius = '8px';
+            setTimeout(() => { chips.style.outline = ''; }, 2000);
+          }
+          return false;
         }
-        return false;
+        if (state.svcScreens && !state.screenCount) return false;
+        if (state.svcTracks && !state.trackCount) return false;
       }
-      if (state.svcScreens && !state.screenCount) return false;
-      if (state.svcTracks && !state.trackCount) return false;
+      // Pressure washing validation (only if pressure selected)
+      if (ss.includes('pressure')) {
+        if (!state.pwCustomProperty) { flashError('q-pressure-section'); return false; }
+        if (!state.pwWaterSource) { flashError('q-pressure-section'); return false; }
+        if (!state.pwSurfaces.length) { flashError('q-pw-surfaces-wrap'); return false; }
+        if (!state.pwSurfaceType) { flashError('q-pw-surface-type'); return false; }
+      }
       return true;
     }
     if (step === 4) {
@@ -988,6 +1023,53 @@ if (qwiz) {
       c.classList.toggle('active', parseInt(c.textContent) === state.autoSuggestedWindowCount);
     });
     document.getElementById('q-custom-layout-prompt').style.display = 'none';
+  });
+
+  // ─── Pressure Washing handlers ───
+  // Yes/No toggle buttons
+  document.querySelectorAll('.qwiz__toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const field = btn.dataset.field;
+      const value = btn.dataset.value;
+      btn.parentElement.querySelectorAll('.qwiz__toggle-btn').forEach(b => {
+        b.classList.remove('active', 'btn--sky');
+        b.classList.add('btn--ghost');
+      });
+      btn.classList.add('active', 'btn--sky');
+      btn.classList.remove('btn--ghost');
+      if (field === 'pw-custom') state.pwCustomProperty = value;
+      if (field === 'pw-water') state.pwWaterSource = value;
+    });
+  });
+
+  // Multi-select dropdown for surfaces
+  var pwTrigger = document.getElementById('q-pw-surfaces-trigger');
+  var pwDropdown = document.getElementById('q-pw-surfaces-dropdown');
+  if (pwTrigger && pwDropdown) {
+    pwTrigger.addEventListener('click', function() {
+      pwDropdown.style.display = pwDropdown.style.display === 'none' ? '' : 'none';
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#q-pw-surfaces-wrap')) {
+        pwDropdown.style.display = 'none';
+      }
+    });
+    pwDropdown.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        state.pwSurfaces = [...pwDropdown.querySelectorAll('input:checked')].map(c => c.value);
+        if (state.pwSurfaces.length > 0) {
+          pwTrigger.textContent = state.pwSurfaces.join(', ');
+          pwTrigger.classList.add('has-value');
+        } else {
+          pwTrigger.textContent = 'Select surface(s)...';
+          pwTrigger.classList.remove('has-value');
+        }
+      });
+    });
+  }
+
+  document.getElementById('q-pw-surface-type')?.addEventListener('change', function(e) {
+    state.pwSurfaceType = e.target.value;
   });
 
   // Commercial service checkboxes

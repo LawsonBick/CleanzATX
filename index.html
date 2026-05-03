@@ -240,7 +240,7 @@
   </script>
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="preload" href="hero-photo.jpg" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=15" />
+  <link rel="stylesheet" href="styles.css?v=16" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -364,7 +364,7 @@
           <span class="trust-marquee__sep"></span>
           <img class="trust-marquee__logo" src="logos/baldwin-beauty.png" alt="Baldwin Beauty School">
           <span class="trust-marquee__sep"></span>
-          <img class="trust-marquee__logo" src="logos/root-scalp-spa.svg" alt="The Root &amp; Scalp Spa">
+          <img class="trust-marquee__logo trust-marquee__logo--tall" src="logos/root-scalp-spa.png" alt="The Root &amp; Scalp Spa">
           <span class="trust-marquee__sep"></span>
           <img class="trust-marquee__logo" src="logos/ca-builders.png" alt="C&amp;A Builders">
           <span class="trust-marquee__sep"></span>
@@ -606,114 +606,175 @@
           </div>
         </div>
 
-        <!-- Step 2: Window & Service Selection -->
+        <!-- Step 2: Service Selection (conditional per service) -->
         <div class="qwiz__panel" data-panel="2">
-          <h3 class="qwiz__panel-title">Window &amp; Service Selection</h3>
+          <h3 class="qwiz__panel-title" id="q-step2-title">Service Selection</h3>
+          <p class="qwiz__panel-sub">Tell us more about your property so we can give you an accurate price.</p>
 
-          <!-- ─── Residential Step 2 ─── -->
-          <div id="q-residential-step2">
-            <div class="qwiz__field">
-              <label id="q-window-label">How many windows does your home have? <span class="req">*</span></label>
-              <div class="qwiz__chips" id="q-window-chips"></div>
-              <div class="qwiz__custom-count" id="q-window-custom-wrap" style="display:none">
-                <input type="number" id="q-window-custom" placeholder="Enter exact count" min="1" max="999" />
-              </div>
-              <p class="qwiz__hint">Our sqft calculator auto-selects the best window estimate based on your home size. You can adjust if needed.</p>
-            </div>
-
-            <!-- Custom layout prompt (shown when user overrides auto-suggest) -->
-            <div id="q-custom-layout-prompt" class="qwiz__conditional" style="display:none">
-              <p style="color:rgba(255,255,255,.8);font-size:14px;margin-bottom:10px;">Is this a custom or non-standard home layout?</p>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn--sky btn--sm" id="q-custom-yes">Yes</button>
-                <button type="button" class="btn btn--ghost btn--sm" id="q-custom-no">No</button>
-              </div>
-            </div>
-
-            <div class="qwiz__field">
-              <label>Select window services</label>
-              <div class="qwiz__service-list">
-
-                <!-- Exterior Windows -->
-                <div class="qwiz__service-card" id="q-card-exterior">
-                  <label class="qwiz__service-card__header">
-                    <input type="checkbox" id="q-svc-exterior" />
-                    <span class="qwiz__service-card__name">Exterior Windows</span>
-                    <span class="qwiz__service-card__price">$10 / window</span>
-                  </label>
-                  <div class="qwiz__service-card__body" id="q-french-pane-prompt" style="display:none">
-                    <p class="qwiz__sub-prompt-q">Does your home have French pane windows? <span class="req">*</span></p>
-                    <div class="qwiz__sub-prompt-btns">
-                      <button type="button" class="btn btn--sky btn--sm" id="q-french-yes">Yes</button>
-                      <button type="button" class="btn btn--ghost btn--sm" id="q-french-no">No</button>
-                    </div>
-                    <div id="q-french-count-wrap" class="qwiz__field" style="display:none">
-                      <label for="q-french-count">How many French pane windows?</label>
-                      <input type="number" id="q-french-count" placeholder="e.g. 8" min="1" max="200" />
-                    </div>
-                  </div>
+          <!-- ─── Window Cleaning Questions (only if windows selected) ─── -->
+          <div id="q-windows-section" style="display:none">
+            <div id="q-residential-step2">
+              <div class="qwiz__field">
+                <label id="q-window-label">How many windows does your home have? <span class="req">*</span></label>
+                <div class="qwiz__chips" id="q-window-chips"></div>
+                <div class="qwiz__custom-count" id="q-window-custom-wrap" style="display:none">
+                  <input type="number" id="q-window-custom" placeholder="Enter exact count" min="1" max="999" />
                 </div>
+                <p class="qwiz__hint">Our sqft calculator auto-selects the best window estimate based on your home size. You can adjust if needed.</p>
+              </div>
 
-                <!-- Interior Windows -->
-                <div class="qwiz__service-card" id="q-card-interior">
-                  <label class="qwiz__service-card__header">
-                    <input type="checkbox" id="q-svc-interior" />
-                    <span class="qwiz__service-card__name">Interior Windows</span>
-                    <span class="qwiz__service-card__price">$6 / window</span>
-                  </label>
-                  <div class="qwiz__service-card__body" id="q-interior-options" style="display:none">
-                    <p class="qwiz__sub-prompt-q">Are you wanting full interior or only partial? <span class="req">*</span></p>
-                    <div class="qwiz__sub-prompt-btns">
-                      <button type="button" class="btn btn--sky btn--sm" id="q-interior-full">Full Interior</button>
-                      <button type="button" class="btn btn--ghost btn--sm" id="q-interior-partial">Partial</button>
-                    </div>
-                    <div id="q-interior-count-wrap" class="qwiz__field" style="display:none">
-                      <label for="q-interior-count">How many interior windows do you want cleaned?</label>
-                      <input type="number" id="q-interior-count" placeholder="Enter window count" min="1" max="999" />
-                    </div>
-                  </div>
+              <!-- Custom layout prompt -->
+              <div id="q-custom-layout-prompt" class="qwiz__conditional" style="display:none">
+                <p style="color:rgba(255,255,255,.8);font-size:14px;margin-bottom:10px;">Is this a custom or non-standard home layout?</p>
+                <div style="display:flex;gap:10px">
+                  <button type="button" class="btn btn--sky btn--sm" id="q-custom-yes">Yes</button>
+                  <button type="button" class="btn btn--ghost btn--sm" id="q-custom-no">No</button>
                 </div>
+              </div>
 
-                <!-- Screen Cleaning -->
-                <div class="qwiz__service-card" id="q-card-screens">
-                  <label class="qwiz__service-card__header">
-                    <input type="checkbox" id="q-svc-screens" />
-                    <span class="qwiz__service-card__name">Screen Cleaning</span>
-                    <span class="qwiz__service-card__price">$5 / screen</span>
-                  </label>
-                  <div class="qwiz__service-card__body" id="q-screen-options" style="display:none">
-                    <div class="qwiz__row">
-                      <div class="qwiz__field">
-                        <label>How many screens? <span class="req">*</span></label>
-                        <div class="qwiz__chips" id="q-screen-chips"></div>
+              <div class="qwiz__field">
+                <label>Select window services</label>
+                <div class="qwiz__service-list">
+
+                  <!-- Exterior Windows -->
+                  <div class="qwiz__service-card" id="q-card-exterior">
+                    <label class="qwiz__service-card__header">
+                      <input type="checkbox" id="q-svc-exterior" />
+                      <span class="qwiz__service-card__name">Exterior Windows</span>
+                      <span class="qwiz__service-card__price">$10 / window</span>
+                    </label>
+                    <div class="qwiz__service-card__body" id="q-french-pane-prompt" style="display:none">
+                      <p class="qwiz__sub-prompt-q">Does your home have French pane windows? <span class="req">*</span></p>
+                      <div class="qwiz__sub-prompt-btns">
+                        <button type="button" class="btn btn--sky btn--sm" id="q-french-yes">Yes</button>
+                        <button type="button" class="btn btn--ghost btn--sm" id="q-french-no">No</button>
                       </div>
-                      <div class="qwiz__field">
-                        <label>Screen Type <span class="req">*</span></label>
-                        <div class="qwiz__checks">
-                          <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal ($5 each)</span></label>
-                          <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar ($10 each)</span></label>
+                      <div id="q-french-count-wrap" class="qwiz__field" style="display:none">
+                        <label for="q-french-count">How many French pane windows?</label>
+                        <input type="number" id="q-french-count" placeholder="e.g. 8" min="1" max="200" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Interior Windows -->
+                  <div class="qwiz__service-card" id="q-card-interior">
+                    <label class="qwiz__service-card__header">
+                      <input type="checkbox" id="q-svc-interior" />
+                      <span class="qwiz__service-card__name">Interior Windows</span>
+                      <span class="qwiz__service-card__price">$6 / window</span>
+                    </label>
+                    <div class="qwiz__service-card__body" id="q-interior-options" style="display:none">
+                      <p class="qwiz__sub-prompt-q">Are you wanting full interior or only partial? <span class="req">*</span></p>
+                      <div class="qwiz__sub-prompt-btns">
+                        <button type="button" class="btn btn--sky btn--sm" id="q-interior-full">Full Interior</button>
+                        <button type="button" class="btn btn--ghost btn--sm" id="q-interior-partial">Partial</button>
+                      </div>
+                      <div id="q-interior-count-wrap" class="qwiz__field" style="display:none">
+                        <label for="q-interior-count">How many interior windows do you want cleaned?</label>
+                        <input type="number" id="q-interior-count" placeholder="Enter window count" min="1" max="999" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Screen Cleaning -->
+                  <div class="qwiz__service-card" id="q-card-screens">
+                    <label class="qwiz__service-card__header">
+                      <input type="checkbox" id="q-svc-screens" />
+                      <span class="qwiz__service-card__name">Screen Cleaning</span>
+                      <span class="qwiz__service-card__price">$5 / screen</span>
+                    </label>
+                    <div class="qwiz__service-card__body" id="q-screen-options" style="display:none">
+                      <div class="qwiz__row">
+                        <div class="qwiz__field">
+                          <label>How many screens? <span class="req">*</span></label>
+                          <div class="qwiz__chips" id="q-screen-chips"></div>
+                        </div>
+                        <div class="qwiz__field">
+                          <label>Screen Type <span class="req">*</span></label>
+                          <div class="qwiz__checks">
+                            <label class="qwiz__check"><input type="radio" name="screenType" value="normal" checked /><span>Normal ($5 each)</span></label>
+                            <label class="qwiz__check"><input type="radio" name="screenType" value="solar" /><span>Solar ($10 each)</span></label>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Track Cleaning -->
-                <div class="qwiz__service-card" id="q-card-tracks">
-                  <label class="qwiz__service-card__header">
-                    <input type="checkbox" id="q-svc-tracks" />
-                    <span class="qwiz__service-card__name">Track Cleaning</span>
-                    <span class="qwiz__service-card__price">$5 / track</span>
-                  </label>
-                  <div class="qwiz__service-card__body" id="q-track-options" style="display:none">
-                    <div class="qwiz__field">
-                      <label>How many tracks? <span class="req">*</span></label>
-                      <div class="qwiz__chips" id="q-track-chips"></div>
+                  <!-- Track Cleaning -->
+                  <div class="qwiz__service-card" id="q-card-tracks">
+                    <label class="qwiz__service-card__header">
+                      <input type="checkbox" id="q-svc-tracks" />
+                      <span class="qwiz__service-card__name">Track Cleaning</span>
+                      <span class="qwiz__service-card__price">$5 / track</span>
+                    </label>
+                    <div class="qwiz__service-card__body" id="q-track-options" style="display:none">
+                      <div class="qwiz__field">
+                        <label>How many tracks? <span class="req">*</span></label>
+                        <div class="qwiz__chips" id="q-track-chips"></div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
+                </div>
               </div>
+            </div>
+          </div>
+
+          <!-- ─── Pressure Washing Questions (only if pressure selected) ─── -->
+          <div id="q-pressure-section" style="display:none">
+            <!-- Custom property -->
+            <div class="qwiz__service-card" style="margin-bottom:12px">
+              <div style="padding:18px">
+                <p class="qwiz__sub-prompt-q">Is this a custom-designed property? <span class="req">*</span></p>
+                <div class="qwiz__sub-prompt-btns">
+                  <button type="button" class="btn btn--sky btn--sm qwiz__toggle-btn" data-field="pw-custom" data-value="yes">Yes</button>
+                  <button type="button" class="btn btn--ghost btn--sm qwiz__toggle-btn" data-field="pw-custom" data-value="no">No</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Water source -->
+            <div class="qwiz__service-card" style="margin-bottom:12px">
+              <div style="padding:18px">
+                <p class="qwiz__sub-prompt-q">Is there a water source at your property? <span class="req">*</span></p>
+                <div class="qwiz__sub-prompt-btns">
+                  <button type="button" class="btn btn--sky btn--sm qwiz__toggle-btn" data-field="pw-water" data-value="yes">Yes</button>
+                  <button type="button" class="btn btn--ghost btn--sm qwiz__toggle-btn" data-field="pw-water" data-value="no">No</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Surfaces to clean -->
+            <div class="qwiz__field">
+              <label for="q-pw-surfaces">What surfaces need cleaning? <span class="req">*</span></label>
+              <div class="qwiz__multi-select" id="q-pw-surfaces-wrap">
+                <button type="button" class="qwiz__multi-select__trigger" id="q-pw-surfaces-trigger">Select surface(s)...</button>
+                <div class="qwiz__multi-select__dropdown" id="q-pw-surfaces-dropdown" style="display:none">
+                  <label class="qwiz__check"><input type="checkbox" value="Driveway" /><span>Driveway</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Sidewalk" /><span>Sidewalk</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Patio" /><span>Patio</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Deck" /><span>Deck</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Pool Deck" /><span>Pool Deck</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Walkway" /><span>Walkway</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Retaining Wall" /><span>Retaining Wall</span></label>
+                  <label class="qwiz__check"><input type="checkbox" value="Other" /><span>Other</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Surface type -->
+            <div class="qwiz__field">
+              <label for="q-pw-surface-type">What is the surface type? <span class="req">*</span></label>
+              <select id="q-pw-surface-type">
+                <option value="">Select surface type...</option>
+                <option value="Concrete">Concrete</option>
+                <option value="Stucco">Stucco</option>
+                <option value="Wood">Wood</option>
+                <option value="Composite">Composite</option>
+                <option value="Epoxy">Epoxy</option>
+                <option value="Paver Stones">Paver Stones</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
 
@@ -1981,7 +2042,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init('pEcuEf_nmG3f4FLX1');</script>
-<script src="main.js?v=12"></script>
+<script src="main.js?v=13"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
