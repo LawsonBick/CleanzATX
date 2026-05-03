@@ -1,4 +1,4 @@
-const CACHE = 'cleanzatx-v2';
+const CACHE = 'cleanzatx-v3';
 const ASSETS = [
   '/',
   '/styles.css',
@@ -6,6 +6,19 @@ const ASSETS = [
   '/logo.png',
   '/hero-photo.jpg',
   '/offline.html',
+  '/logos/allens-boots.png',
+  '/logos/lucchese.png',
+  '/logos/eddie-vs.svg',
+  '/logos/capital-grille.png',
+  '/logos/golds-gym.svg',
+  '/logos/baldwin-beauty.png',
+  '/logos/root-scalp-spa.svg',
+  '/logos/ca-builders.png',
+  '/logos/berkshire.svg',
+  '/logos/cascade-pools.png',
+  '/logos/compass.svg',
+  '/logos/dish-society.png',
+  '/logos/moreland.svg',
 ];
 
 self.addEventListener('install', e => {
