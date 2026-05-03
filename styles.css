@@ -1832,10 +1832,15 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 .trust-marquee__scroll {
   display: flex;
-  gap: 60px;
-  align-items: center;
   width: max-content;
   animation: marquee-scroll 47.3s linear infinite;
+}
+.trust-marquee__set {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 60px; /* gap between last of set 1 and first of set 2 */
 }
 .trust-marquee__logo {
   flex-shrink: 0;
@@ -1859,7 +1864,8 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 @media (max-width: 768px) {
   .trust-marquee { padding: 16px 0; flex-direction: column; gap: 10px; }
   .trust-marquee__label { padding: 0 16px; font-size: .58rem; text-align: center; }
-  .trust-marquee__scroll { gap: 44px; animation-duration: 36s; }
+  .trust-marquee__set { gap: 44px; padding-right: 44px; }
+  .trust-marquee__scroll { animation-duration: 36s; }
   .trust-marquee__logo { height: 30px; max-width: 120px; }
 }
 
