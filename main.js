@@ -555,22 +555,18 @@ if (qwiz) {
         const cType = document.getElementById('q-commercial-type').value;
         state.commercialPropertyType = cType;
         state.commercialPropertyDesc = document.getElementById('q-commercial-desc')?.value?.trim() || '';
-        const cStories = document.getElementById('q-commercial-stories').value;
-        state.stories = parseInt(cStories) || 0;
         if (!cType) { flashError('q-commercial-type'); return false; }
         if (cType === 'Other' && !state.commercialPropertyDesc) { flashError('q-commercial-desc'); return false; }
-        if (!cStories) { flashError('q-commercial-stories'); return false; }
+        if (!state.stories) { flashError('q-commercial-stories-chips'); return false; }
       } else {
         // Residential validation
         const sqft = parseInt(document.getElementById('q-sqft').value);
-        const stories = document.getElementById('q-stories').value;
         const lastCleaned = document.getElementById('q-last-cleaned').value;
         state.sqft = sqft || 0;
-        state.stories = parseInt(stories) || 0;
         state.lastCleaned = lastCleaned;
         if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
         // 3700+ sqft: warn but allow through — will show custom quote path at Step 5
-        if (!stories) { flashError('q-stories'); return false; }
+        if (!state.stories) { flashError('q-stories-chips'); return false; }
         if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
       }
       return true;
@@ -812,13 +808,33 @@ if (qwiz) {
     });
   });
 
-  // Property type toggle (Step 1) — show/hide residential vs commercial fields
-  document.querySelectorAll('input[name="propertyType"]').forEach(r => {
-    r.addEventListener('change', e => {
-      state.propertyType = e.target.value;
-      const isCommercial = e.target.value === 'Commercial';
+  // Property type bubble selector (Step 1) — show/hide residential vs commercial fields
+  document.querySelectorAll('#q-property-type-chips .qwiz__chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#q-property-type-chips .qwiz__chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.propertyType = chip.dataset.value;
+      const isCommercial = chip.dataset.value === 'Commercial';
       document.getElementById('q-residential-fields').style.display = isCommercial ? 'none' : '';
       document.getElementById('q-commercial-fields').style.display = isCommercial ? '' : 'none';
+    });
+  });
+
+  // Stories bubble selectors (residential)
+  document.querySelectorAll('#q-stories-chips .qwiz__chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#q-stories-chips .qwiz__chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.stories = parseInt(chip.dataset.value) || 0;
+    });
+  });
+
+  // Stories bubble selectors (commercial)
+  document.querySelectorAll('#q-commercial-stories-chips .qwiz__chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#q-commercial-stories-chips .qwiz__chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.stories = parseInt(chip.dataset.value) || 0;
     });
   });
 

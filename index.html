@@ -240,7 +240,7 @@
   </script>
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="preload" href="hero-photo.jpg" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=11" />
+  <link rel="stylesheet" href="styles.css?v=12" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -523,12 +523,13 @@
         <div class="qwiz__panel" data-panel="1">
           <h3 class="qwiz__panel-title">Property Information</h3>
 
-          <!-- Residential / Commercial toggle -->
+          <!-- Property Type bubble selector -->
           <div class="qwiz__field">
             <label>Property Type <span class="req">*</span></label>
-            <div class="qwiz__checks qwiz__checks--inline">
-              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-residential" value="Residential" checked /><span>Residential</span></label>
-              <label class="qwiz__check"><input type="radio" name="propertyType" id="q-type-commercial" value="Commercial" /><span>Commercial</span></label>
+            <div class="qwiz__chips" id="q-property-type-chips">
+              <span class="qwiz__chip active" data-value="Residential">Residential</span>
+              <span class="qwiz__chip" data-value="Commercial">Commercial</span>
+              <span class="qwiz__chip" data-value="Realtor">Realtor</span>
             </div>
           </div>
 
@@ -554,13 +555,12 @@
                 </div>
               </div>
               <div class="qwiz__field">
-                <label for="q-stories">Number of Stories <span class="req">*</span></label>
-                <select id="q-stories" required>
-                  <option value="">Select...</option>
-                  <option value="1">1 Story</option>
-                  <option value="2">2 Stories</option>
-                  <option value="3">3+ Stories</option>
-                </select>
+                <label>Number of Stories <span class="req">*</span></label>
+                <div class="qwiz__chips" id="q-stories-chips">
+                  <span class="qwiz__chip" data-value="1">1 Story</span>
+                  <span class="qwiz__chip" data-value="2">2 Stories</span>
+                  <span class="qwiz__chip" data-value="3">3 Stories</span>
+                </div>
               </div>
             </div>
             <div class="qwiz__field">
@@ -570,8 +570,7 @@
                 <option value="0-1 year ago">0-1 year ago</option>
                 <option value="2 years ago">2 years ago</option>
                 <option value="3 years ago">3 years ago</option>
-                <option value="4 years ago">4 years ago</option>
-                <option value="5+ years ago">5+ years ago</option>
+                <option value="Never / Unsure">Never / Unsure</option>
               </select>
             </div>
           </div>
@@ -593,13 +592,12 @@
               <input type="text" id="q-commercial-desc" placeholder="e.g. 3-story office building" />
             </div>
             <div class="qwiz__field">
-              <label for="q-commercial-stories">Number of Stories <span class="req">*</span></label>
-              <select id="q-commercial-stories">
-                <option value="">Select...</option>
-                <option value="1">1 Story</option>
-                <option value="2">2 Stories</option>
-                <option value="3">3+ Stories</option>
-              </select>
+              <label>Number of Stories <span class="req">*</span></label>
+              <div class="qwiz__chips" id="q-commercial-stories-chips">
+                <span class="qwiz__chip" data-value="1">1 Story</span>
+                <span class="qwiz__chip" data-value="2">2 Stories</span>
+                <span class="qwiz__chip" data-value="3">3 Stories</span>
+              </div>
             </div>
           </div>
 
@@ -1970,7 +1968,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init('pEcuEf_nmG3f4FLX1');</script>
-<script src="main.js?v=8"></script>
+<script src="main.js?v=9"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
