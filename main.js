@@ -405,6 +405,13 @@ if (qwiz) {
     const label = document.getElementById('qwizStepLabel');
     label.textContent = `Step ${step + 1} of ${TOTAL_STEPS}: ${stepLabels[step] || ''}`;
 
+    // Show/hide "last cleaned" field based on whether windows is selected
+    if (step === 1) {
+      const hasWindows = state.selectedServices.includes('windows');
+      const lcField = document.getElementById('q-last-cleaned-field');
+      if (lcField) lcField.style.display = hasWindows ? '' : 'none';
+    }
+
     // Pre-populate chips when entering step 2
     if (step === 2) {
       const isCommercial = state.propertyType === 'Commercial';
@@ -574,13 +581,14 @@ if (qwiz) {
       } else {
         // Residential validation
         const sqft = parseInt(document.getElementById('q-sqft').value);
-        const lastCleaned = document.getElementById('q-last-cleaned').value;
+        const hasWindows = state.selectedServices.includes('windows');
+        const lastCleaned = hasWindows ? document.getElementById('q-last-cleaned').value : '';
         state.sqft = sqft || 0;
         state.lastCleaned = lastCleaned;
         if (!sqft || sqft < 100) { flashError('q-sqft'); return false; }
         // 3700+ sqft: warn but allow through — will show custom quote path at Step 5
         if (!state.stories) { flashError('q-stories-chips'); return false; }
-        if (!lastCleaned) { flashError('q-last-cleaned'); return false; }
+        if (hasWindows && !lastCleaned) { flashError('q-last-cleaned'); return false; }
       }
       return true;
     }
