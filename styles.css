@@ -1804,7 +1804,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
    Trust Marquee
    ============================================================ */
 .trust-marquee {
-  background: linear-gradient(180deg, rgba(12,26,46,.95) 0%, rgba(15,36,64,.9) 100%);
+  background: linear-gradient(180deg, rgba(15,30,52,.97) 0%, rgba(18,40,68,.95) 100%);
   border-top: 1px solid rgba(14,165,233,.08);
   border-bottom: 1px solid rgba(14,165,233,.08);
   padding: 22px 0;
@@ -1839,24 +1839,16 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 .trust-marquee__logo {
   flex-shrink: 0;
-  height: 40px;
+  height: 38px;
   width: auto;
+  max-width: 160px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: .45;
+  filter: brightness(1.6) saturate(.85);
+  opacity: .8;
   transition: opacity .3s;
 }
-/* Logos with solid/dark backgrounds — skip invert, use blend mode instead */
-.trust-marquee__logo[alt="The Capital Grille"],
-.trust-marquee__logo[alt="Baldwin Beauty School"],
-.trust-marquee__logo[alt="Allens Boots"],
-.trust-marquee__logo[alt="Dish Society"] {
-  filter: grayscale(1) brightness(1.8) contrast(.8);
-  mix-blend-mode: screen;
-  opacity: .55;
-}
 .trust-marquee:hover .trust-marquee__logo {
-  opacity: .6;
+  opacity: .95;
 }
 
 @keyframes marquee-scroll {
@@ -1868,7 +1860,7 @@ a.area-pill { text-decoration: none; cursor: pointer; }
   .trust-marquee { padding: 16px 0; flex-direction: column; gap: 10px; }
   .trust-marquee__label { padding: 0 16px; font-size: .58rem; text-align: center; }
   .trust-marquee__scroll { gap: 44px; animation-duration: 36s; }
-  .trust-marquee__logo { height: 28px; }
+  .trust-marquee__logo { height: 30px; max-width: 120px; }
 }
 
 /* ============================================================
