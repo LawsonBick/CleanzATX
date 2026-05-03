@@ -3055,6 +3055,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
   gap: 0;
+  align-items: end;
 }
 .plans-compare__label-col {
   /* empty corner cell */
