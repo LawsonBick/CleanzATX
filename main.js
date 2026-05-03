@@ -1052,55 +1052,33 @@ if (qwiz) {
       deadlineDate = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
     }
 
-    // Send to n8n — handles all OpenPhone/Xecute steps server-side
+    // Build services list for payloads
     const servicesList = [];
     if (state.svcExterior) servicesList.push('Exterior Windows');
     if (state.svcInterior) servicesList.push('Interior Windows');
     if (state.svcScreens) servicesList.push('Screen Cleaning (' + screenTypeLabel + ')');
     if (state.svcTracks) servicesList.push('Track Cleaning');
 
+    /* ── n8n webhook — DISABLED ──
+       The Vercel proxy to the n8n server was removed to stop null SMS
+       notifications. Re-enable in vercel.json when the n8n workflow
+       has the "Is Real Lead?" gate imported.
     fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        first_name:                 state.firstName,
-        last_name:                  state.lastName || '',
-        phone:                      state.phone,
-        email:                      state.email || '',
-        address:                    state.address || '',
-        sqft:                       state.sqft,
-        stories:                    state.stories,
-        last_cleaned:               state.lastCleaned || '',
-        property_type:              state.propertyType || 'Residential',
-        business_name:              state.businessName || '',
-        commercial_property_type:   state.commercialPropertyType || '',
-        commercial_property_desc:   state.commercialPropertyDesc || '',
-        custom_layout:              state.customLayout,
-        french_panes:               state.frenchPanes ? state.frenchPaneCount + ' panes' : 'No',
-        service_plan:               planLabel,
-        auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
-        exterior_price:             p.exterior.toFixed(2),
-        interior_price:             p.interior.toFixed(2),
-        screen_price:               p.screens.toFixed(2),
-        track_price:                p.tracks.toFixed(2),
-        french_pane_price:          (p.frenchPanes || 0).toFixed(2),
-        discount:                   p.discount.toFixed(2),
-        total_price:                p.total.toFixed(2),
-        services:                   servicesList.join(', '),
-        deadline_date:              deadlineDate,
-        estimated_duration_minutes: getEstimatedDuration(),
-        referral_source:            state.referral || '',
-        timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
-        large_home:                 isLarge,
-        promo_code:                 state.promoCode || '',
-        promo_discount:             state.promoDiscount || 0,
-        selected_services:          state.selectedServices || [],
-        home_material:              state.homeMaterial || '',
-        home_material_notes:        state.homeMaterialNotes || '',
-        debris_types:               state.debrisTypes || [],
-        surcharges_applied:         state.surchargesApplied || [],
+        first_name: state.firstName, last_name: state.lastName || '',
+        phone: state.phone, email: state.email || '',
+        address: state.address || '', sqft: state.sqft, stories: state.stories,
+        last_cleaned: state.lastCleaned || '', property_type: state.propertyType || 'Residential',
+        service_plan: planLabel, auto_billing: state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+        exterior_price: p.exterior.toFixed(2), interior_price: p.interior.toFixed(2),
+        screen_price: p.screens.toFixed(2), track_price: p.tracks.toFixed(2),
+        discount: p.discount.toFixed(2), total_price: p.total.toFixed(2),
+        services: servicesList.join(', '), selected_services: state.selectedServices || [],
       }),
     }).catch(() => {});
+    ── end n8n ── */
 
     // Send to CleanzATX Tracker — auto-creates client + plan
     fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
@@ -1521,28 +1499,8 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
    quote submission via handleSubmit(). */
 
 
-/* ---------- Mobile CTA bar hide when quote form visible ---------- */
-(function() {
-  const bar = document.getElementById('mobileCTABar');
-  if (!bar) return;
-  const quoteSection = document.getElementById('quote');
-  if (!quoteSection) return;
-  // Hide bar while quote section is visible OR above it (start hidden, show after scrolling past)
-  bar.classList.add('hidden');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      // Show bar only when quote section has fully scrolled out of view (below or above)
-      if (e.isIntersecting) {
-        bar.classList.add('hidden');
-      } else {
-        // Only show if we've scrolled PAST the quote section (not before it)
-        const rect = quoteSection.getBoundingClientRect();
-        if (rect.bottom < 0) bar.classList.remove('hidden');
-      }
-    });
-  }, { threshold: 0.05 });
-  obs.observe(quoteSection);
-})();
+/* ---------- Mobile CTA bar — REMOVED ---------- */
+/* Sticky mobile CTA bar removed per Tyler's request. */
 
 /* ---------- Address Autofill (Nominatim) ---------- */
 (function() {

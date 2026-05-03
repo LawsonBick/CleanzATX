@@ -1050,12 +1050,12 @@
         }).catch(() => {});
       }
 
-      // n8n webhook
+      /* n8n webhook — DISABLED (proxy removed from vercel.json to stop null SMS)
       fetch('https://www.cleanzatx.com/n8n/webhook/f1cd6d3b-ddc5-4a08-9894-ff8bcb72659d', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ first_name: name, last_name: '', phone, address: document.getElementById('pwiz-address')?.value || '', sqft: state.size, services: state.services.join(', '), service_plan: 'Pollen Landing Page Lead', source: 'Pollen Landing Page' }),
-      }).catch(() => {});
+      }).catch(() => {}); */
 
       // GA4
       if (typeof gtag !== 'undefined') gtag('event', 'generate_lead', { lead_source: 'pollen_landing_page' });

@@ -1801,6 +1801,64 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 }
 
 /* ============================================================
+   Trust Marquee
+   ============================================================ */
+.trust-marquee {
+  background: linear-gradient(180deg, rgba(12,26,46,.95) 0%, rgba(15,36,64,.9) 100%);
+  border-top: 1px solid rgba(14,165,233,.08);
+  border-bottom: 1px solid rgba(14,165,233,.08);
+  padding: 18px 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+.trust-marquee__label {
+  flex-shrink: 0;
+  padding: 0 28px 0 24px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  white-space: nowrap;
+}
+.trust-marquee__track {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.trust-marquee__scroll {
+  display: flex;
+  gap: 52px;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+.trust-marquee__logo {
+  flex-shrink: 0;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.45);
+  white-space: nowrap;
+  padding: 6px 16px;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .trust-marquee { padding: 14px 0; }
+  .trust-marquee__label { padding: 0 16px 0 16px; font-size: .6rem; }
+  .trust-marquee__scroll { gap: 36px; animation-duration: 22s; }
+  .trust-marquee__logo { font-size: .82rem; }
+}
+
+/* ============================================================
    Quote Wizard
    ============================================================ */
 .quote-section {
