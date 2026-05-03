@@ -1939,20 +1939,6 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
    quote submission via handleSubmit(). */
 
 /* ---------- Trust marquee seamless loop ---------- */
-(function () {
-  const set1 = document.querySelector('.trust-marquee__set');
-  const scroll = document.querySelector('.trust-marquee__scroll');
-  if (!set1 || !scroll) return;
-
-  function calibrate() {
-    const w = set1.offsetWidth;
-    scroll.style.setProperty('--set-w', '-' + w + 'px');
-  }
-
-  // Calibrate after all images load
-  window.addEventListener('load', calibrate);
-  // Recalibrate on resize
-  window.addEventListener('resize', calibrate);
-  // Initial calibrate
-  calibrate();
-})();
+/* Uses pure CSS translateX(-50%) — two identical sets inside
+   a max-content flex wrapper means 50% = exactly one set width.
+   No JS calibration needed. */

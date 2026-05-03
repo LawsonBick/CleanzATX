@@ -1,4 +1,4 @@
-const CACHE = 'cleanzatx-v3';
+const CACHE = 'cleanzatx-v5';
 const ASSETS = [
   '/',
   '/styles.css',
