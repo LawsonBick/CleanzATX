@@ -3053,7 +3053,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
 }
 .plans-compare__headers {
   display: grid;
-  grid-template-columns: 1.4fr repeat(3, 1fr);
+  grid-template-columns: 1.4fr repeat(2, 1fr);
   gap: 0;
   align-items: end;
 }
@@ -3135,7 +3135,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
 }
 .plans-compare__row {
   display: grid;
-  grid-template-columns: 1.4fr repeat(3, 1fr);
+  grid-template-columns: 1.4fr repeat(2, 1fr);
   gap: 0;
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
@@ -3191,7 +3191,7 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
     overflow: hidden;
   }
   .plans-compare__headers {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   .plans-compare__headers .plans-compare__label-col { display: none; }
   .plans-compare__plan-col {
@@ -3204,9 +3204,9 @@ input.qwiz__chip--custom-input::-webkit-outer-spin-button { -webkit-appearance: 
   .plans-compare__freq { font-size: 10px; margin-top: 4px; }
   .plans-compare__badge { font-size: 8px; padding: 3px 8px; margin-bottom: 6px; }
 
-  /* Each row: feature name full-width on top, 3 values below */
+  /* Each row: feature name full-width on top, 2 values below */
   .plans-compare__row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     border-bottom: 1px solid rgba(255,255,255,.06);
   }
   .plans-compare__feature {
