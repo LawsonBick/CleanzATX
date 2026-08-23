@@ -4,8 +4,10 @@
    ========================================================================== */
 
 (function () {
-  // TODO: replace with real Formspree or EmailJS endpoint when live
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORMSPREE_ID";
+  // Formsubmit.co delivers submissions to Kate's inbox with no signup.
+  // First submission triggers a one-time activation email to Kate.
+  const FORM_ENDPOINT = "https://formsubmit.co/ajax/katedurham46@gmail.com";
+  const KATE_EMAIL    = "katedurham46@gmail.com";
 
   const BASE_PER_PERSON = 60;
   const HIGH_MULTIPLIER = 1.4;
@@ -81,8 +83,8 @@
 
     if (rawDate) {
       const d = rawDate.replace(/-/g, "");
-      start = d + "T170000"; // default 5:00pm local
-      end   = d + "T210000"; // default 9:00pm local
+      start = d + "T170000";
+      end   = d + "T210000";
     }
 
     const details = encodeURIComponent(
@@ -117,6 +119,30 @@
     })[ch]);
   }
 
+  function buildMailtoFallback(formData) {
+    const lines = [
+      "New quote request from Sunday Harvest Co.",
+      "",
+      "Name: "     + (formData.get("name") || ""),
+      "Phone: "    + (formData.get("phone") || ""),
+      "Email: "    + (formData.get("email") || ""),
+      "Event: "    + (formData.get("event-type") || ""),
+      "Date: "     + (formData.get("event-date") || ""),
+      "Location: " + (formData.get("location") || ""),
+      "Guests: "   + (formData.get("guests") || ""),
+      "Budget: "   + (formData.get("budget") || ""),
+      "Dietary: "  + formData.getAll("dietary").join(", "),
+      "Heard via: " + (formData.get("hear") || ""),
+      "",
+      "Notes:",
+      (formData.get("notes") || "")
+    ];
+    const subject = "Quote request — " + (formData.get("name") || "New guest");
+    return "mailto:" + KATE_EMAIL +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(lines.join("\n"));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     const submitBtn = form.querySelector("button[type=submit]");
@@ -127,22 +153,24 @@
     const name = formData.get("name");
     const phone = formData.get("phone");
 
-    // Send to Formspree. If the placeholder endpoint is still in use,
-    // skip the network call but still show the thank-you overlay.
-    const usingPlaceholder = FORMSPREE_ENDPOINT.includes("YOUR_FORMSPREE_ID");
+    formData.append("_subject", "New quote request — " + (name || "Sunday Harvest"));
+    formData.append("_template", "table");
+    formData.append("_captcha", "false");
 
-    if (!usingPlaceholder) {
-      try {
-        await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          body: formData,
-          headers: { Accept: "application/json" }
-        });
-      } catch (err) {
-        console.warn("Form submission failed, showing SMS fallback.", err);
-      }
-    } else {
-      console.info("Formspree endpoint not configured — replace YOUR_FORMSPREE_ID in quote.js.");
+    let delivered = false;
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      });
+      delivered = res.ok;
+    } catch (err) {
+      console.warn("Form POST failed, falling back to mailto.", err);
+    }
+
+    if (!delivered) {
+      window.location.href = buildMailtoFallback(formData);
     }
 
     showThanks(name, phone, formData);
@@ -152,7 +180,6 @@
     computeEstimate();
   }
 
-  // Wire up events
   if (form) {
     form.addEventListener("submit", handleSubmit);
     [guestInput, eventTypeSelect].forEach(el => {
