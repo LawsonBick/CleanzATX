@@ -249,6 +249,7 @@ if (qwiz) {
     surchargesApplied: [],
     plan: '', autoBilling: false, commercialFrequency: 'weekly',
     firstName: '', lastName: '', phone: '', email: '',
+    smsConsent: false,
     referral: '', referrer: '', timeline: '', deadlineDate: '',
     promoCode: '', promoDiscount: 0,
     lastCleaned: '',
@@ -650,6 +651,7 @@ if (qwiz) {
       state.lastName = document.getElementById('q-lname')?.value.trim() || '';
       state.phone = phone;
       state.email = document.getElementById('q-email').value.trim();
+      state.smsConsent = !!document.getElementById('q-sms-consent')?.checked;
       state.referral = document.getElementById('q-referral').value;
       state.referrer = document.getElementById('q-referrer')?.value?.trim() || '';
       state.timeline = timeline;
@@ -1174,6 +1176,7 @@ if (qwiz) {
       last_name:        state.lastName || '',
       phone:            state.phone,
       email:            state.email || '',
+      sms_consent:      state.smsConsent ? 'Yes' : 'No',
       address:          state.address || '',
       property_type:    state.propertyType || 'Residential',
       business_name:    state.businessName || '',

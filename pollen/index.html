@@ -782,6 +782,12 @@
             <label>Phone Number *</label>
             <input type="tel" id="pwiz-phone" placeholder="(512) 000-0000" autocomplete="tel" />
           </div>
+          <div class="p-field p-field--consent">
+            <label for="pwiz-sms-consent" style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:13px;line-height:1.5;color:rgba(255,255,255,.78);font-weight:400">
+              <input type="checkbox" id="pwiz-sms-consent" style="margin-top:3px;flex-shrink:0;width:16px;height:16px;cursor:pointer" />
+              <span>Yes, text me at this number about my quote and service. Msg frequency varies. Msg and data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#7dd3fc">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#7dd3fc">Terms of Service</a>.</span>
+            </label>
+          </div>
           <div class="p-field">
             <label>Address or Neighborhood <span style="color:rgba(255,255,255,.35);font-weight:400">(optional)</span></label>
             <input type="text" id="pwiz-address" placeholder="Lakeway, TX or 123 Main St" autocomplete="street-address" />
@@ -1035,9 +1041,11 @@
 
       // EmailJS
       if (typeof emailjs !== 'undefined') {
+        const smsConsent = !!document.getElementById('pwiz-sms-consent')?.checked;
         emailjs.send('service_xsex2ss', 'template_536xvvp', {
           first_name: name,
           phone: phone,
+          sms_consent: smsConsent ? 'Yes' : 'No',
           address: document.getElementById('pwiz-address')?.value || '',
           sqft: state.size,
           exterior_windows: state.services.join(', '),
@@ -1101,6 +1109,15 @@
     setTimeout(() => { cancelAnimationFrame(frame); canvas.remove(); }, 3000);
   }
   </script>
+
+  <!-- Compliance footer (A2P 10DLC) -->
+  <footer style="background:#0c1a2e;border-top:1px solid rgba(255,255,255,.06);padding:28px 24px;text-align:center;color:rgba(255,255,255,.55);font-size:12px;line-height:1.7;font-family:'Inter',sans-serif">
+    <div style="max-width:900px;margin:0 auto">
+      <p style="margin:0 0 6px"><strong style="color:rgba(255,255,255,.78)">DURMGENERAL LLC</strong> dba CleanzAtx · 1020 Challenger, Lakeway, TX 78734 · <a href="tel:5125180512" style="color:#38bdf8;text-decoration:none">(512) 518-0512</a></p>
+      <p style="margin:0 0 6px">© 2026 DURMGENERAL LLC. CleanzAtx is a DBA of DURMGENERAL LLC. All rights reserved.</p>
+      <p style="margin:0"><a href="/privacy-policy" style="color:#38bdf8;text-decoration:none">Privacy Policy</a> · <a href="/terms-of-service" style="color:#38bdf8;text-decoration:none">Terms of Service</a> · <a href="/" style="color:#38bdf8;text-decoration:none">cleanzatx.com</a></p>
+    </div>
+  </footer>
 
 </body>
 </html>
