@@ -2037,6 +2037,30 @@ a.area-pill { text-decoration: none; cursor: pointer; }
 .qwiz__field select option { background: var(--navy-2); color: var(--white); }
 .qwiz__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+/* SMS consent checkbox — compact, non-blocking (A2P 10DLC compliance) */
+.qwiz__consent { margin-top: -4px; }
+.qwiz__consent-label {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 12.5px !important;
+  line-height: 1.55;
+  font-weight: 400 !important;
+  color: rgba(255,255,255,.72) !important;
+  margin: 0 !important;
+}
+.qwiz__consent-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--sky);
+}
+.qwiz__consent-label a { color: var(--sky); text-decoration: underline; }
+.qwiz__consent-label a:hover { color: #fff; }
+
 /* Chips (radio buttons as clickable tiles) */
 .qwiz__chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .qwiz__chip {
