@@ -816,7 +816,7 @@ if (qwiz) {
       const next = parseInt(btn.dataset.next);
       if (!validateStep(state.step)) return;
       // GA4 events for new steps
-      if (typeof gtag !== 'undefined') {
+      if (typeof gtag === 'function') {
         if (state.step === 0) {
           gtag('event', 'quote_step_services', { selected_services: state.selectedServices });
         }
@@ -1155,7 +1155,7 @@ if (qwiz) {
 
   // GA4 — track quote wizard step progression
   function trackStep(step) {
-    if (typeof gtag === 'undefined') return;
+    if (typeof gtag !== 'function') return;
     gtag('event', 'quote_step', { step_number: step });
     if (step === 0) gtag('event', 'begin_checkout');
   }
@@ -1287,12 +1287,13 @@ if (qwiz) {
     }).catch(() => {});
 
     // GA4 — lead conversion event
-    if (typeof gtag !== 'undefined') {
+    if (typeof gtag === 'function') {
       gtag('event', 'generate_lead', {
         value: parseFloat(calcPrice().total.toFixed(2)),
         currency: 'USD',
         lead_source: state.referral || 'unknown',
         selected_services: state.selectedServices,
+        ...(state.plan ? { plan: state.plan } : {}),
       });
     }
 
@@ -1352,17 +1353,10 @@ if (qwiz) {
     document.body.style.overflow = '';
   }
 
-  // Intercept all tel: links
-  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+  // Intercept all tel: links (except the modal's own Call button, which must dial)
+  // Call/text click tracking lives in analytics.js
+  document.querySelectorAll('a[href^="tel:"]:not(.phone-modal__btn)').forEach(link => {
     link.addEventListener('click', openModal);
-  });
-
-  // Track phone call & text clicks
-  overlay.querySelector('.phone-modal__btn--call')?.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'call' });
-  });
-  overlay.querySelector('.phone-modal__btn--text')?.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'text' });
   });
 
   // Close on cancel button or overlay backdrop click
@@ -1373,14 +1367,7 @@ if (qwiz) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 })();
 
-/* ---------- GA4 — CTA button click tracking ---------- */
-document.querySelectorAll('a[href="#quote"], .btn--primary, .btn--nav').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'cta_click', { button_text: btn.textContent.trim() });
-    }
-  });
-});
+/* GA4 CTA / phone / email / outbound click tracking lives in analytics.js */
 
 /* ---------- Contact form (removed — replaced by quote wizard) ---------- */
 
@@ -2073,7 +2060,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
       service_plan: 'UPSELL ACCEPTED — Quarterly Plan',
       timeline: 'Upsell accepted after initial quote submission',
     }).catch(() => {});
-    if (typeof gtag !== 'undefined') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
+    if (typeof gtag === 'function') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
   });
 })();
 

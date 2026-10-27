@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <!-- GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGY563H3P8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QL4RJE3056"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-LGY563H3P8');
+    gtag('config', 'G-QL4RJE3056');
   </script>
+  <script src="/analytics.js?v=1" defer></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pollen Season Window Cleaning | CleanzATX — Lakeway & Bee Cave TX</title>
@@ -1066,7 +1067,7 @@
       }).catch(() => {}); */
 
       // GA4
-      if (typeof gtag !== 'undefined') gtag('event', 'generate_lead', { lead_source: 'pollen_landing_page' });
+      if (typeof gtag === 'function') gtag('event', 'generate_lead', { lead_source: 'pollen_landing_page', selected_services: state.services });
 
       // Show confirm
       document.getElementById('pwiz-step2').classList.remove('active');
@@ -1115,6 +1116,7 @@
     <div style="max-width:900px;margin:0 auto">
       <p style="margin:0 0 6px"><strong style="color:rgba(255,255,255,.78)">DURMGENERAL LLC</strong> dba CleanzAtx · 1020 Challenger, Lakeway, TX 78734 · <a href="tel:5125180512" style="color:#38bdf8;text-decoration:none">(512) 518-0512</a></p>
       <p style="margin:0 0 6px">© 2026 DURMGENERAL LLC. CleanzAtx is a DBA of DURMGENERAL LLC. All rights reserved.</p>
+      <p style="margin:0 0 6px">Service areas: <a href="/window-cleaning-lakeway" style="color:#38bdf8;text-decoration:none">Lakeway</a> · <a href="/window-cleaning-bee-cave" style="color:#38bdf8;text-decoration:none">Bee Cave</a> · <a href="/window-cleaning-lake-travis" style="color:#38bdf8;text-decoration:none">Lake Travis</a> · <a href="/window-cleaning-hudson-bend" style="color:#38bdf8;text-decoration:none">Hudson Bend</a> · <a href="/window-cleaning-steiner-ranch" style="color:#38bdf8;text-decoration:none">Steiner Ranch</a> · <a href="/window-cleaning-four-points" style="color:#38bdf8;text-decoration:none">Four Points</a> · <a href="/window-cleaning-westlake-hills" style="color:#38bdf8;text-decoration:none">Westlake Hills</a></p>
       <p style="margin:0"><a href="/privacy-policy" style="color:#38bdf8;text-decoration:none">Privacy Policy</a> · <a href="/terms-of-service" style="color:#38bdf8;text-decoration:none">Terms of Service</a> · <a href="/" style="color:#38bdf8;text-decoration:none">cleanzatx.com</a></p>
     </div>
   </footer>

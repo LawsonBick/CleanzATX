@@ -1,0 +1,7 @@
+# Internal files kept in the repo but never served on cleanzatx.com
+n8n-workflow.json
+detailflow-crm.zip
+detailflow-crm/
+cleanzatx-tracker/
+.claude/
+server.py
