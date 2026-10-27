@@ -816,7 +816,7 @@ if (qwiz) {
       const next = parseInt(btn.dataset.next);
       if (!validateStep(state.step)) return;
       // GA4 events for new steps
-      if (typeof gtag !== 'undefined') {
+      if (typeof gtag === 'function') {
         if (state.step === 0) {
           gtag('event', 'quote_step_services', { selected_services: state.selectedServices });
         }
@@ -1155,7 +1155,7 @@ if (qwiz) {
 
   // GA4 — track quote wizard step progression
   function trackStep(step) {
-    if (typeof gtag === 'undefined') return;
+    if (typeof gtag !== 'function') return;
     gtag('event', 'quote_step', { step_number: step });
     if (step === 0) gtag('event', 'begin_checkout');
   }
@@ -1287,12 +1287,13 @@ if (qwiz) {
     }).catch(() => {});
 
     // GA4 — lead conversion event
-    if (typeof gtag !== 'undefined') {
+    if (typeof gtag === 'function') {
       gtag('event', 'generate_lead', {
         value: parseFloat(calcPrice().total.toFixed(2)),
         currency: 'USD',
         lead_source: state.referral || 'unknown',
         selected_services: state.selectedServices,
+        ...(state.plan ? { plan: state.plan } : {}),
       });
     }
 
@@ -2059,7 +2060,7 @@ document.querySelectorAll('.faq-acc-btn').forEach(btn => {
       service_plan: 'UPSELL ACCEPTED — Quarterly Plan',
       timeline: 'Upsell accepted after initial quote submission',
     }).catch(() => {});
-    if (typeof gtag !== 'undefined') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
+    if (typeof gtag === 'function') gtag('event', 'upsell_accepted', { plan: 'quarterly' });
   });
 })();
 

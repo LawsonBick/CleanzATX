@@ -26,6 +26,7 @@
     if (typeof gtag !== 'function') return;
     gtag('event', name, Object.assign({
       page_location: location.href,
+      page_path: location.pathname,
       page_type: PAGE_TYPE,
       neighborhood: hood ? hood[1] : undefined
     }, params));
@@ -36,7 +37,20 @@
   }
 
   document.addEventListener('click', function (e) {
-    const el = e.target.closest && e.target.closest('a, button');
+    if (!e.target.closest) return;
+
+    // Gallery page — photo opened in the lightbox
+    const photo = e.target.closest('.gpage-card');
+    if (photo) {
+      const img = photo.querySelector('img');
+      send('gallery_photo_view', {
+        photo_name: photo.dataset.title || (img && img.alt) || '',
+        photo_alt: img ? img.alt : ''
+      });
+      return;
+    }
+
+    const el = e.target.closest('a, button');
     if (!el) return;
 
     const href = (el.getAttribute('href') || '').trim();
@@ -55,7 +69,7 @@
       return;
     }
     if (scheme === 'mailto') {
-      send('email_click', { link_url: href, link_text: linkText(el) });
+      send('email_click', { method: 'email', link_url: href, link_text: linkText(el) });
       return;
     }
 
@@ -76,5 +90,19 @@
         link_url: href || undefined
       });
     }
+  });
+
+  // quote_start — first interaction with a quote form (home wizard or pollen form)
+  const QUOTE_FORMS = { quoteWizard: 'home_quote', pollenWizard: 'pollen_quote' };
+  let quoteStarted = false;
+  function onQuoteInteract(e) {
+    if (quoteStarted || !e.target.closest) return;
+    const form = e.target.closest('#quoteWizard, #pollenWizard');
+    if (!form) return;
+    quoteStarted = true;
+    send('quote_start', { form_name: QUOTE_FORMS[form.id] });
+  }
+  ['pointerdown', 'focusin', 'keydown', 'click'].forEach(function (type) {
+    document.addEventListener(type, onQuoteInteract, true);
   });
 })();
