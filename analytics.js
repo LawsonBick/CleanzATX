@@ -105,4 +105,14 @@
   ['pointerdown', 'focusin', 'keydown', 'click'].forEach(function (type) {
     document.addEventListener(type, onQuoteInteract, true);
   });
+
+  // gtag.js holds events for ~5s and sends the batch early only on pagehide.
+  // Phones usually just hide the page (switching to Phone/Messages, locking the
+  // screen, swiping away Safari) without a pagehide, so taps made right before
+  // that were being lost. Ask gtag to send what it's holding as soon as the
+  // page is hidden.
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'hidden' || typeof gtag !== 'function') return;
+    try { window.dispatchEvent(new Event('pagehide')); } catch (e) {}
+  });
 })();
