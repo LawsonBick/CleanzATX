@@ -1352,17 +1352,10 @@ if (qwiz) {
     document.body.style.overflow = '';
   }
 
-  // Intercept all tel: links
-  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+  // Intercept all tel: links (except the modal's own Call button, which must dial)
+  // Call/text click tracking lives in analytics.js
+  document.querySelectorAll('a[href^="tel:"]:not(.phone-modal__btn)').forEach(link => {
     link.addEventListener('click', openModal);
-  });
-
-  // Track phone call & text clicks
-  overlay.querySelector('.phone-modal__btn--call')?.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'call' });
-  });
-  overlay.querySelector('.phone-modal__btn--text')?.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') gtag('event', 'phone_call_click', { method: 'text' });
   });
 
   // Close on cancel button or overlay backdrop click
@@ -1373,14 +1366,7 @@ if (qwiz) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 })();
 
-/* ---------- GA4 — CTA button click tracking ---------- */
-document.querySelectorAll('a[href="#quote"], .btn--primary, .btn--nav').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'cta_click', { button_text: btn.textContent.trim() });
-    }
-  });
-});
+/* GA4 CTA / phone / email / outbound click tracking lives in analytics.js */
 
 /* ---------- Contact form (removed — replaced by quote wizard) ---------- */
 
