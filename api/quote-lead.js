@@ -160,8 +160,7 @@ function buildText(first, windowPicked, powerPicked, days) {
       ? `We have ${fmtDay(days[0])} open with an ${CONFIG.ARRIVAL_WINDOW} arrival. Would that work for you? `
       : `We have ${fmtDay(days[0])} or ${fmtDay(days[1])} open with an ${CONFIG.ARRIVAL_WINDOW} arrival. Would either of those work for you? `;
     return `Hi ${first}, thanks for reaching out to CleanzATX! We just got your request for ${services}. ` +
-      (open ? `${open}Tyler will reach out shortly with your price.` : 'Tyler will reach out shortly with your price and available dates.') +
-      ' Reply STOP to opt out.';
+      (open ? `${open}Tyler will reach out shortly with your price.` : 'Tyler will reach out shortly with your price and available dates.');
   };
   const options = serviceSummaries(windowPicked, powerPicked).map(body);
   return options.find(t => t.length <= CONFIG.TEXT_MAX_CHARS) || options[options.length - 1];
