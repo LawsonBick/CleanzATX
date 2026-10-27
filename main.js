@@ -221,6 +221,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    QUOTE FORM — 2-step callback quote request
    Step 1: services + property, Step 2: contact + preferences
    ============================================================ */
+// Lead service, hosted separately — change here if it moves
+const LEAD_SERVICE_URL = 'https://cleanzatx-leads.vercel.app/api/quote-lead';
+
 const qwiz = document.getElementById('quoteWizard');
 if (qwiz) {
 
@@ -337,8 +340,6 @@ if (qwiz) {
     const lastName  = (document.getElementById('q-lname')?.value || '').trim();
     const phone     = (document.getElementById('q-phone')?.value || '').trim();
     const email     = (document.getElementById('q-email')?.value || '').trim();
-    // No checkbox: the notice above the submit button says submitting = OK to call/text about the quote
-    const smsConsent = true;
     const address   = (document.getElementById('q-address')?.value || '').trim();
     const sqft      = parseInt(document.getElementById('q-sqft')?.value) || 0;
     const propertyType = propertyTypeSel?.value || 'Residential';
@@ -412,18 +413,21 @@ if (qwiz) {
       }).catch(() => {});
     } catch (e) {}
 
-    // Rotor lead + welcome text, via our serverless function (never blocks the confirmation)
+    // Send the lead to the lead service (never blocks the confirmation or generate_lead).
+    // Consent comes from the notice above the submit button.
     try {
-      fetch('/api/quote-lead', {
+      fetch(LEAD_SERVICE_URL, {
         method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           first_name: firstName, last_name: lastName, phone, email, address,
           property_type: propertyType, sqft, stories,
-          services: selectedServices, frequency, timeline,
-          preferred_date: deadlineDate, target_date: computedDeadline,
-          last_cleaned: lastCleaned, referral, referrer, notes,
-          sms_consent: smsConsent,
-          company: document.getElementById('q-company')?.value || '',
+          services: selectedServices,
+          timeline,
+          specific_date: timeline === 'specific_date' ? deadlineDate : '',
+          frequency: frequencyLabel,
+          last_cleaned: lastCleanedLabels[lastCleaned] || lastCleaned || '',
+          referral, referrer, notes,
+          website: document.getElementById('q-website')?.value || '',
         }),
       }).catch(() => {});
     } catch (e) {}

@@ -8,10 +8,5 @@
     { "source": "/why-house-washing-can-help-you-sell-your-home-faster/", "destination": "/", "statusCode": 301 },
     { "source": "/barton-creek-texas", "destination": "/window-cleaning-westlake-hills", "statusCode": 301 },
     { "source": "/barton-creek-texas/", "destination": "/window-cleaning-westlake-hills", "statusCode": 301 }
-  ],
-  "functions": {
-    "api/quote-lead.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
