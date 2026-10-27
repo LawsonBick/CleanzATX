@@ -337,7 +337,8 @@ if (qwiz) {
     const lastName  = (document.getElementById('q-lname')?.value || '').trim();
     const phone     = (document.getElementById('q-phone')?.value || '').trim();
     const email     = (document.getElementById('q-email')?.value || '').trim();
-    const smsConsent = !!document.getElementById('q-sms-consent')?.checked;
+    // No checkbox: the notice above the submit button says submitting = OK to call/text about the quote
+    const smsConsent = true;
     const address   = (document.getElementById('q-address')?.value || '').trim();
     const sqft      = parseInt(document.getElementById('q-sqft')?.value) || 0;
     const propertyType = propertyTypeSel?.value || 'Residential';
@@ -393,7 +394,7 @@ if (qwiz) {
     try {
       emailjs.send('service_xsex2ss', 'template_536xvvp', {
         first_name: firstName, last_name: lastName, phone, email,
-        sms_consent: smsConsent ? 'Yes' : 'No',
+        sms_consent: 'Yes (agreed by submitting)',
         address, property_type: propertyType, sqft, stories,
         last_cleaned: lastCleanedLabels[lastCleaned] || lastCleaned || '',
         selected_services: servicesText,

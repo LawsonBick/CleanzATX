@@ -558,12 +558,6 @@
             </div>
           </div>
 
-          <div class="qwiz__field qwiz__consent">
-            <label class="qwiz__consent-label" for="q-sms-consent">
-              <input type="checkbox" id="q-sms-consent" />
-              <span>Yes, text me at this number about my quote and service. Msg frequency varies. Msg and data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a>.</span>
-            </label>
-          </div>
 
           <div class="qwiz__row qwiz__row--stay">
             <div class="qwiz__field">
@@ -635,6 +629,10 @@
             <label for="q-company">Company</label>
             <input type="text" id="q-company" name="company" tabindex="-1" autocomplete="off" />
           </div>
+
+          <p class="qwiz__consent-note" style="font-size:14px;line-height:1.55;color:rgba(255,255,255,.82);margin:6px 0 12px">
+            By submitting, you agree CleanzATX may call or text you at this number about your quote. Msg &amp; data rates may apply. Reply STOP to opt out. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:underline">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:underline">Terms</a>.
+          </p>
 
           <div class="qwiz__row qwiz__row--stay" style="margin-top:4px">
             <button type="button" class="btn btn--ghost btn--full" id="q-back">Back</button>
@@ -1528,7 +1526,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>if (window.emailjs) emailjs.init('pEcuEf_nmG3f4FLX1');</script>
-<script src="main.js?v=18"></script>
+<script src="main.js?v=19"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

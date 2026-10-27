@@ -1,10 +1,11 @@
 // POST /api/quote-lead — Vercel serverless function (Node, no dependencies).
 //
 // For each website quote:
-//   1. (SMS consent only) read the upcoming schedule from Rotor and pick 1–2
+//   1. read the upcoming schedule from Rotor and pick 1–2
 //      open mornings using the CONFIG rules below — plain rules, no AI
 //   2. create/update the lead in Rotor (the CRM), noting what was offered
-//   3. (SMS consent only) send one welcome text from the business line via Quo
+//   3. send one welcome text from the business line via Quo. Consent is given
+//      by submitting: the form says so right above the submit button.
 // A failure in any step never stops the next one, and the website never waits
 // on this (the form fires it with keepalive and shows its confirmation at once).
 //
@@ -182,7 +183,7 @@ function buildNotes(f, windowPicked, powerPicked, offerLine) {
   row('Stories', str(f.stories, 5));
   const referral = str(f.referral, 60), referrer = str(f.referrer, 80);
   row('How they found us', referral + (referrer ? ` (${referrer})` : ''));
-  lines.push(`SMS consent: ${f.sms_consent === true ? 'Yes' : 'No'}`);
+  lines.push('SMS consent: Yes (agreed by submitting)');
   const custNotes = str(f.notes, 1500);
   if (custNotes) lines.push('', 'Customer notes:', custNotes);
   const text = lines.join('\n');
@@ -283,14 +284,13 @@ async function handler(req, res) {
   const services = Array.isArray(f.services) ? f.services : [];
   const windowPicked = Object.keys(WINDOW_SERVICES).filter(k => services.includes(k));
   const powerPicked = Object.keys(POWER_SERVICES).filter(k => services.includes(k));
-  const consent = f.sms_consent === true;
   const now = clock.now();
 
-  // Will we text? (consent + Quo configured + not texted this number in the last few minutes)
+  // Will we text? (Quo configured + not texted this number in the last few minutes)
   const quoKey = process.env.QUO_API_KEY, quoFrom = process.env.QUO_FROM_NUMBER;
   const cooldown = CONFIG.TEXT_COOLDOWN_MINUTES * 60000;
   for (const [p, t] of recentTexts) if (now - t > cooldown) recentTexts.delete(p);
-  const willText = consent && !!quoKey && !!quoFrom && !recentTexts.has(phone);
+  const willText = !!quoKey && !!quoFrom && !recentTexts.has(phone);
   if (willText) recentTexts.set(phone, now.getTime());
 
   // 1. Schedule → open mornings (only needed when we're about to text)
@@ -311,9 +311,8 @@ async function handler(req, res) {
   const tags = ['website-quote'];
   if (windowPicked.length) tags.push('window-cleaning');
   if (powerPicked.length) tags.push('power-washing');
-  if (consent) tags.push('sms-consent');
-  const offerLine = !consent ? 'No SMS consent, call instead.'
-    : !willText ? 'SMS consent given, but no welcome text was sent (texting not set up, or already texted in the last few minutes). Follow up by text or call.'
+  tags.push('sms-consent');   // the form notice: submitting = OK to call/text about the quote
+  const offerLine = !willText ? 'No welcome text was sent (texting not set up, or already texted in the last few minutes). Follow up by text or call.'
     : offer ? `Texted offer: ${offer}` : 'Texted welcome (no open mornings offered; send price and dates).';
   const email = str(f.email, 255);
   const lead = {
