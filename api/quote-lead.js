@@ -1,8 +1,8 @@
 // POST /api/quote-lead — Vercel serverless function (Node, no dependencies).
 //
 // For each website quote:
-//   1. read the upcoming schedule from Rotor and pick 1–2
-//      open mornings using the CONFIG rules below — plain rules, no AI
+//   1. read the next 30 days of jobs from Rotor and pick 1–3 open AM/PM slots
+//      using the CONFIG rules below — plain rules, no AI
 //   2. create/update the lead in Rotor (the CRM), noting what was offered
 //   3. send one welcome text from the business line via Quo. Consent is given
 //      by submitting: the form says so right above the submit button.
@@ -17,22 +17,42 @@
 // ───────────── Scheduling rules (edit these) ─────────────
 const CONFIG = {
   TIME_ZONE: 'America/Chicago',
-  WORK_DAYS: [1, 2, 3, 4, 5],     // 0 = Sun … 6 = Sat → Mon–Fri
-  MIN_BUSINESS_DAYS_OUT: 1,       // earliest offer: the next work day…
-  LATE_CUTOFF_HOUR: 15,           // …or the one after, if the request comes in at/after 3 PM
-  LOOKAHEAD_DAYS: 14,             // only offer days within the next 14 days
-  SCHEDULE_FETCH_DAYS: 21,        // how far ahead to read the Rotor schedule
-  MAX_OFFERS: 2,                  // offer up to 2 days
-  ARRIVAL_WINDOW: '8-9 AM',       // plain hyphen keeps the text in cheap GSM-7 encoding
-  MORNING_ENDS_HOUR: 12,          // small job: day is open if no job starts before noon
-  BIG_JOB: {                      // big job: the day must have no jobs at all
-    BOTH_CATEGORIES: true,        // window cleaning AND power washing
-    SERVICES: ['house_wash', 'roof_wash', 'post_construction'],
-    MIN_SQFT: 4000,
-    MIN_STORIES: 3,
+  CREWS: 1,                         // a slot is full once this many jobs occupy it
+  WORK_DAYS: [1, 2, 3, 4, 5],       // 0 = Sun … 6 = Sat → Mon–Fri
+  MIN_BUSINESS_DAYS_OUT: 1,         // earliest offer: the next work day (never same-day)…
+  LATE_CUTOFF_HOUR: 15,             // …or the one after, if the request comes in at/after 3 PM
+  SCHEDULE_FETCH_DAYS: 30,          // how far ahead to read the Rotor schedule
+
+  // Two slots per work day (plain hyphens keep the text in cheap GSM-7 encoding)
+  SLOTS: { AM: '8-9 AM', PM: '12-1 PM' },
+
+  // How an existing Rotor job blocks slots (price = sum of its line items)
+  FULL_DAY_PRICE: 800,              // price ≥ $800 → blocks AM + PM
+  AM_ONLY_LATEST_START: '09:00',    // cheaper job starting at/before 9:00 AM → blocks AM only
+  PM_START: '12:00',                // cheaper job starting at/after 12:00 PM → blocks PM only
+                                    // (cheaper job starting 9:01–11:59 → blocks AM + PM)
+
+  // New job size: FULL DAY if any rule matches, otherwise HALF DAY
+  FULL_DAY_IF: {
+    WINDOWS_MIN_SQFT: 4000,         // any window cleaning at 4,000+ sq ft
+    WINDOWS_AND_POWER_MIN_SQFT: 2000, // windows + power washing at 2,000+ sq ft — default, confirm with owner
+    HOUSE_OR_ROOF_SERVICES: ['house_wash', 'roof_wash'],
+    HOUSE_OR_ROOF_MIN_SQFT: 3000,   // house wash or roof wash at 3,000+ sq ft — default, confirm with owner
   },
+
+  // Where to look, by the form's "Timeline" answer
+  SEARCH: {
+    asap: { businessDays: 5 },          // the next 5 business days
+    within_1_week: { calendarDays: 7 },
+    within_2_weeks: { calendarDays: 14 },
+    flexible: { calendarDays: 21 },
+    specific_date: { aroundBusinessDays: 3 }, // that date first, then the nearest open slots ±3 business days
+    default: { calendarDays: 14 },      // timeline missing/unknown
+  },
+
+  MAX_OFFERS: 3,
   TEXT_MAX_CHARS: 320,
-  TEXT_COOLDOWN_MINUTES: 10,      // don't text the same phone twice within this window
+  TEXT_COOLDOWN_MINUTES: 10,        // don't text the same phone twice within this window
 };
 
 const ROTOR_BASE = 'https://api.getrotor.com/open-api';
@@ -66,12 +86,12 @@ const str = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : 
 
 // ───────────── Dates (calendar days in CONFIG.TIME_ZONE) ─────────────
 const tzParts = new Intl.DateTimeFormat('en-US', {
-  timeZone: CONFIG.TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23',
+  timeZone: CONFIG.TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
 });
 function localParts(date) {
   const p = {};
   for (const x of tzParts.formatToParts(date)) p[x.type] = x.value;
-  return { key: `${p.year}-${p.month}-${p.day}`, hour: Number(p.hour) };
+  return { key: `${p.year}-${p.month}-${p.day}`, hour: Number(p.hour), minute: Number(p.minute) };
 }
 // Date-only math on "YYYY-MM-DD" keys, anchored at noon UTC so DST never shifts the day
 const keyToDate = key => { const [y, m, d] = key.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d, 12)); };
@@ -94,49 +114,94 @@ function parseDayKey(raw) {
   return '';
 }
 
-// ───────────── Day picker ─────────────
-function isBigJob({ windowPicked, powerPicked, sqft, stories }) {
-  const B = CONFIG.BIG_JOB;
-  return (B.BOTH_CATEGORIES && windowPicked.length > 0 && powerPicked.length > 0) ||
-    [...windowPicked, ...powerPicked].some(k => B.SERVICES.includes(k)) ||
-    sqft >= B.MIN_SQFT || stories >= B.MIN_STORIES;
+// ───────────── Slot picker ─────────────
+const toMinutes = hhmm => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
+const isCancelled = job => /^cancel/i.test(String(job && job.status || ''));
+const jobPrice = job => (Array.isArray(job.line_items) ? job.line_items : [])
+  .reduce((sum, li) => sum + (Number(li && li.total_price) || 0), 0);
+
+// Which slots an existing job takes: ['AM'], ['PM'] or ['AM', 'PM']
+function slotsTaken(job, startParts) {
+  const mins = startParts.hour * 60 + startParts.minute;
+  if (jobPrice(job) >= CONFIG.FULL_DAY_PRICE) return ['AM', 'PM'];
+  if (mins <= toMinutes(CONFIG.AM_ONLY_LATEST_START)) return ['AM'];
+  if (mins < toMinutes(CONFIG.PM_START)) return ['AM', 'PM'];
+  return ['PM'];
 }
 
-const isCancelled = job => /^cancel/i.test(String(job && job.status || ''));
-
-// jobs: Rotor serviced jobs; returns up to CONFIG.MAX_OFFERS "YYYY-MM-DD" keys
-function pickOpenDays({ now, jobs, big, preferredKey }) {
-  const { key: today, hour } = localParts(now);
-  const minBiz = CONFIG.MIN_BUSINESS_DAYS_OUT + (hour >= CONFIG.LATE_CUTOFF_HOUR ? 1 : 0);
-
-  const busyAllDay = new Set(), busyMorning = new Set();
+// "YYYY-MM-DD" → { AM: n, PM: n } jobs occupying each slot
+function occupancy(jobs) {
+  const occ = new Map();
   for (const job of jobs || []) {
-    if (isCancelled(job) || !job.service_date) continue;
+    if (!job || isCancelled(job) || !job.service_date) continue;
     const start = new Date(job.service_date);
     if (isNaN(start)) continue;
-    const { key, hour: h } = localParts(start);
-    busyAllDay.add(key);
-    if (h < CONFIG.MORNING_ENDS_HOUR) busyMorning.add(key);
+    const parts = localParts(start);
+    const day = occ.get(parts.key) || { AM: 0, PM: 0 };
+    for (const slot of slotsTaken(job, parts)) day[slot]++;
+    occ.set(parts.key, day);
   }
-  const isOpen = key => (big ? !busyAllDay.has(key) : !busyMorning.has(key));
+  return occ;
+}
 
-  // Work days from tomorrow on, numbered by business days out
-  const eligible = (key) => {
-    const span = daysBetween(today, key);
-    if (span < 1 || !isWorkDay(key)) return false;
-    let biz = 0;
-    for (let i = 1; i <= span; i++) if (isWorkDay(addDays(today, i))) biz++;
-    return biz >= minBiz;
-  };
+function newJobSize({ windowPicked, powerPicked, sqft }) {
+  const F = CONFIG.FULL_DAY_IF;
+  const full = (windowPicked.length > 0 && sqft >= F.WINDOWS_MIN_SQFT) ||
+    (windowPicked.length > 0 && powerPicked.length > 0 && sqft >= F.WINDOWS_AND_POWER_MIN_SQFT) ||
+    (powerPicked.some(k => F.HOUSE_OR_ROOF_SERVICES.includes(k)) && sqft >= F.HOUSE_OR_ROOF_MIN_SQFT);
+  return full ? 'full' : 'half';
+}
 
-  const picks = [];
-  const latest = addDays(today, CONFIG.SCHEDULE_FETCH_DAYS);   // only trust days we read the schedule for
-  if (preferredKey && preferredKey <= latest && eligible(preferredKey) && isOpen(preferredKey)) picks.push(preferredKey);
-  for (let i = 1; i <= CONFIG.LOOKAHEAD_DAYS && picks.length < CONFIG.MAX_OFFERS; i++) {
-    const key = addDays(today, i);
-    if (!picks.includes(key) && eligible(key) && isOpen(key)) picks.push(key);
+// Work days strictly after `from` up to and including `to`
+function businessDaysBetween(from, to) {
+  let n = 0;
+  for (let k = addDays(from, 1); k <= to; k = addDays(k, 1)) if (isWorkDay(k)) n++;
+  return n;
+}
+// The work day n work days away (n may be negative)
+function shiftBusinessDays(key, n) {
+  let k = key;
+  for (let left = Math.abs(n); left > 0;) { k = addDays(k, Math.sign(n)); if (isWorkDay(k)) left--; }
+  return k;
+}
+
+// Returns up to CONFIG.MAX_OFFERS { key: 'YYYY-MM-DD', slot: 'AM' | 'PM' }
+function pickOffers({ now, jobs, size, timeline, preferredKey }) {
+  const { key: today, hour } = localParts(now);
+  const earliestBiz = CONFIG.MIN_BUSINESS_DAYS_OUT + (hour >= CONFIG.LATE_CUTOFF_HOUR ? 1 : 0);
+  const lastKnown = addDays(today, CONFIG.SCHEDULE_FETCH_DAYS);   // only trust days we read the schedule for
+  const eligible = key => key > today && key <= lastKnown && isWorkDay(key) && businessDaysBetween(today, key) >= earliestBiz;
+
+  // Candidate days in search order
+  const S = CONFIG.SEARCH;
+  const specific = timeline === 'specific_date' && preferredKey;
+  let candidates = [];
+  if (specific) {
+    const r = S.specific_date.aroundBusinessDays;
+    for (let i = 1; i <= r; i++) candidates.push(shiftBusinessDays(preferredKey, -i), shiftBusinessDays(preferredKey, i));
+  } else {
+    const rule = S[timeline] && timeline !== 'specific_date' ? S[timeline] : S.default;
+    const end = rule.businessDays ? shiftBusinessDays(today, rule.businessDays) : addDays(today, rule.calendarDays);
+    for (let k = addDays(today, 1); k <= end; k = addDays(k, 1)) candidates.push(k);
   }
-  return picks.slice(0, CONFIG.MAX_OFFERS);
+  candidates = candidates.filter(eligible);
+
+  const occ = occupancy(jobs);
+  const free = (key, slot) => ((occ.get(key) || { AM: 0, PM: 0 })[slot]) < CONFIG.CREWS;
+  const emptyDay = key => free(key, 'AM') && free(key, 'PM');
+  const pmOnly = key => !free(key, 'AM') && free(key, 'PM');   // a morning job ends ~noon
+
+  const first = [];
+  if (specific && eligible(preferredKey)) {
+    if (emptyDay(preferredKey)) first.push({ key: preferredKey, slot: 'AM' });
+    else if (size === 'half' && pmOnly(preferredKey)) first.push({ key: preferredKey, slot: 'PM' });
+  }
+  const rest = [];
+  const room = () => CONFIG.MAX_OFFERS - first.length - rest.length;
+  for (const key of candidates) if (room() > 0 && emptyDay(key)) rest.push({ key, slot: 'AM' });
+  if (size === 'half') for (const key of candidates) if (room() > 0 && pmOnly(key)) rest.push({ key, slot: 'PM' });
+  rest.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+  return [...first, ...rest];
 }
 
 // ───────────── Text message ─────────────
@@ -155,22 +220,34 @@ function serviceSummaries(windowPicked, powerPicked) {
   return [long, short, tiny].map(a => a.filter(Boolean).join(' + ') || 'exterior cleaning');
 }
 
-function buildText(first, windowPicked, powerPicked, days) {
-  const body = services => {
-    const open = days.length === 0 ? null : days.length === 1
-      ? `We have ${fmtDay(days[0])} open with an ${CONFIG.ARRIVAL_WINDOW} arrival. Would that work for you? `
-      : `We have ${fmtDay(days[0])} or ${fmtDay(days[1])} open with an ${CONFIG.ARRIVAL_WINDOW} arrival. Would either of those work for you? `;
+const offerLabel = (o, comma = true) => comma ? `${fmtDay(o.key)} (${CONFIG.SLOTS[o.slot]})` : `${fmtDay(o.key, false)} ${CONFIG.SLOTS[o.slot]}`;
+
+function buildText(first, windowPicked, powerPicked, offers) {
+  const body = (services, list) => {
+    const l = list.map(o => offerLabel(o));
+    const open = l.length === 0 ? null
+      : l.length === 1 ? `We have ${l[0]} open. Would that work for you? `
+      : l.length === 2 ? `We have ${l[0]} or ${l[1]} open. Would either of those work for you? `
+      : `We have ${l.slice(0, -1).join(', ')} or ${l[l.length - 1]} open. Would any of those work for you? `;
     return `Hi ${first}, thanks for reaching out to CleanzATX! We just got your request for ${services}. ` +
       (open ? `${open}Tyler will reach out shortly with your price.` : 'Tyler will reach out shortly with your price and available dates.');
   };
-  const options = serviceSummaries(windowPicked, powerPicked).map(body);
-  return options.find(t => t.length <= CONFIG.TEXT_MAX_CHARS) || options[options.length - 1];
+  // Shorten the services text first, then drop offers, until it fits
+  for (let n = offers.length; n >= 0; n--) {
+    for (const services of serviceSummaries(windowPicked, powerPicked)) {
+      const t = body(services, offers.slice(0, n));
+      if (t.length <= CONFIG.TEXT_MAX_CHARS) return t;
+    }
+  }
+  return body(serviceSummaries(windowPicked, powerPicked).pop(), []);
 }
 
 // ───────────── Rotor lead notes ─────────────
-function buildNotes(f, windowPicked, powerPicked, offerLine) {
+function buildNotes(f, windowPicked, powerPicked, offerLine, size) {
   const lines = [];
-  if (offerLine) lines.push(offerLine, '');
+  if (offerLine) lines.push(offerLine);
+  if (size) lines.push(`Job size: ${size} day`);
+  if (offerLine || size) lines.push('');
   if (windowPicked.length) lines.push('WINDOW CLEANING:', ...windowPicked.map(k => '- ' + WINDOW_SERVICES[k]), '');
   if (powerPicked.length) lines.push('POWER WASHING:', ...powerPicked.map(k => '- ' + POWER_SERVICES[k]), '');
   const row = (label, value) => { if (value) lines.push(`${label}: ${value}`); };
@@ -293,19 +370,19 @@ async function handler(req, res) {
   const willText = !!quoKey && !!quoFrom && !recentTexts.has(phone);
   if (willText) recentTexts.set(phone, now.getTime());
 
-  // 1. Schedule → open mornings (only needed when we're about to text)
-  let days = [];
+  // 1. Schedule → 1–3 open slots (only needed when we're about to text)
+  const size = newJobSize({ windowPicked, powerPicked, sqft: Number(f.sqft) || 0 });
+  let offers = [];
   if (willText) {
     const preferredKey = f.timeline === 'specific_date' ? parseDayKey(f.preferred_date) : '';
     const sched = await rotorUpcomingJobs(rotorKey, now, new Date(now.getTime() + CONFIG.SCHEDULE_FETCH_DAYS * 86400000));
-    if (sched.ok) {
-      const big = isBigJob({ windowPicked, powerPicked, sqft: Number(f.sqft) || 0, stories: Number(f.stories) || 0 });
-      days = pickOpenDays({ now, jobs: sched.jobs, big, preferredKey });
-    } else {
-      console.error('rotor_schedule_failed', sched.status, sched.code);
-    }
+    if (sched.ok) offers = pickOffers({ now, jobs: sched.jobs, size, timeline: str(f.timeline, 30), preferredKey });
+    else console.error('rotor_schedule_failed', sched.status, sched.code);
   }
-  const offer = days.length ? `${days.map(d => fmtDay(d, false)).join(' or ')}, ${CONFIG.ARRIVAL_WINDOW}` : '';
+  const textBody = willText ? buildText(safeFirstName(first), windowPicked, powerPicked, offers) : '';
+  // What the text actually offers (it may drop offers to stay under the length limit)
+  const offered = offers.filter(o => textBody.includes(offerLabel(o)));
+  const offer = offered.map(o => offerLabel(o, false)).join(' / ');
 
   // 2. Lead in Rotor
   const tags = ['website-quote'];
@@ -313,7 +390,7 @@ async function handler(req, res) {
   if (powerPicked.length) tags.push('power-washing');
   tags.push('sms-consent');   // the form notice: submitting = OK to call/text about the quote
   const offerLine = !willText ? 'No welcome text was sent (texting not set up, or already texted in the last few minutes). Follow up by text or call.'
-    : offer ? `Texted offer: ${offer}` : 'Texted welcome (no open mornings offered; send price and dates).';
+    : offer ? `Texted offer: ${offer}` : 'Texted welcome (no open slots offered; send price and dates).';
   const email = str(f.email, 255);
   const lead = {
     name: `${first} ${last}`.trim(),
@@ -327,14 +404,14 @@ async function handler(req, res) {
     priority: 'high',
     service_type: [windowPicked.length && 'Window Cleaning', powerPicked.length && 'Power Washing'].filter(Boolean).join(' + ') || 'Exterior Cleaning',
     tags,
-    notes: buildNotes(f, windowPicked, powerPicked, offerLine),
+    notes: buildNotes(f, windowPicked, powerPicked, offerLine, size),
   };
   const rotor = await rotorUpsert(rotorKey, lead);
   if (!rotor.ok) console.error('rotor_lead_failed', rotor.status, rotor.code);
 
   // 3. Welcome text
   if (willText) {
-    const sent = await quoSend(quoKey, quoFrom, phone, buildText(safeFirstName(first), windowPicked, powerPicked, days));
+    const sent = await quoSend(quoKey, quoFrom, phone, textBody);
     if (!sent.ok) {
       recentTexts.delete(phone);
       console.error('quo_text_failed', sent.status, sent.code);
@@ -343,7 +420,7 @@ async function handler(req, res) {
       // Re-send the full lead by id: tags merge, notes reflect what actually happened
       const update = sent.ok
         ? { ...lead, tags: [...tags, 'texted-welcome', ...(offer ? ['offered-dates'] : [])] }
-        : { ...lead, notes: buildNotes(f, windowPicked, powerPicked, 'Welcome text FAILED to send' + (offer ? ` (would have offered ${offer})` : '') + '. Call or text them.') };
+        : { ...lead, notes: buildNotes(f, windowPicked, powerPicked, 'Welcome text FAILED to send' + (offer ? ` (would have offered ${offer})` : '') + '. Call or text them.', size) };
       const tagged = await rotorUpsert(rotorKey, { ...(rotor.id ? { id: rotor.id } : {}), ...update });
       if (!tagged.ok) console.error('rotor_update_failed', tagged.status, tagged.code);
     }
@@ -353,4 +430,4 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
-module.exports._test = { CONFIG, clock, recentTexts, pickOpenDays, isBigJob, buildText, buildNotes, toE164, safeFirstName, parseDayKey, localParts };
+module.exports._test = { CONFIG, clock, recentTexts, pickOffers, newJobSize, slotsTaken, occupancy, jobPrice, buildText, buildNotes, toE164, safeFirstName, parseDayKey, localParts };
