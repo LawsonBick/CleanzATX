@@ -411,19 +411,18 @@ if (qwiz) {
       }).catch(() => {});
     } catch (e) {}
 
-    // Send to CleanzATX Tracker — auto-creates the client
+    // Rotor lead + welcome text, via our serverless function (never blocks the confirmation)
     try {
-      fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      fetch('/api/quote-lead', {
+        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: firstName, last_name: lastName, phone, email,
-          sms_consent: smsConsent ? 'Yes' : 'No',
-          address, sqft, stories, property_type: propertyType,
-          service_categories: Array.from(catCheckboxes).filter(c => c.checked).map(c => c.value),
-          selected_services: selectedServices, services: servicesText,
-          service_frequency: frequency, service_plan: frequencyLabel,
-          last_cleaned: lastCleaned, referral_source: referral, referrer_name: referrer,
-          timeline, deadline_date: computedDeadline, notes, source: 'quote_form_v2',
+          first_name: firstName, last_name: lastName, phone, email, address,
+          property_type: propertyType, sqft, stories,
+          services: selectedServices, frequency, timeline,
+          preferred_date: deadlineDate, target_date: computedDeadline,
+          last_cleaned: lastCleaned, referral, referrer, notes,
+          sms_consent: smsConsent,
+          company: document.getElementById('q-company')?.value || '',
         }),
       }).catch(() => {});
     } catch (e) {}

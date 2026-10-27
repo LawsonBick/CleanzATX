@@ -1,7 +1,7 @@
 // Pages are always fetched from the network first, so visitors (and Google
 // Analytics) get the latest deploy right away; the cache is only an offline
 // fallback. Static files use cache-then-refresh. Other sites (Google tag,
-// fonts, EmailJS, the tracker API) are never touched.
+// fonts, EmailJS) are never touched; /api is always fetched live.
 const CACHE = 'cleanzatx-v9';
 const OFFLINE = '/__offline';
 const ASSETS = ['/', '/styles.css', '/logo.png', '/hero-photo.jpg'];
