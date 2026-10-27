@@ -222,7 +222,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    Step 1: services + property, Step 2: contact + preferences
    ============================================================ */
 // Lead service, hosted separately — change here if it moves
-const LEAD_SERVICE_URL = 'https://cleanzatx-leads.vercel.app/api/quote-lead';
+const LEAD_SERVICE_URL = 'https://cleanzatx-lead-service.vercel.app/api/quote-lead';
 
 const qwiz = document.getElementById('quoteWizard');
 if (qwiz) {
