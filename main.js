@@ -546,8 +546,8 @@ if (qwiz) {
     // Build price display when entering step 5
     if (step === 5) buildPriceDisplay();
 
-    // GA4 step tracking
-    trackStep(step);
+    // GA4 step tracking (not on the initial page-load render of step 0)
+    if (qwiz._initialized) trackStep(step);
 
     // Scroll to form (skip on initial load)
     if (!qwiz._initialized) {
@@ -1154,10 +1154,15 @@ if (qwiz) {
   });
 
   // GA4 — track quote wizard step progression
+  // begin_checkout fires once, when the visitor first moves past step 0
+  let checkoutBegun = false;
   function trackStep(step) {
     if (typeof gtag !== 'function') return;
     gtag('event', 'quote_step', { step_number: step });
-    if (step === 0) gtag('event', 'begin_checkout');
+    if (step > 0 && !checkoutBegun) {
+      checkoutBegun = true;
+      gtag('event', 'begin_checkout');
+    }
   }
 
   // Submit handlers
@@ -1170,39 +1175,41 @@ if (qwiz) {
     const planLabel = state.plan === '6month' ? 'Bi-Annual' : state.plan === 'quarterly' ? 'Quarterly' : state.plan === 'monthly' ? 'Monthly' : state.plan === 'weekly' ? (state.commercialFrequency === 'biweekly' ? 'Bi-weekly' : 'Weekly') : state.plan || 'None (One-Time)';
     const screenTypeLabel = state.screenType === 'solar' ? 'Solar Screens' : 'Normal Screens';
 
-    // Silent EmailJS send
-    const emailPayload = {
-      first_name:       state.firstName,
-      last_name:        state.lastName || '',
-      phone:            state.phone,
-      email:            state.email || '',
-      sms_consent:      state.smsConsent ? 'Yes' : 'No',
-      address:          state.address || '',
-      property_type:    state.propertyType || 'Residential',
-      business_name:    state.businessName || '',
-      commercial_property_type: state.commercialPropertyType || '',
-      commercial_property_desc: state.commercialPropertyDesc || '',
-      sqft:             state.sqft,
-      stories:          state.stories,
-      last_cleaned:     state.lastCleaned || '',
-      exterior_windows: state.svcExterior ? 'Yes' : 'No',
-      interior_windows: state.svcInterior ? 'Yes' : 'No',
-      screens:          state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
-      tracks:           state.svcTracks ? state.trackCount + ' tracks' : 'No',
-      french_panes:     state.frenchPanes ? state.frenchPaneCount + ' French pane windows' : 'No',
-      custom_layout:    state.customLayout,
-      service_plan:     planLabel,
-      auto_billing:     state.autoBilling ? 'Enrolled' : 'Not Enrolled',
-      referral_source:  state.referral || '',
-      timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
-      promo_code:       state.promoCode || '',
-      promo_discount:   state.promoDiscount || 0,
-      selected_services: (state.selectedServices || []).join(', '),
-      home_material:    state.homeMaterial || '',
-      home_material_notes: state.homeMaterialNotes || '',
-      debris_types:     (state.debrisTypes || []).join(', '),
-    };
-    emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
+    // Silent EmailJS send (never let a failed/blocked email library stop the submit)
+    try {
+      const emailPayload = {
+        first_name:       state.firstName,
+        last_name:        state.lastName || '',
+        phone:            state.phone,
+        email:            state.email || '',
+        sms_consent:      state.smsConsent ? 'Yes' : 'No',
+        address:          state.address || '',
+        property_type:    state.propertyType || 'Residential',
+        business_name:    state.businessName || '',
+        commercial_property_type: state.commercialPropertyType || '',
+        commercial_property_desc: state.commercialPropertyDesc || '',
+        sqft:             state.sqft,
+        stories:          state.stories,
+        last_cleaned:     state.lastCleaned || '',
+        exterior_windows: state.svcExterior ? 'Yes' : 'No',
+        interior_windows: state.svcInterior ? 'Yes' : 'No',
+        screens:          state.svcScreens ? state.screenCount + ' screens (' + (state.screenType === 'solar' ? 'solar' : 'standard') + ')' : 'No',
+        tracks:           state.svcTracks ? state.trackCount + ' tracks' : 'No',
+        french_panes:     state.frenchPanes ? state.frenchPaneCount + ' French pane windows' : 'No',
+        custom_layout:    state.customLayout,
+        service_plan:     planLabel,
+        auto_billing:     state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+        referral_source:  state.referral || '',
+        timeline:         ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+        promo_code:       state.promoCode || '',
+        promo_discount:   state.promoDiscount || 0,
+        selected_services: (state.selectedServices || []).join(', '),
+        home_material:    state.homeMaterial || '',
+        home_material_notes: state.homeMaterialNotes || '',
+        debris_types:     (state.debrisTypes || []).join(', '),
+      };
+      emailjs.send('service_xsex2ss', 'template_536xvvp', emailPayload).catch(() => {});
+    } catch (e) {}
 
     // Derive deadline date
     let deadlineDate = state.deadlineDate || '';
@@ -1242,60 +1249,64 @@ if (qwiz) {
     ── end n8n ── */
 
     // Send to CleanzATX Tracker — auto-creates client + plan
-    fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        first_name:                 state.firstName,
-        last_name:                  state.lastName || '',
-        phone:                      state.phone,
-        email:                      state.email || '',
-        address:                    state.address || '',
-        sqft:                       state.sqft,
-        stories:                    state.stories,
-        last_cleaned:               state.lastCleaned || '',
-        property_type:              state.propertyType || 'Residential',
-        business_name:              state.businessName || '',
-        commercial_property_type:   state.commercialPropertyType || '',
-        commercial_property_desc:   state.commercialPropertyDesc || '',
-        custom_layout:              state.customLayout,
-        french_panes:               state.frenchPanes ? state.frenchPaneCount + ' panes' : 'No',
-        service_plan:               planLabel,
-        auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
-        exterior_price:             p.exterior.toFixed(2),
-        interior_price:             p.interior.toFixed(2),
-        screen_price:               p.screens.toFixed(2),
-        track_price:                p.tracks.toFixed(2),
-        french_pane_price:          (p.frenchPanes || 0).toFixed(2),
-        discount:                   p.discount.toFixed(2),
-        total_price:                p.total.toFixed(2),
-        services:                   servicesList.join(', '),
-        deadline_date:              deadlineDate,
-        estimated_duration_minutes: getEstimatedDuration(),
-        referral_source:            state.referral || '',
-        timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
-        large_home:                 isLarge,
-        how_found:                  state.referral || '',
-        promo_code:                 state.promoCode || '',
-        promo_discount:             state.promoDiscount || 0,
-        selected_services:          state.selectedServices || [],
-        home_material:              state.homeMaterial || '',
-        home_material_notes:        state.homeMaterialNotes || '',
-        debris_types:               state.debrisTypes || [],
-        surcharges_applied:         state.surchargesApplied || [],
-      }),
-    }).catch(() => {});
+    try {
+      fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name:                 state.firstName,
+          last_name:                  state.lastName || '',
+          phone:                      state.phone,
+          email:                      state.email || '',
+          address:                    state.address || '',
+          sqft:                       state.sqft,
+          stories:                    state.stories,
+          last_cleaned:               state.lastCleaned || '',
+          property_type:              state.propertyType || 'Residential',
+          business_name:              state.businessName || '',
+          commercial_property_type:   state.commercialPropertyType || '',
+          commercial_property_desc:   state.commercialPropertyDesc || '',
+          custom_layout:              state.customLayout,
+          french_panes:               state.frenchPanes ? state.frenchPaneCount + ' panes' : 'No',
+          service_plan:               planLabel,
+          auto_billing:               state.autoBilling ? 'Enrolled' : 'Not Enrolled',
+          exterior_price:             p.exterior.toFixed(2),
+          interior_price:             p.interior.toFixed(2),
+          screen_price:               p.screens.toFixed(2),
+          track_price:                p.tracks.toFixed(2),
+          french_pane_price:          (p.frenchPanes || 0).toFixed(2),
+          discount:                   p.discount.toFixed(2),
+          total_price:                p.total.toFixed(2),
+          services:                   servicesList.join(', '),
+          deadline_date:              deadlineDate,
+          estimated_duration_minutes: getEstimatedDuration(),
+          referral_source:            state.referral || '',
+          timeline:                   ({ asap: 'ASAP', within_1_week: 'Within 1 Week', within_2_weeks: 'Within 2 Weeks', specific_date: 'Specific Date' })[state.timeline] || state.timeline || '',
+          large_home:                 isLarge,
+          how_found:                  state.referral || '',
+          promo_code:                 state.promoCode || '',
+          promo_discount:             state.promoDiscount || 0,
+          selected_services:          state.selectedServices || [],
+          home_material:              state.homeMaterial || '',
+          home_material_notes:        state.homeMaterialNotes || '',
+          debris_types:               state.debrisTypes || [],
+          surcharges_applied:         state.surchargesApplied || [],
+        }),
+      }).catch(() => {});
+    } catch (e) {}
 
     // GA4 — lead conversion event
-    if (typeof gtag === 'function') {
-      gtag('event', 'generate_lead', {
-        value: parseFloat(calcPrice().total.toFixed(2)),
-        currency: 'USD',
-        lead_source: state.referral || 'unknown',
-        selected_services: state.selectedServices,
-        ...(state.plan ? { plan: state.plan } : {}),
-      });
-    }
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', {
+          value: parseFloat(p.total.toFixed(2)),
+          currency: 'USD',
+          lead_source: state.referral || 'unknown',
+          selected_services: state.selectedServices,
+          ...(state.plan ? { plan: state.plan } : {}),
+        });
+      }
+    } catch (e) {}
 
     // Show confirmation
     qwiz.querySelectorAll('.qwiz__panel').forEach(p => p.classList.remove('active'));
