@@ -26,11 +26,17 @@ const CONFIG = {
   // Two slots per work day (plain hyphens keep the text in cheap GSM-7 encoding)
   SLOTS: { AM: '8-9 AM', PM: '12-1 PM' },
 
-  // How an existing Rotor job blocks slots (price = sum of its line items)
-  FULL_DAY_PRICE: 800,              // price ≥ $800 → blocks AM + PM
-  AM_ONLY_LATEST_START: '09:00',    // cheaper job starting at/before 9:00 AM → blocks AM only
-  PM_START: '12:00',                // cheaper job starting at/after 12:00 PM → blocks PM only
-                                    // (cheaper job starting 9:01–11:59 → blocks AM + PM)
+  // How an existing Rotor job blocks slots (price = sum of its line items).
+  // Thresholds from the owner's Oct 2026 Rotor visit timers: window jobs under
+  // $500 took 0.5–3.6 h, $500–700 took 3–4.5 h, $800 took 6.5 h; roof / house
+  // washes are priced high but quick ($2,460 roof soft wash 2.9 h, $1,231 house
+  // wash + windows + patios 3.9 h).
+  WINDOW_SERVICE_MATCH: 'window',   // job is a "window job" if any Rotor service type contains this
+  FULL_DAY_PRICE: 800,              // window job priced ≥ $800 → blocks AM + PM
+  FULL_DAY_PRICE_NON_WINDOW: 3000,  // other jobs (roof, power washing, add-ons, no type) ≥ $3,000 → AM + PM
+  AM_ONLY_LATEST_START: '09:00',    // below the full-day price, starting at/before 9:00 AM → blocks AM only
+  PM_START: '12:00',                // below the full-day price, starting at/after 12:00 PM → blocks PM only
+                                    // (below it, starting 9:01–11:59 → blocks AM + PM)
 
   // New job size: FULL DAY if any rule matches, otherwise HALF DAY
   FULL_DAY_IF: {
@@ -120,10 +126,14 @@ const isCancelled = job => /^cancel/i.test(String(job && job.status || ''));
 const jobPrice = job => (Array.isArray(job.line_items) ? job.line_items : [])
   .reduce((sum, li) => sum + (Number(li && li.total_price) || 0), 0);
 
+const isWindowJob = job => (Array.isArray(job.service_types) ? job.service_types : [])
+  .some(t => String(t).toLowerCase().includes(CONFIG.WINDOW_SERVICE_MATCH));
+
 // Which slots an existing job takes: ['AM'], ['PM'] or ['AM', 'PM']
 function slotsTaken(job, startParts) {
   const mins = startParts.hour * 60 + startParts.minute;
-  if (jobPrice(job) >= CONFIG.FULL_DAY_PRICE) return ['AM', 'PM'];
+  const fullDayPrice = isWindowJob(job) ? CONFIG.FULL_DAY_PRICE : CONFIG.FULL_DAY_PRICE_NON_WINDOW;
+  if (jobPrice(job) >= fullDayPrice) return ['AM', 'PM'];
   if (mins <= toMinutes(CONFIG.AM_ONLY_LATEST_START)) return ['AM'];
   if (mins < toMinutes(CONFIG.PM_START)) return ['AM', 'PM'];
   return ['PM'];
@@ -430,4 +440,4 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
-module.exports._test = { CONFIG, clock, recentTexts, pickOffers, newJobSize, slotsTaken, occupancy, jobPrice, buildText, buildNotes, toE164, safeFirstName, parseDayKey, localParts };
+module.exports._test = { CONFIG, clock, recentTexts, pickOffers, newJobSize, slotsTaken, occupancy, jobPrice, isWindowJob, buildText, buildNotes, toE164, safeFirstName, parseDayKey, localParts };
