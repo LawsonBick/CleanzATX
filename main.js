@@ -369,6 +369,19 @@ if (qwiz) {
     const servicesText = selectedServices.map(s => serviceLabels[s] || s).join(', ');
     const has = s => selectedServices.includes(s) ? 'Yes' : 'No';
 
+    // Grouped, one-per-line service lists for the email. Built only from these
+    // fixed keys and serviceLabels (no user input), because the template
+    // renders them as HTML ({{{window_services}}}).
+    const WINDOW_KEYS = ['ext_windows', 'int_windows', 'screens', 'tracks', 'skylights', 'post_construction', 'hard_water'];
+    const POWER_KEYS = ['house_wash', 'driveway', 'front_patio', 'back_patio', 'roof_wash', 'gutters', 'stone_limestone', 'deck_fence'];
+    const windowPicked = WINDOW_KEYS.filter(k => selectedServices.includes(k));
+    const powerPicked = POWER_KEYS.filter(k => selectedServices.includes(k));
+    const serviceLines = keys => keys.length ? keys.map(k => '• ' + serviceLabels[k]).join('<br>') : 'Not requested';
+    const serviceSummary = [
+      windowPicked.length ? `Window Cleaning (${windowPicked.length})` : '',
+      powerPicked.length ? `Power Washing (${powerPicked.length})` : '',
+    ].filter(Boolean).join(' + ') || 'Not specified';
+
     let computedDeadline = deadlineDate;
     if (!computedDeadline) {
       const d = new Date();
@@ -384,6 +397,10 @@ if (qwiz) {
         address, property_type: propertyType, sqft, stories,
         last_cleaned: lastCleanedLabels[lastCleaned] || lastCleaned || '',
         selected_services: servicesText,
+        window_services: serviceLines(windowPicked),
+        power_services: serviceLines(powerPicked),
+        service_summary: serviceSummary,
+        service_count: windowPicked.length + powerPicked.length,
         exterior_windows: has('ext_windows'), interior_windows: has('int_windows'),
         screens: has('screens'), tracks: has('tracks'),
         service_plan: frequencyLabel,
