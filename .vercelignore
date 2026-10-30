@@ -5,3 +5,4 @@ detailflow-crm/
 cleanzatx-tracker/
 .claude/
 server.py
+.env.example

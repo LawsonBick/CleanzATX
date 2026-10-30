@@ -411,6 +411,27 @@ if (qwiz) {
       }).catch(() => {});
     } catch (e) {}
 
+    // Rotor lead, via our own /api/quote-lead (API key stays on the server).
+    // Runs alongside the email; the confirmation never waits on it.
+    try {
+      fetch('/api/quote-lead', {
+        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: [firstName, lastName].filter(Boolean).join(' '),
+          email, phone, address,
+          sms_consent: smsConsent,
+          services: selectedServices.map(s => serviceLabels[s] || s),
+          frequency: frequencyLabel,
+          timeline: timelineLabels[timeline] || timeline,
+          target_date: timeline === 'specific_date' ? deadlineDate : '',
+          last_serviced: lastCleanedLabels[lastCleaned] || lastCleaned || '',
+          property_type: propertyType,
+          sqft: sqft || '', stories: stories || '',
+          referral, referrer, notes,
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+
     // GA4 — lead conversion (no price on the callback form, so no value)
     try {
       if (typeof gtag === 'function') {
@@ -420,6 +441,10 @@ if (qwiz) {
           selected_services: selectedServices.join(','),
           ...(frequency ? { plan: frequency } : {}),
         });
+        // TODO(Google Ads): no Ads conversion tag exists yet (index.html only has a
+        // commented-out AW-CONVERSION_ID placeholder). Once the Ads account gives you
+        // a conversion ID and label, enable that tag and fire it here, e.g.:
+        // gtag('event', 'conversion', { send_to: 'AW-XXXXXXXXX/XXXXXXXXXXXXX' });
       }
     } catch (e) {}
 
