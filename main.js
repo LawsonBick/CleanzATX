@@ -221,9 +221,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    QUOTE FORM — 2-step callback quote request
    Step 1: services + property, Step 2: contact + preferences
    ============================================================ */
-// Lead service, hosted separately — change here if it moves
-const LEAD_SERVICE_URL = 'https://cleanzatx-lead-service.vercel.app/api/quote-lead';
-
 const qwiz = document.getElementById('quoteWizard');
 if (qwiz) {
 
@@ -340,6 +337,7 @@ if (qwiz) {
     const lastName  = (document.getElementById('q-lname')?.value || '').trim();
     const phone     = (document.getElementById('q-phone')?.value || '').trim();
     const email     = (document.getElementById('q-email')?.value || '').trim();
+    const smsConsent = !!document.getElementById('q-sms-consent')?.checked;
     const address   = (document.getElementById('q-address')?.value || '').trim();
     const sqft      = parseInt(document.getElementById('q-sqft')?.value) || 0;
     const propertyType = propertyTypeSel?.value || 'Residential';
@@ -371,19 +369,6 @@ if (qwiz) {
     const servicesText = selectedServices.map(s => serviceLabels[s] || s).join(', ');
     const has = s => selectedServices.includes(s) ? 'Yes' : 'No';
 
-    // Grouped, one-per-line service lists for the email. Built only from these
-    // fixed keys and serviceLabels (no user input), because the template
-    // renders them as HTML ({{{window_services}}}).
-    const WINDOW_KEYS = ['ext_windows', 'int_windows', 'screens', 'tracks', 'skylights', 'post_construction', 'hard_water'];
-    const POWER_KEYS = ['house_wash', 'driveway', 'front_patio', 'back_patio', 'roof_wash', 'gutters', 'stone_limestone', 'deck_fence'];
-    const windowPicked = WINDOW_KEYS.filter(k => selectedServices.includes(k));
-    const powerPicked = POWER_KEYS.filter(k => selectedServices.includes(k));
-    const serviceLines = keys => keys.length ? keys.map(k => '• ' + serviceLabels[k]).join('<br>') : 'Not requested';
-    const serviceSummary = [
-      windowPicked.length ? `Window Cleaning (${windowPicked.length})` : '',
-      powerPicked.length ? `Power Washing (${powerPicked.length})` : '',
-    ].filter(Boolean).join(' + ') || 'Not specified';
-
     let computedDeadline = deadlineDate;
     if (!computedDeadline) {
       const d = new Date();
@@ -395,14 +380,10 @@ if (qwiz) {
     try {
       emailjs.send('service_xsex2ss', 'template_536xvvp', {
         first_name: firstName, last_name: lastName, phone, email,
-        sms_consent: 'Yes (agreed by submitting)',
+        sms_consent: smsConsent ? 'Yes' : 'No',
         address, property_type: propertyType, sqft, stories,
         last_cleaned: lastCleanedLabels[lastCleaned] || lastCleaned || '',
         selected_services: servicesText,
-        window_services: serviceLines(windowPicked),
-        power_services: serviceLines(powerPicked),
-        service_summary: serviceSummary,
-        service_count: windowPicked.length + powerPicked.length,
         exterior_windows: has('ext_windows'), interior_windows: has('int_windows'),
         screens: has('screens'), tracks: has('tracks'),
         service_plan: frequencyLabel,
@@ -413,21 +394,19 @@ if (qwiz) {
       }).catch(() => {});
     } catch (e) {}
 
-    // Send the lead to the lead service (never blocks the confirmation or generate_lead).
-    // Consent comes from the notice above the submit button.
+    // Send to CleanzATX Tracker — auto-creates the client
     try {
-      fetch(LEAD_SERVICE_URL, {
-        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+      fetch((window.CLEANZATX_TRACKER_URL || 'https://cleanzatx-tracker.vercel.app') + '/api/webhooks/quote-form', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: firstName, last_name: lastName, phone, email, address,
-          property_type: propertyType, sqft, stories,
-          services: selectedServices,
-          timeline,
-          specific_date: timeline === 'specific_date' ? deadlineDate : '',
-          frequency: frequencyLabel,
-          last_cleaned: lastCleanedLabels[lastCleaned] || lastCleaned || '',
-          referral, referrer, notes,
-          website: document.getElementById('q-website')?.value || '',
+          first_name: firstName, last_name: lastName, phone, email,
+          sms_consent: smsConsent ? 'Yes' : 'No',
+          address, sqft, stories, property_type: propertyType,
+          service_categories: Array.from(catCheckboxes).filter(c => c.checked).map(c => c.value),
+          selected_services: selectedServices, services: servicesText,
+          service_frequency: frequency, service_plan: frequencyLabel,
+          last_cleaned: lastCleaned, referral_source: referral, referrer_name: referrer,
+          timeline, deadline_date: computedDeadline, notes, source: 'quote_form_v2',
         }),
       }).catch(() => {});
     } catch (e) {}
